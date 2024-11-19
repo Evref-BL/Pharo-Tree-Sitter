@@ -1,11 +1,10 @@
 Class {
-	#name : 'TSTree',
-	#superclass : 'FFIOpaqueObject',
-	#category : 'TreeSitter',
-	#package : 'TreeSitter'
+	#name : #TSTree,
+	#superclass : #FFIOpaqueObject,
+	#category : 'TreeSitter'
 }
 
-{ #category : 'private' }
+{ #category : #private }
 TSTree >> rootNode [
 
 	^ TSLibrary uniqueInstance ts_tree_root_node: self

@@ -1,11 +1,10 @@
 Class {
-	#name : 'TSLanguage',
-	#superclass : 'FFIOpaqueObject',
-	#category : 'TreeSitter',
-	#package : 'TreeSitter'
+	#name : #TSLanguage,
+	#superclass : #FFIOpaqueObject,
+	#category : 'TreeSitter'
 }
 
-{ #category : 'versions' }
+{ #category : #versions }
 TSLanguage >> version [
 
 	^ TSLibrary uniqueInstance ts_language_version: self

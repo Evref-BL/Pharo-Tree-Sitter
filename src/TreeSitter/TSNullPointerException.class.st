@@ -1,11 +1,10 @@
 Class {
-	#name : 'TSNullPointerException',
-	#superclass : 'Error',
-	#category : 'TreeSitter',
-	#package : 'TreeSitter'
+	#name : #TSNullPointerException,
+	#superclass : #Error,
+	#category : 'TreeSitter'
 }
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 TSNullPointerException >> messageText [
 
 	^ messageText ifNil: [
