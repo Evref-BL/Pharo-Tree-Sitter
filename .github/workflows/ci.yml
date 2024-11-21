@@ -1,0 +1,53 @@
+name: CI
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+on:
+  push:
+    branches: 
+      - main
+      - v*
+  pull_request:
+    branches:    
+      - main
+      - v*
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        smalltalk: [ Pharo64-12 ]
+    name: ${{ matrix.smalltalk }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: tree-sitter/setup-action@v2
+
+      - name: Clone Tree sitter python
+        uses: GuillaumeFalourd/clone-github-repo-action@v2.3
+        with:
+          depth: 1
+          branch: 'master'
+          owner: 'tree-sitter'
+          repository: 'tree-sitter-python'
+
+      - name: build lib
+        shell: bash
+        run: |
+          cd tree-sitter-python
+          tree-sitter build
+          sudo mv python.so /usr/local/lib/libtree-sitter-python.so
+          cd ..
+      
+      - uses: hpi-swa/setup-smalltalkCI@v1
+        with:
+          smalltalk-image: ${{ matrix.smalltalk }}
+      - run: smalltalkci -s ${{ matrix.smalltalk }}
+        shell: bash
+        timeout-minutes: 15
+      - name: Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}

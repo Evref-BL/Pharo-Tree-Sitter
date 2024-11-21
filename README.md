@@ -1,5 +1,8 @@
 # Pharo tree-sitter
 
+[![CI](https://github.com/Evref-BL/Pharo-Tree-Sitter/actions/workflows/ci.yml/badge.svg)](https://github.com/Evref-BL/Pharo-Tree-Sitter/actions/workflows/ci.yml)
+[![Coverage Status](https://coveralls.io/repos/github/Evref-BL/Pharo-Tree-Sitter/badge.svg?branch=main)](https://coveralls.io/github/Evref-BL/Pharo-Tree-Sitter?branch=main)
+
 This is a binding to tree-sitter from Pharo.
 It allows one to perform analysis or highlight code using an existing tree sitter parser made by the community
 
@@ -13,7 +16,7 @@ The dependencies are:
 ```st
 Metacello new
   baseline: 'TreeSitter';
-  repository: 'github://badetitou/Pharo-Tree-Sitter:main/src';
+  repository: 'github://Evref-BL/Pharo-Tree-Sitter:main/src';
   load.
 ```
 
