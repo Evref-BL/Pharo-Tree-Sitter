@@ -1,11 +1,10 @@
 Class {
-	#name : 'BaselineOfTreeSitter',
-	#superclass : 'BaselineOf',
-	#category : 'BaselineOfTreeSitter',
-	#package : 'BaselineOfTreeSitter'
+	#name : #BaselineOfTreeSitter,
+	#superclass : #BaselineOf,
+	#category : #BaselineOfTreeSitter
 }
 
-{ #category : 'baselines' }
+{ #category : #baselines }
 BaselineOfTreeSitter >> baseline: spec [
 
 	<baseline>
@@ -15,25 +14,27 @@ BaselineOfTreeSitter >> baseline: spec [
 		self defineGroups: spec ]
 ]
 
-{ #category : 'baselines' }
+{ #category : #baselines }
 BaselineOfTreeSitter >> defineDependencies: spec [
 
 	
 ]
 
-{ #category : 'baselines' }
+{ #category : #baselines }
 BaselineOfTreeSitter >> defineGroups: spec [
 
 	
 ]
 
-{ #category : 'baselines' }
+{ #category : #baselines }
 BaselineOfTreeSitter >> definePackages: spec [
 
 	spec
 		package: 'TreeSitter';
 		package: 'TreeSitter-Tests'
-		with: [ spec requires: #( 'TreeSitter' 'TreeSitter-Python' ) ];
+		with: [ spec requires: #( 'TreeSitter' 'TreeSitter-Python' 'TreeSitter-Groovy' ) ];
+		package: 'TreeSitter-Groovy'
+		with: [ spec requires: #( 'TreeSitter' ) ];
 		package: 'TreeSitter-Python'
 		with: [ spec requires: #( 'TreeSitter' ) ];
 		package: 'TreeSitter-Spec'
