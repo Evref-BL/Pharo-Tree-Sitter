@@ -8,7 +8,7 @@ Class {
 		'OFFSET_ID',
 		'OFFSET_TREE'
 	],
-	#category : 'TreeSitter'
+	#category : #TreeSitter
 }
 
 { #category : #'field definition' }
@@ -86,6 +86,16 @@ TSTreeCursor >> id [
 TSTreeCursor >> id: anObject [
 	"This method was automatically generated"
 	handle pointerAt: OFFSET_ID put: anObject getHandle.
+]
+
+{ #category : #accessing }
+TSTreeCursor >> nextSibling [
+	^ TSLibrary uniqueInstance ts_tree_cursor_goto_next_sibling:  self. 
+]
+
+{ #category : #accessing }
+TSTreeCursor >> parent [
+	^ TSLibrary uniqueInstance ts_tree_cursor_goto_parent: self. 
 ]
 
 { #category : #'accessing - structure variables' }
