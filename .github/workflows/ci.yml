@@ -38,8 +38,7 @@ jobs:
         run: |
           cd tree-sitter-python
           tree-sitter build
-          mv python.so /usr/local/lib/python.so
-          ls
+          sudo mv python.so /usr/local/lib/libtree-sitter.so
           cd ..
       
       - uses: hpi-swa/setup-smalltalkCI@v1
