@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+    branches: 
+      - main
+      - v*
+  pull_request:
+    branches:    
+      - main
+      - v*
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        smalltalk: [ Pharo64-12 ]
+    name: ${{ matrix.smalltalk }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: tree-sitter/setup-action/cli@v1
+      - uses: tree-sitter/parser-test-action@v2
+        with:
+          test-python: true
+      
+      - uses: hpi-swa/setup-smalltalkCI@v1
+        with:
+          smalltalk-image: ${{ matrix.smalltalk }}
+      - run: smalltalkci -s ${{ matrix.smalltalk }}
+        shell: bash
+        timeout-minutes: 15
