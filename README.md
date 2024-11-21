@@ -13,7 +13,7 @@ The dependencies are:
 ```st
 Metacello new
   baseline: 'TreeSitter';
-  repository: 'github://badetitou/Pharo-Tree-Sitter:main/src';
+  repository: 'github://Evref-BL/Pharo-Tree-Sitter:main/src';
   load.
 ```
 
