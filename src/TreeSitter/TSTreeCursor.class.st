@@ -1,6 +1,6 @@
 Class {
-	#name : #TSTreeCursor,
-	#superclass : #FFIStructure,
+	#name : 'TSTreeCursor',
+	#superclass : 'FFIStructure',
 	#classVars : [
 		'OFFSET_CONTEXT0',
 		'OFFSET_CONTEXT1',
@@ -8,10 +8,11 @@ Class {
 		'OFFSET_ID',
 		'OFFSET_TREE'
 	],
-	#category : #TreeSitter
+	#category : 'TreeSitter',
+	#package : 'TreeSitter'
 }
 
-{ #category : #'field definition' }
+{ #category : 'field definition' }
 TSTreeCursor class >> fieldsDesc [
 	^ #(
   TSTree *tree;
@@ -22,89 +23,89 @@ TSTreeCursor class >> fieldsDesc [
 	)
 ]
 
-{ #category : #'accessing - structure variables' }
+{ #category : 'accessing - structure variables' }
 TSTreeCursor >> context0 [
 	"This method was automatically generated"
 	^handle unsignedLongAt: OFFSET_CONTEXT0
 ]
 
-{ #category : #'accessing - structure variables' }
+{ #category : 'accessing - structure variables' }
 TSTreeCursor >> context0: anObject [
 	"This method was automatically generated"
 	handle unsignedLongAt: OFFSET_CONTEXT0 put: anObject
 ]
 
-{ #category : #'accessing - structure variables' }
+{ #category : 'accessing - structure variables' }
 TSTreeCursor >> context1 [
 	"This method was automatically generated"
 	^handle unsignedLongAt: OFFSET_CONTEXT1
 ]
 
-{ #category : #'accessing - structure variables' }
+{ #category : 'accessing - structure variables' }
 TSTreeCursor >> context1: anObject [
 	"This method was automatically generated"
 	handle unsignedLongAt: OFFSET_CONTEXT1 put: anObject
 ]
 
-{ #category : #'accessing - structure variables' }
+{ #category : 'accessing - structure variables' }
 TSTreeCursor >> context2 [
 	"This method was automatically generated"
 	^handle unsignedLongAt: OFFSET_CONTEXT2
 ]
 
-{ #category : #'accessing - structure variables' }
+{ #category : 'accessing - structure variables' }
 TSTreeCursor >> context2: anObject [
 	"This method was automatically generated"
 	handle unsignedLongAt: OFFSET_CONTEXT2 put: anObject
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TSTreeCursor >> currentNode [
 
 	^ TSLibrary uniqueInstance ts_tree_cursor_current_node: self
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TSTreeCursor >> fieldName [
 
 	^ TSLibrary uniqueInstance ts_tree_cursor_current_field_name: self
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TSTreeCursor >> firstChild [
 
 	^ TSLibrary uniqueInstance ts_tree_cursor_goto_first_child: self
 ]
 
-{ #category : #'accessing - structure variables' }
+{ #category : 'accessing - structure variables' }
 TSTreeCursor >> id [
 	"This method was automatically generated"
 	^ExternalData fromHandle: (handle pointerAt: OFFSET_ID) type: ExternalType void asPointerType
 ]
 
-{ #category : #'accessing - structure variables' }
+{ #category : 'accessing - structure variables' }
 TSTreeCursor >> id: anObject [
 	"This method was automatically generated"
 	handle pointerAt: OFFSET_ID put: anObject getHandle.
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TSTreeCursor >> nextSibling [
 	^ TSLibrary uniqueInstance ts_tree_cursor_goto_next_sibling:  self. 
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TSTreeCursor >> parent [
 	^ TSLibrary uniqueInstance ts_tree_cursor_goto_parent: self. 
 ]
 
-{ #category : #'accessing - structure variables' }
+{ #category : 'accessing - structure variables' }
 TSTreeCursor >> tree [
 	"This method was automatically generated"
 	^ExternalData fromHandle: (handle pointerAt: OFFSET_TREE) type: ExternalType void asPointerType
 ]
 
-{ #category : #'accessing - structure variables' }
+{ #category : 'accessing - structure variables' }
 TSTreeCursor >> tree: anObject [
 	"This method was automatically generated"
 	handle pointerAt: OFFSET_TREE put: anObject getHandle.
