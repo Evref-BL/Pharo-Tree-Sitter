@@ -24,11 +24,13 @@ Metacello new
 ### MacOS
 We recommand you to download the tree-sitter core library using HomeBrew 
 
-`brew install tree-sitter`. 
+```sh
+brew install tree-sitter
+``` 
 
 Then, locate the `libtree-sitter.dylib` under the path `/opt/homebrew/Cellar/tree-sitter/0.x.x/lib/libtree-sitter.dylib`
 
-Finally, check the possibile lib location detected by Pharo using `FFIMacLibraryFinder  new  paths` in a playground. Both the core library and the parser library should be under any of these paths. Please move them their.  
+Finally, check the possible lib location detected by Pharo using `FFIMacLibraryFinder new paths` in a playground. Both the core library and the parser library should be under any of these paths. Please move them their.
 
 For instance, move your `python.dylib` under `/Pharo/vms/110-x64/Pharo.app/Contents/Resources/lib/`
 
@@ -52,6 +54,15 @@ ninja
 ```
 
 Then move the `libtree-sitter.dll` file under the **VM** folder of Pharo.
+
+### Archlinux
+
+The tree-sitter libs are available in the extra repository.
+So you only have to install tree-sitter and the grammar you wanna use with your package manager.
+
+```sh
+yay tree-sitter tree-sitter-grammars
+```
 
 ## Quick Example
 
