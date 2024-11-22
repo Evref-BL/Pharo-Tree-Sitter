@@ -9,7 +9,7 @@ Class {
 		'OFFSET_ID',
 		'OFFSET_TREE'
 	],
-	#category : 'TreeSitter'
+	#category : #TreeSitter
 }
 
 { #category : #'field definition' }
@@ -140,6 +140,12 @@ TSNode >> startPoint [
 TSNode >> symbol [
 
 	^ TSLibrary uniqueInstance ts_node_symbol: self
+]
+
+{ #category : #'as yet unclassified' }
+TSNode >> textFromSourceText: string [
+
+	^ string copyFrom: (string positionFromTSPoint: self startPoint) to: (string positionFromTSPoint: self endPoint ).
 ]
 
 { #category : #'accessing - structure variables' }

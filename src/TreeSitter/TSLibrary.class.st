@@ -106,6 +106,12 @@ TSLibrary >> ts_parser_new [
 ]
 
 { #category : #cursor }
+TSLibrary >> ts_tree_cursor_current_field_id: aTSTreeCursor [ 
+
+	^ self ffiCall: 'char * ts_tree_cursor_current_field_id(TSTreeCursor * aTSTreeCursor)'
+]
+
+{ #category : #cursor }
 TSLibrary >> ts_tree_cursor_current_field_name: aTSTreeCursor [ 
 
 	^ self ffiCall: 'char * ts_tree_cursor_current_field_name(TSTreeCursor * aTSTreeCursor)'

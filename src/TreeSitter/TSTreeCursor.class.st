@@ -58,16 +58,21 @@ TSTreeCursor >> context2: anObject [
 	handle unsignedLongAt: OFFSET_CONTEXT2 put: anObject
 ]
 
+{ #category : #'as yet unclassified' }
+TSTreeCursor >> currentFieldId [
+	^ TSLibrary uniqueInstance ts_tree_cursor_current_field_id: self. 
+]
+
+{ #category : #accessing }
+TSTreeCursor >> currentFieldName [
+
+	^ TSLibrary uniqueInstance ts_tree_cursor_current_field_name: self
+]
+
 { #category : #accessing }
 TSTreeCursor >> currentNode [
 
 	^ TSLibrary uniqueInstance ts_tree_cursor_current_node: self
-]
-
-{ #category : #accessing }
-TSTreeCursor >> fieldName [
-
-	^ TSLibrary uniqueInstance ts_tree_cursor_current_field_name: self
 ]
 
 { #category : #accessing }
