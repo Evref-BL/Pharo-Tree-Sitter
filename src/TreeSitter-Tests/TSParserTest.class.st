@@ -26,7 +26,7 @@ TSParserTest >> tearDown [
 	super tearDown
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'tests' }
 TSParserTest >> testLanguageVersion [
 
 	self
@@ -34,7 +34,7 @@ TSParserTest >> testLanguageVersion [
 		raise: TSNullPointerException
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'tests' }
 TSParserTest >> testRootNodeSymbolSimplePythonProgram [
 
 	| pythonLanguage string tree |
@@ -53,7 +53,7 @@ TSParserTest >> testRootNodeSymbolSimplePythonProgram [
 	self assert: tree rootNode symbol equals: 108
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'tests' }
 TSParserTest >> testRootOfSimplePythonHasOneChild [
 
 	| pythonLanguage string tree |
@@ -71,7 +71,7 @@ TSParserTest >> testRootOfSimplePythonHasOneChild [
 	self assert: tree rootNode childCount equals: 1
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'tests' }
 TSParserTest >> testRootOfSimplePythonHasOneNamedChild [
 
 	| pythonLanguage string tree |
