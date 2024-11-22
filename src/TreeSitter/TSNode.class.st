@@ -124,6 +124,13 @@ TSNode >> namedChildCount [
 	^ TSLibrary uniqueInstance ts_node_named_child_count: self
 ]
 
+{ #category : 'api' }
+TSNode >> namedChildren [
+
+	^ (1 to: self namedChildCount) collect: [ :idx |
+		  self namedChildAt: idx ]
+]
+
 { #category : 'printing' }
 TSNode >> printOn: aStream [
 

@@ -35,6 +35,28 @@ TSParserTest >> testLanguageVersion [
 ]
 
 { #category : 'tests' }
+TSParserTest >> testPositionInString [
+
+	| pythonLanguage string tree |
+	parser := TSParser new.
+	pythonLanguage := TSLanguage python.
+	parser language: pythonLanguage.
+
+	string := 'print("Hello, I''m Python!")
+# comment'.
+
+	tree := TSLibrary uniqueInstance
+		        ts_parser: parser
+		        _parse_string: string
+		        ofLength: string size
+		        usingOldTree: ExternalAddress null.
+	self
+		assert: (string positionFromTSPoint:
+				 tree rootNode namedChildren second startPoint)
+		equals: 28
+]
+
+{ #category : 'tests' }
 TSParserTest >> testRootNodeSymbolSimplePythonProgram [
 
 	| pythonLanguage string tree |
