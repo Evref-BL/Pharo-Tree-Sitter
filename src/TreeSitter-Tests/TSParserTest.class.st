@@ -110,3 +110,18 @@ TSParserTest >> testRootOfSimplePythonHasOneNamedChild [
 		        usingOldTree: ExternalAddress null.
 	self assert: tree rootNode namedChildCount equals: 1
 ]
+
+{ #category : 'tests' }
+TSParserTest >> testTreeHasAssociatedString [
+
+	| pythonLanguage string tree |
+	parser := TSParser new.
+	pythonLanguage := TSLanguage python.
+	parser language: pythonLanguage.
+
+	string := 'print("Hello, I''m Python!")
+# comment'.
+
+	tree := parser parseString: string.
+	self assert: tree originString equals: string
+]
