@@ -145,7 +145,7 @@ TSNode >> symbol [
 { #category : #'as yet unclassified' }
 TSNode >> textFromSourceText: string [
 
-	^ string copyFrom: (string positionFromTSPoint: self startPoint) to: (string positionFromTSPoint: self endPoint ).
+	^ string copyFrom: (string positionFromTSPoint: self startPoint)+1 to: (string positionFromTSPoint: self endPoint ).
 ]
 
 { #category : #'accessing - structure variables' }
