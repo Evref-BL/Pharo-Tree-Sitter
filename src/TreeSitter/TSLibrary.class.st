@@ -28,7 +28,7 @@ TSLibrary >> ts_language_version: aTSLanguage [
 		  'uint32 ts_language_version(TSLanguage * aTSLanguage)'
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'node' }
 TSLibrary >> ts_node: aTsNode _field_name_for_named_child: namedChildIndex [ 
 
 	^ self ffiCall: 'char * ts_node_field_name_for_named_child(TSNode aTsNode, uint32 namedChildIndex)'
@@ -182,10 +182,10 @@ TSLibrary >> ts_tree_root_node: aTSTree [
 ]
 
 { #category : 'accessing - platform' }
-TSLibrary >> unix64LibraryName [
+TSLibrary >> unixLibraryName [
 	"Users should use unix32* or unix64*"
 
-	^ FFIUnix64LibraryFinder findAnyLibrary: #( 'libtree-sitter.so' )
+	^ 'libtree-sitter.so'
 ]
 
 { #category : 'accessing - platform' }
