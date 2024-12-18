@@ -17,7 +17,7 @@ TSLanguage >> symbolCount [
 	^ TSLibrary uniqueInstance ts_language_symbol_count: self
 ]
 
-{ #category : 'utils' }
+{ #category : 'utilities' }
 TSLanguage >> symbolsOfType: aTSSymbolType [
 
 	| collection |
