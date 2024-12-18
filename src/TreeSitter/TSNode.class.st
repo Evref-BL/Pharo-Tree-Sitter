@@ -33,16 +33,16 @@ TSNode >> childCount [
 
 { #category : 'as yet unclassified' }
 TSNode >> collectFieldNameOfNamedChild [
-	|collection|
-	collection := OrderedDictionary new. 
-	
+
+	| collection |
+	collection := OrderedDictionary new.
+
 	1 to: self namedChildCount do: [ :pharoIndex |
-		| namedChild field|
+		| namedChild field |
 		namedChild := self namedChildAt: pharoIndex.
-		field := self fieldNameOfChildNamedAt: pharoIndex. 
-		collection at: field put: namedChild. 
-		 ].
-	^ collection 
+		field := self fieldNameOfChildNamedAt: pharoIndex.
+		collection at: field put: namedChild ].
+	^ collection
 ]
 
 { #category : 'api' }
@@ -129,17 +129,18 @@ TSNode >> endPoint [
 
 { #category : 'accessing' }
 TSNode >> fieldName [
-	^ TSLibrary uniqueInstance 
-	ts_tree_cursor_current_field_name: self cursor
+
+	^ TSLibrary uniqueInstance ts_tree_cursor_current_field_name:
+		  self cursor
 ]
 
 { #category : 'accessing' }
-TSNode >> fieldNameOfChildNamedAt: childIndex [ 
+TSNode >> fieldNameOfChildNamedAt: childIndex [
 	"starting at 0"
-	
-	^ TSLibrary uniqueInstance 
-		ts_node: self
-	 _field_name_for_named_child: childIndex - 1 
+
+	^ TSLibrary uniqueInstance
+		  ts_node: self
+		  _field_name_for_named_child: childIndex - 1
 ]
 
 { #category : 'accessing - structure variables' }
