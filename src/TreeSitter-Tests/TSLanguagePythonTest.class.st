@@ -27,6 +27,16 @@ TSLanguagePythonTest >> tearDown [
 ]
 
 { #category : 'tests' }
+TSLanguagePythonTest >> testCollectAllSymbolOfOneSymbolType [
+
+	self
+		assert:
+		(parser language symbolsOfType: TSSymbolType tssymboltyperegular)
+			size
+		equals: 129
+]
+
+{ #category : 'tests' }
 TSLanguagePythonTest >> testPythonNumberOfSymbol [
 
 	self assert: parser language symbolCount equals: 275
