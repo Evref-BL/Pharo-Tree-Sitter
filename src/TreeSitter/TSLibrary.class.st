@@ -12,12 +12,26 @@ TSLibrary >> macLibraryName [
 	^ FFIMacLibraryFinder findAnyLibrary: #( 'libtree-sitter.dylib' )
 ]
 
+{ #category : 'parser' }
+TSLibrary >> ts_field_count_for_language: aTSLanguage [
+
+	aTSLanguage isNull ifTrue: [ TSNullPointerException signal  ].
+	^ self ffiCall:
+		  'uint32 ts_language_field_count(const TSLanguage * aTSLanguage)'
+]
+
 { #category : 'language' }
 TSLibrary >> ts_language_version: aTSLanguage [
 
 	aTSLanguage isNull ifTrue: [ TSNullPointerException signal  ].
 	^ self ffiCall:
 		  'uint32 ts_language_version(TSLanguage * aTSLanguage)'
+]
+
+{ #category : 'as yet unclassified' }
+TSLibrary >> ts_node: aTsNode _field_name_for_named_child: namedChildIndex [ 
+
+	^ self ffiCall: 'char * ts_node_field_name_for_named_child(TSNode aTsNode, uint32 namedChildIndex)'
 ]
 
 { #category : 'node' }
@@ -31,6 +45,13 @@ TSLibrary >> ts_node: aTSNode _named_child_count: child_index [
 TSLibrary >> ts_node_child_count: aTSNode [
 
 	^ self ffiCall: 'uint32 ts_node_child_count(TSNode aTSNode)'
+]
+
+{ #category : 'node' }
+TSLibrary >> ts_node_child_of: aTSNode _by_field_name: aFieldName ofLength: field_name_length [ 
+	
+	^ self ffiCall:
+		  'TSNode ts_node_child_by_field_name( TSNode aTSNode, char * aFieldName, uint32 field_name_length)'
 ]
 
 { #category : 'node' }
@@ -104,6 +125,12 @@ TSLibrary >> ts_parser_new [
 
 	^ self ffiCall:
 		  'TSParser * ts_parser_new ()'
+]
+
+{ #category : 'cursor' }
+TSLibrary >> ts_tree_cursor_current_field_id: aTSTreeCursor [ 
+
+	^ self ffiCall: 'char * ts_tree_cursor_current_field_id(TSTreeCursor * aTSTreeCursor)'
 ]
 
 { #category : 'cursor' }

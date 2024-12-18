@@ -31,6 +31,30 @@ TSNode >> childCount [
 	^ TSLibrary uniqueInstance ts_node_child_count: self
 ]
 
+{ #category : 'as yet unclassified' }
+TSNode >> collectFieldNameOfNamedChild [
+	|collection|
+	collection := OrderedDictionary new. 
+	
+	1 to: self namedChildCount do: [ :pharoIndex |
+		| namedChild field|
+		namedChild := self namedChildAt: pharoIndex.
+		field := self fieldNameOfChildNamedAt: pharoIndex. 
+		collection at: field put: namedChild. 
+		 ].
+	^ collection 
+]
+
+{ #category : 'api' }
+TSNode >> collectNamedChild [
+	|children|
+	children := OrderedCollection new.
+	1 to: self namedChildCount do: [ :i |
+		children add: (self namedChildAt: i).
+		 ].
+	^ children 
+]
+
 { #category : 'accessing - structure variables' }
 TSNode >> context0 [
 	"This method was automatically generated"
@@ -85,10 +109,37 @@ TSNode >> cursor [
 	^ TSLibrary uniqueInstance ts_tree_cursor_new: self
 ]
 
+{ #category : 'as yet unclassified' }
+TSNode >> detectChildWithFieldName: aFieldName [
+	"ensure that this field name exist, crash otherwise"
+	^ TSLibrary uniqueInstance ts_node_child_of: self _by_field_name: aFieldName ofLength: aFieldName size 
+]
+
+{ #category : 'collection' }
+TSNode >> detectNamedChild: name ifNone: aConstantBlockClosure [ 
+
+	^ self collectNamedChild detect: [ :tsNode | tsNode type = name ] ifNone: aConstantBlockClosure
+]
+
 { #category : 'api' }
 TSNode >> endPoint [
 
 	^ TSLibrary uniqueInstance ts_node_end_point: self
+]
+
+{ #category : 'accessing' }
+TSNode >> fieldName [
+	^ TSLibrary uniqueInstance 
+	ts_tree_cursor_current_field_name: self cursor
+]
+
+{ #category : 'accessing' }
+TSNode >> fieldNameOfChildNamedAt: childIndex [ 
+	"starting at 0"
+	
+	^ TSLibrary uniqueInstance 
+		ts_node: self
+	 _field_name_for_named_child: childIndex - 1 
 ]
 
 { #category : 'accessing - structure variables' }
@@ -131,6 +182,13 @@ TSNode >> namedChildren [
 		  self namedChildAt: idx ]
 ]
 
+{ #category : 'as yet unclassified' }
+TSNode >> nodeChildByFieldName: aFieldName [
+	
+	
+	^ TSLibrary uniqueInstance ts_node_child_of: self _by_field_name: aFieldName ofLength: aFieldName size. 
+]
+
 { #category : 'printing' }
 TSNode >> printOn: aStream [
 
@@ -148,6 +206,12 @@ TSNode >> startPoint [
 TSNode >> symbol [
 
 	^ TSLibrary uniqueInstance ts_node_symbol: self
+]
+
+{ #category : 'as yet unclassified' }
+TSNode >> textFromSourceText: string [
+
+	^ string copyFrom: (string positionFromTSPoint: self startPoint)+1 to: (string positionFromTSPoint: self endPoint ).
 ]
 
 { #category : 'accessing - structure variables' }
