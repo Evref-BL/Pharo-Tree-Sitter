@@ -21,6 +21,14 @@ TSLibrary >> ts_field_count_for_language: aTSLanguage [
 ]
 
 { #category : 'language' }
+TSLibrary >> ts_language: aTSLanguage _field_name_for_id: aFieldID [
+
+	aTSLanguage isNull ifTrue: [ TSNullPointerException signal ].
+	^ self ffiCall:
+		  'char * ts_language_field_name_for_id(TSLanguage * aTSLanguage, uint16 aFieldID)'
+]
+
+{ #category : 'language' }
 TSLibrary >> ts_language: aTSLanguage _symbol_name: symbol [
 
 	aTSLanguage isNull ifTrue: [ TSNullPointerException signal ].
@@ -34,6 +42,14 @@ TSLibrary >> ts_language: aTSLanguage _symbol_type: symbol [
 	aTSLanguage isNull ifTrue: [ TSNullPointerException signal ].
 	^ self ffiCall:
 		  'TSSymbolType ts_language_symbol_type(TSLanguage * aTSLanguage, uint16 symbol)'
+]
+
+{ #category : 'language' }
+TSLibrary >> ts_language_field_count: aTSLanguage [
+
+	aTSLanguage isNull ifTrue: [ TSNullPointerException signal ].
+	^ self ffiCall:
+		  'uint32 ts_language_field_count(TSLanguage * aTSLanguage)'
 ]
 
 { #category : 'language' }

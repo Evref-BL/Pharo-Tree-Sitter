@@ -6,9 +6,21 @@ Class {
 }
 
 { #category : 'accessing' }
+TSLanguage >> fieldCount [
+
+	^ TSLibrary uniqueInstance ts_language_field_count: self
+]
+
+{ #category : 'accessing' }
 TSLanguage >> name [
 
 	^ TSLibrary uniqueInstance ts_language_name: self
+]
+
+{ #category : 'accessing' }
+TSLanguage >> nameOfField: aField [
+
+	^ TSLibrary uniqueInstance ts_language: self _field_name_for_id: aField 
 ]
 
 { #category : 'accessing' }
