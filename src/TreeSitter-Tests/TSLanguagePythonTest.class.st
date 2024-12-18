@@ -37,3 +37,9 @@ TSLanguagePythonTest >> testRetrieveSymbolName [
 
 	self assert: (parser language nameOfSymbol: 1) equals: 'identifier'
 ]
+
+{ #category : 'tests' }
+TSLanguagePythonTest >> testRetrieveSymbolType [
+
+	self assert: (parser language typeOfSymbol: 1) equals: TSSymbolType tssymboltyperegular
+]

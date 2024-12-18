@@ -18,6 +18,12 @@ TSLanguage >> symbolCount [
 ]
 
 { #category : 'versions' }
+TSLanguage >> typeOfSymbol: aSymbol [
+
+	^ TSLibrary uniqueInstance ts_language: self _symbol_type: aSymbol
+]
+
+{ #category : 'versions' }
 TSLanguage >> version [
 
 	^ TSLibrary uniqueInstance ts_language_version: self
