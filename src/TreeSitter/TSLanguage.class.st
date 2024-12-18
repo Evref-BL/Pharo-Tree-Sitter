@@ -6,6 +6,12 @@ Class {
 }
 
 { #category : 'accessing' }
+TSLanguage >> name [
+
+	^ TSLibrary uniqueInstance ts_language_name: self
+]
+
+{ #category : 'accessing' }
 TSLanguage >> nameOfSymbol: aSymbol [
 
 	^ TSLibrary uniqueInstance ts_language: self _symbol_name: aSymbol
