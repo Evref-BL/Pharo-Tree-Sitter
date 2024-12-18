@@ -31,3 +31,9 @@ TSLanguagePythonTest >> testPythonNumberOfSymbol [
 
 	self assert: parser language symbolCount equals: 275
 ]
+
+{ #category : 'tests' }
+TSLanguagePythonTest >> testRetrieveSymbolName [
+
+	self assert: (parser language nameOfSymbol: 1) equals: 'identifier'
+]

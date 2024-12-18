@@ -21,6 +21,13 @@ TSLibrary >> ts_field_count_for_language: aTSLanguage [
 ]
 
 { #category : 'language' }
+TSLibrary >> ts_language: aTSLanguage _symbol_name: symbol [
+
+	^ self ffiCall:
+		  'char * ts_language_symbol_name(TSLanguage *  aTSLanguage, uint16 symbol)'
+]
+
+{ #category : 'language' }
 TSLibrary >> ts_language_symbol_count: aTSLanguage [
 
 	aTSLanguage isNull ifTrue: [ TSNullPointerException signal ].
