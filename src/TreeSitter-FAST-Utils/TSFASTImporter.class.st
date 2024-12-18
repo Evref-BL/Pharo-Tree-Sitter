@@ -4,7 +4,8 @@ Class {
 	#instVars : [
 		'tsLanguage',
 		'languageName',
-		'model'
+		'model',
+		'originString'
 	],
 	#category : 'TreeSitter-FAST-Utils',
 	#package : 'TreeSitter-FAST-Utils'
@@ -13,9 +14,11 @@ Class {
 { #category : 'accessing' }
 TSFASTImporter >> import: aTSNode [
 
+	| rootFastEntity |
 	model := ('FAST' , self languageName , 'Model' asClassInEnvironment:
 		          self class environment) new.
-	aTSNode accept: self.
+	rootFastEntity := aTSNode accept: self.
+	rootFastEntity source: self originString.
 	^ model
 ]
 
@@ -36,6 +39,18 @@ TSFASTImporter >> languageName [
 TSFASTImporter >> languageName: anObject [
 
 	languageName := anObject
+]
+
+{ #category : 'accessing' }
+TSFASTImporter >> originString [
+
+	^ originString
+]
+
+{ #category : 'accessing' }
+TSFASTImporter >> originString: anObject [
+
+	originString := anObject
 ]
 
 { #category : 'accessing' }
@@ -65,5 +80,9 @@ TSFASTImporter >> visitNode: aTSNode [
 			ifEmpty: [ fastEntity addGenericChildren: childFast ]
 			ifNotEmpty: [
 			(fastEntity perform: fieldName asSymbol) add: childFast ] ].
+	fastEntity startPos:
+		(self originString positionFromTSPoint: aTSNode startPoint) + 1.
+	fastEntity endPos:
+		(self originString positionFromTSPoint: aTSNode endPoint).
 	^ fastEntity
 ]

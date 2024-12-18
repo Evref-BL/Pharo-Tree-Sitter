@@ -47,7 +47,9 @@ TSFASTBuilder >> addDefineHierarchyIn: metamodelGeneratorClass [
 
 	super defineHierarchy.
 
-	entity --|> tEntity.' ].
+	entity --|> tEntity.
+	entity --|> #THasImmediateSource.
+	entity withPrecedenceOf: #THasImmediateSource' ].
 	metamodelGeneratorClass compile: method classified: #definition
 ]
 
