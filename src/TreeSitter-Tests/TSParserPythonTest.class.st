@@ -26,6 +26,24 @@ TSParserPythonTest >> tearDown [
 	super tearDown
 ]
 
+{ #category : 'tests' }
+TSParserPythonTest >> testPositionEndPointInString [
+
+	| string tree |
+	string := 'print("Hello, I''m Python!")
+# comment'.
+
+	tree := TSLibrary uniqueInstance
+		        ts_parser: parser
+		        _parse_string: string
+		        ofLength: string size
+		        usingOldTree: ExternalAddress null.
+	self
+		assert: (string positionFromTSPoint:
+				 tree rootNode namedChildren second endPoint)
+		equals: 37
+]
+
 { #category : 'as yet unclassified' }
 TSParserPythonTest >> testPositionInString [
 
