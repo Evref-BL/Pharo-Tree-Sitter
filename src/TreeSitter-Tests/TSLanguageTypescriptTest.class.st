@@ -33,7 +33,7 @@ TSLanguageTypescriptTest >> testCollectAllSymbolOfOneSymbolType [
 		assert:
 		(parser language symbolsOfType: TSSymbolType tssymboltyperegular)
 			size
-		equals: 192
+		equals: 191
 ]
 
 { #category : 'tests' }
