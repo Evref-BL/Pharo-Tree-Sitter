@@ -228,6 +228,13 @@ TSLibrary >> ts_tree_cursor_new: aTSNode [
 	^ self ffiCall: 'TSTreeCursor ts_tree_cursor_new (TSNode aTSNode)'
 ]
 
+{ #category : 'as yet unclassified' }
+TSLibrary >> ts_tree_edit: aTSTree forInputEdit: aTSInputEdit [
+	
+	^ self ffiCall:
+		  'void ts_tree_edit(TSTree *aTSTree, const TSInputEdit *aTSInputEdit)'
+]
+
 { #category : 'tree' }
 TSLibrary >> ts_tree_root_node: aTSTree [
 
