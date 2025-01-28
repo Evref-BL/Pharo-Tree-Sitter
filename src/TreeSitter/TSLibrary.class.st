@@ -114,6 +114,12 @@ TSLibrary >> ts_node_is_named: aTSNode [
 ]
 
 { #category : 'node' }
+TSLibrary >> ts_node_is_null: aTSNode [
+
+	^ self ffiCall: 'bool ts_node_is_null(TSNode aTSNode)'
+]
+
+{ #category : 'node' }
 TSLibrary >> ts_node_named_child_count: aTSNode [
 
 	^ self ffiCall: 'uint32 ts_node_named_child_count(TSNode aTSNode)'

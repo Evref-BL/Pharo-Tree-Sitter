@@ -162,6 +162,12 @@ TSNode >> isNamed [
 ]
 
 { #category : 'api' }
+TSNode >> isNull [ 
+
+	^ TSLibrary uniqueInstance ts_node_is_null: self
+]
+
+{ #category : 'api' }
 TSNode >> namedChildAt: childIndex [
 	"starting at 0"
 
