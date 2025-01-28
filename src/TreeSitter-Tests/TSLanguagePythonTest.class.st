@@ -33,7 +33,7 @@ TSLanguagePythonTest >> testCollectAllSymbolOfOneSymbolType [
 		assert:
 		(parser language symbolsOfType: TSSymbolType tssymboltyperegular)
 			size
-		equals: 129
+		equals: 130
 ]
 
 { #category : 'tests' }
