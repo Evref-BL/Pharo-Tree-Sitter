@@ -54,7 +54,7 @@ jobs:
         run: |
           cd tree-sitter-typescript/typescript
           tree-sitter build
-          sudo mv parser.so /usr/local/lib/libtree-sitter-typescript.so
+          sudo mv parser.so /usr/local/lib/tree-sitter-typescript.so
           cd ../..
       
       - uses: hpi-swa/setup-smalltalkCI@v1
