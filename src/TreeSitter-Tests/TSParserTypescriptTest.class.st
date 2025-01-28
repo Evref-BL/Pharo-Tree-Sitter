@@ -1,0 +1,113 @@
+Class {
+	#name : 'TSParserTypescriptTest',
+	#superclass : 'TestCase',
+	#instVars : [
+		'parser',
+		'typescriptLanguage'
+	],
+	#category : 'TreeSitter-Tests',
+	#package : 'TreeSitter-Tests'
+}
+
+{ #category : 'running' }
+TSParserTypescriptTest >> setUp [
+
+	super setUp.
+
+	parser := TSParser new.
+	typescriptLanguage := TSLanguage typescript.
+	parser language: typescriptLanguage .
+]
+
+{ #category : 'running' }
+TSParserTypescriptTest >> tearDown [
+
+	parser delete.
+	super tearDown
+]
+
+{ #category : 'tests' }
+TSParserTypescriptTest >> testChildrenCollection [
+
+	| string tree |
+	string := 'const car: { type: string, model: string, year: number } = {
+  					type: "Toyota",
+ 					model: "Corolla",
+  					year: 2009
+				};'.
+
+	tree := parser parseString: string. 
+	
+	self assert: tree rootNode collectNamedChild size equals: 1. 
+	self assert: tree rootNode collectNamedChild first collectNamedChild size equals: 1.
+	self assert: tree rootNode collectNamedChild first collectNamedChild first collectNamedChild size equals: 3. 
+]
+
+{ #category : 'tests' }
+TSParserTypescriptTest >> testFieldsNamesCollection [
+
+	| string tree fieldsDict|
+	string := 'function deleteUser(user: User) {
+  					// This is a comment
+				 }'.
+
+	tree := parser parseString: string.
+	
+	fieldsDict := tree rootNode namedChildren first collectFieldNameOfNamedChild.
+	
+	self assert: fieldsDict keys first equals: 'name'. 
+	self assert: fieldsDict keys second equals: 'parameters'. 
+	self assert: fieldsDict keys third equals: 'body'. 
+]
+
+{ #category : 'tests' }
+TSParserTypescriptTest >> testParseTypescriptClass [
+
+	| string tree |
+	string := 'class Person {
+  					name: string;
+				 }'.
+
+	tree := parser parseString: string.
+	self assert: tree rootNode namedChildCount equals: 1.
+	self assert: tree rootNode namedChildren first type equals: 'class_declaration'.
+	
+	
+	
+]
+
+{ #category : 'tests' }
+TSParserTypescriptTest >> testParseTypescriptClassAndExpression [
+
+	| string tree |
+	string := 'class Person {
+  					name: string;
+				 }
+				const person = new Person();
+				person.name = "Jane"; '.
+
+	tree := parser parseString: string.
+	self assert: tree rootNode namedChildCount equals: 3.
+	self assert: tree rootNode namedChildren first type equals: 'class_declaration'.
+	self assert: tree rootNode namedChildren second type equals: 'lexical_declaration'.
+	self assert: tree rootNode namedChildren third type equals: 'expression_statement'.
+	
+	
+]
+
+{ #category : 'tests' }
+TSParserTypescriptTest >> testParseTypescriptFunction [
+
+	| string tree |
+	string := 'function deleteUser(user: User) {
+  					// This is a comment
+				 }'.
+
+	tree := parser parseString: string.
+	self assert: tree rootNode childCount equals: 1.
+	self assert: tree rootNode namedChildren first type equals: 'function_declaration'.
+	self assert: tree rootNode namedChildren first namedChildCount equals: 3.
+	self assert: tree rootNode namedChildren first namedChildren first type equals: 'identifier'.
+	self assert: tree rootNode namedChildren first namedChildren second type equals: 'formal_parameters'.
+	self assert: tree rootNode namedChildren first namedChildren third type equals: 'statement_block'.
+]
