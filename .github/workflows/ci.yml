@@ -40,6 +40,22 @@ jobs:
           tree-sitter build
           sudo mv python.so /usr/local/lib/libtree-sitter-python.so
           cd ..
+       
+      - name: Clone Tree-sitter TypeScript
+        uses: GuillaumeFalourd/clone-github-repo-action@v2.3
+        with:
+          depth: 1
+          branch: 'master'
+          owner: 'tree-sitter'
+          repository: 'tree-sitter-typescript'
+
+      - name: Build TypeScript Library
+        shell: bash
+        run: |
+          cd tree-sitter-typescript/typescript
+          tree-sitter build
+          sudo mv typescript.so /usr/local/lib/libtree-sitter-typescript.so
+          cd ../..
       
       - uses: hpi-swa/setup-smalltalkCI@v1
         with:
