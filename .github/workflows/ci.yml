@@ -53,7 +53,7 @@ jobs:
         shell: bash
         run: |
           cd tree-sitter-typescript/typescript
-          tree-sitter build
+          tree-sitter build --target linux
           sudo mv typescript.so /usr/local/lib/libtree-sitter-typescript.so
           cd ../..
       
