@@ -180,15 +180,6 @@ TSLibrary >> ts_parser_new [
 		  'TSParser * ts_parser_new ()'
 ]
 
-{ #category : 'parser' }
-TSLibrary >> ts_parser_parse: old_tree forInput: aTSInput using: aParser [
-	
-	"Use the parser to parse some source code and create a syntax tree. If you are parsing this document for the first time, pass null for the old_tree parameter. Otherwise, if you have already parsed an earlier version of this document and the document has since been edited, pass the previous syntax tree so that the unchanged parts of it can be reused. This will save time and memory. For this to work correctly, you must have already edited the old syntax tree using the #ts_tree_edit:forInputEdit: function in a way that exactly matches the source code changes."
-	
-	^ self ffiCall:
-		  'TSTree *ts_parser_parse(TSParser *aParser, const TSTree *old_tree, TSInput aTSInput)'
-]
-
 { #category : 'cursor' }
 TSLibrary >> ts_tree_cursor_current_field_id: aTSTreeCursor [ 
 
