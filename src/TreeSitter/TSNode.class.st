@@ -143,6 +143,12 @@ TSNode >> fieldNameOfChildNamedAt: childIndex [
 		  _field_name_for_named_child: childIndex - 1
 ]
 
+{ #category : 'api' }
+TSNode >> hasChanges [ 
+
+	^ TSLibrary uniqueInstance ts_node_has_changes: self
+]
+
 { #category : 'accessing - structure variables' }
 TSNode >> id [
 	"This method was automatically generated"
@@ -153,6 +159,12 @@ TSNode >> id [
 TSNode >> id: anObject [
 	"This method was automatically generated"
 	handle pointerAt: OFFSET_ID put: anObject getHandle.
+]
+
+{ #category : 'api' }
+TSNode >> isEqualTo: anotherNode [
+
+	^ TSLibrary uniqueInstance ts_node_eq: self to: anotherNode
 ]
 
 { #category : 'api' }
@@ -196,6 +208,12 @@ TSNode >> nodeChildByFieldName: aFieldName [
 	^ TSLibrary uniqueInstance ts_node_child_of: self _by_field_name: aFieldName ofLength: aFieldName size. 
 ]
 
+{ #category : 'api' }
+TSNode >> parent [  
+
+	^ TSLibrary uniqueInstance ts_node_parent: self
+]
+
 { #category : 'printing' }
 TSNode >> printOn: aStream [
 
@@ -207,6 +225,12 @@ TSNode >> printOn: aStream [
 TSNode >> startPoint [
 
 	^ TSLibrary uniqueInstance ts_node_start_point: self
+]
+
+{ #category : 'api' }
+TSNode >> string [   
+
+	^ TSLibrary uniqueInstance ts_node_string: self
 ]
 
 { #category : 'api' }

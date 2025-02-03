@@ -108,6 +108,20 @@ TSLibrary >> ts_node_end_point: aTSNode [
 ]
 
 { #category : 'node' }
+TSLibrary >> ts_node_eq: aTSNode to: otherNode [
+
+	^ self ffiCall: 'bool ts_node_eq(TSNode aTSNode, TSNode otherNode)'
+]
+
+{ #category : 'node' }
+TSLibrary >> ts_node_has_changes: aTSNode [
+	
+	"Check if a syntax node has been edited."
+	
+	^ self ffiCall: 'bool ts_node_has_changes(TSNode aTSNode)'
+]
+
+{ #category : 'node' }
 TSLibrary >> ts_node_is_named: aTSNode [
 
 	^ self ffiCall: 'bool ts_node_is_named(TSNode aTSNode)'
@@ -126,9 +140,24 @@ TSLibrary >> ts_node_named_child_count: aTSNode [
 ]
 
 { #category : 'node' }
+TSLibrary >> ts_node_parent: aTSNode [
+	
+	"Get the node's immediate parent.
+ 	Prefer [`ts_node_child_containing_descendant`] for iterating over the node's ancestors.."
+	
+	^ self ffiCall: 'TSNode ts_node_parent(TSNode aTSNode)'
+]
+
+{ #category : 'node' }
 TSLibrary >> ts_node_start_point: aTSNode [
 
 	^ self ffiCall: 'TSPoint ts_node_start_point(TSNode aTSNode)'
+]
+
+{ #category : 'node' }
+TSLibrary >> ts_node_string: aTSNode [ 
+
+	^ self ffiCall: 'char *ts_node_string(TSNode aTSNode)'
 ]
 
 { #category : 'node' }
