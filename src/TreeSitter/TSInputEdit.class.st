@@ -13,6 +13,17 @@ Class {
 	#package : 'TreeSitter'
 }
 
+{ #category : 'as yet unclassified' }
+TSInputEdit >> createPointWithRow: aRow andColumn: aColumn [
+	
+	| newPoint |
+	
+	newPoint := TSPoint new.
+	^  newPoint
+			row: aRow;
+			column: aColumn. 
+]
+
 { #category : 'accessing' }
 TSInputEdit >> newEndByte [
 
