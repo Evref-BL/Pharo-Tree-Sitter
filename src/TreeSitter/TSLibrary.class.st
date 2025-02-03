@@ -231,7 +231,7 @@ TSLibrary >> ts_tree_cursor_new: aTSNode [
 { #category : 'tree' }
 TSLibrary >> ts_tree_edit: aTSTree forInputEdit: aTSInputEdit [
 	
-	^ self ffiCall:
+	self ffiCall:
 		  'void ts_tree_edit(TSTree *aTSTree, const TSInputEdit *aTSInputEdit)'
 ]
 
