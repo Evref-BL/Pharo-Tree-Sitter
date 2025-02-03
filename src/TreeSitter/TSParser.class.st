@@ -54,13 +54,8 @@ TSParser >> language: aTSLanguage [
 
 { #category : 'accessing' }
 TSParser >> parseString: aString [
-	| stringToConsider |
-	stringToConsider := aString withUnixLineEndings.
-	^ TSLibrary uniqueInstance
-		  ts_parser: self
-		  _parse_string: stringToConsider 
-		  ofLength: stringToConsider size
-		  usingOldTree: ExternalAddress null
+	"To be used for the first time"
+	^ self parseString: aString usingTree: ExternalAddress null
 ]
 
 { #category : 'accessing' }
