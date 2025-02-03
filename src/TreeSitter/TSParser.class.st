@@ -34,6 +34,12 @@ TSParser >> delete [
 	^ TSLibrary uniqueInstance ts_parser_delete: self
 ]
 
+{ #category : 'as yet unclassified' }
+TSParser >> editTree: aTree usingInputEdit: anInput [
+
+	TSLibrary uniqueInstance ts_tree_edit: aTree forInputEdit: anInput.
+]
+
 { #category : 'accessing' }
 TSParser >> language [
 
@@ -55,4 +61,18 @@ TSParser >> parseString: aString [
 		  _parse_string: stringToConsider 
 		  ofLength: stringToConsider size
 		  usingOldTree: ExternalAddress null
+]
+
+{ #category : 'accessing' }
+TSParser >> parseString: aString usingTree: aTree [
+
+	"to be used after editing the old tree which must be past here as a parameter to make an incremental parsing"
+	
+	| stringToConsider |
+	stringToConsider := aString withUnixLineEndings.
+	^ TSLibrary uniqueInstance
+		  ts_parser: self
+		  _parse_string: stringToConsider 
+		  ofLength: stringToConsider size
+		  usingOldTree: aTree
 ]
