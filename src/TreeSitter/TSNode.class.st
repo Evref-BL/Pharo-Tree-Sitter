@@ -150,6 +150,12 @@ TSNode >> fieldNameOfChildNamedAt: childIndex [
 ]
 
 { #category : 'api' }
+TSNode >> firstNamedChild [
+
+	^ TSLibrary uniqueInstance ts_node: self _named_child_count: 0
+]
+
+{ #category : 'api' }
 TSNode >> hasChanges [ 
 
 	^ TSLibrary uniqueInstance ts_node_has_changes: self
