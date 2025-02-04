@@ -164,7 +164,7 @@ TSLibrary >> ts_node_parent: aTSNode [
 { #category : 'node' }
 TSLibrary >> ts_node_prev_sibling: aTSNode [
 
-	^ self ffiCall: 'TSNode ts_node_prev_sibling(TSNode aTSNode);'
+	^ self ffiCall: 'TSNode ts_node_prev_sibling(TSNode aTSNode)'
 ]
 
 { #category : 'parser' }
