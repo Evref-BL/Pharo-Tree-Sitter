@@ -147,12 +147,24 @@ TSLibrary >> ts_node_named_child_count: aTSNode [
 ]
 
 { #category : 'node' }
+TSLibrary >> ts_node_next_sibling: aTSNode [
+
+	^ self ffiCall: 'TSNode ts_node_next_sibling(TSNode aTSNode)'
+]
+
+{ #category : 'node' }
 TSLibrary >> ts_node_parent: aTSNode [
 	
 	"Get the node's immediate parent.
  	Prefer [`ts_node_child_containing_descendant`] for iterating over the node's ancestors.."
 	
 	^ self ffiCall: 'TSNode ts_node_parent(TSNode aTSNode)'
+]
+
+{ #category : 'node' }
+TSLibrary >> ts_node_prev_sibling: aTSNode [
+
+	^ self ffiCall: 'TSNode ts_node_prev_sibling(TSNode aTSNode);'
 ]
 
 { #category : 'parser' }

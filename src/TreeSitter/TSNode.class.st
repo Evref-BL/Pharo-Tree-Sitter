@@ -207,6 +207,12 @@ TSNode >> namedChildren [
 		  self namedChildAt: idx ]
 ]
 
+{ #category : 'accessing' }
+TSNode >> nextSibling [ 
+	
+	^ TSLibrary uniqueInstance ts_node_next_sibling: self
+]
+
 { #category : 'as yet unclassified' }
 TSNode >> nodeChildByFieldName: aFieldName [
 	
@@ -218,6 +224,12 @@ TSNode >> nodeChildByFieldName: aFieldName [
 TSNode >> parent [  
 
 	^ TSLibrary uniqueInstance ts_node_parent: self
+]
+
+{ #category : 'accessing' }
+TSNode >> previousSibling [ 
+	
+	^ TSLibrary uniqueInstance ts_node_prev_sibling: self
 ]
 
 { #category : 'printing' }
