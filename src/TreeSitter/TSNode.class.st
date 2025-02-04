@@ -215,7 +215,7 @@ TSNode >> namedChildren [
 
 { #category : 'accessing' }
 TSNode >> nextSibling [ 
-	
+	"make sure to use it while siblings exist otherwise image crashes"
 	^ TSLibrary uniqueInstance ts_node_next_sibling: self
 ]
 
@@ -234,7 +234,7 @@ TSNode >> parent [
 
 { #category : 'accessing' }
 TSNode >> previousSibling [ 
-	
+	"make sure to use it while siblings exist otherwise image crashes"
 	^ TSLibrary uniqueInstance ts_node_prev_sibling: self
 ]
 
