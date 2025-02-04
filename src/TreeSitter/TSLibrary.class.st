@@ -101,6 +101,13 @@ TSLibrary >> ts_node_child_of: aTSNode _by_field_name: aFieldName ofLength: fiel
 		  'TSNode ts_node_child_by_field_name( TSNode aTSNode, char * aFieldName, uint32 field_name_length)'
 ]
 
+{ #category : 'parser' }
+TSLibrary >> ts_node_end_byte: aTSNode [
+
+	^ self ffiCall:
+		  'uint32 ts_node_end_byte(TSNode aTSNode)'
+]
+
 { #category : 'node' }
 TSLibrary >> ts_node_end_point: aTSNode [
 
@@ -146,6 +153,13 @@ TSLibrary >> ts_node_parent: aTSNode [
  	Prefer [`ts_node_child_containing_descendant`] for iterating over the node's ancestors.."
 	
 	^ self ffiCall: 'TSNode ts_node_parent(TSNode aTSNode)'
+]
+
+{ #category : 'parser' }
+TSLibrary >> ts_node_start_byte: aTSNode [
+
+	^ self ffiCall:
+		  'uint32 ts_node_start_byte(TSNode aTSNode)'
 ]
 
 { #category : 'node' }
