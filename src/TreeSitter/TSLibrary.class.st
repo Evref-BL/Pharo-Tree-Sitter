@@ -235,6 +235,12 @@ TSLibrary >> ts_parser_new [
 		  'TSParser * ts_parser_new ()'
 ]
 
+{ #category : 'parser' }
+TSLibrary >> ts_parser_reset: aTSParser [
+
+	self ffiCall: 'void ts_parser_reset(TSParser *aTSParser)'
+]
+
 { #category : 'cursor' }
 TSLibrary >> ts_tree_cursor_current_field_id: aTSTreeCursor [ 
 

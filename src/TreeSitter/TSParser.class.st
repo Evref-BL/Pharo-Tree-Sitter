@@ -71,3 +71,9 @@ TSParser >> parseString: aString usingTree: aTree [
 		  ofLength: stringToConsider size
 		  usingOldTree: aTree
 ]
+
+{ #category : 'initialization' }
+TSParser >> reset [ 
+
+	TSLibrary uniqueInstance ts_parser_reset: self
+]
