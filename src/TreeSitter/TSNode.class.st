@@ -122,6 +122,12 @@ TSNode >> detectNamedChild: name ifNone: aConstantBlockClosure [
 ]
 
 { #category : 'api' }
+TSNode >> endByte [
+
+	^ TSLibrary uniqueInstance ts_node_end_byte: self
+]
+
+{ #category : 'api' }
 TSNode >> endPoint [
 
 	^ TSLibrary uniqueInstance ts_node_end_point: self
@@ -219,6 +225,12 @@ TSNode >> printOn: aStream [
 
 	super printOn: aStream.
 	self isNamed ifTrue: [ aStream << ' (' << self type << ')' ]
+]
+
+{ #category : 'api' }
+TSNode >> startByte [
+
+	^ TSLibrary uniqueInstance ts_node_start_byte: self
 ]
 
 { #category : 'api' }
