@@ -502,14 +502,12 @@ TSIncrementalParsingTypescriptTest >> testTypescriptIncrementalParsingBasic [
 	self assert: originalTree rootNode hasChanges equals: true.	
 	self assert: newTree rootNode hasChanges equals: false.		
 	self assert:  newTree rootNode collectNamedChild first collectNamedChild fourth collectNamedChild size equals: 2.
-	
-
 ]
 
 { #category : 'tests' }
 TSIncrementalParsingTypescriptTest >> testTypescriptIncrementalParsingDeleteBeginning [
 
-	| originalTree newTree |
+	| originalTree newTree|
 
 	originalTree := parser parseString: self originalStringToParse.
 	
@@ -568,9 +566,7 @@ TSIncrementalParsingTypescriptTest >> testTypescriptIncrementalParsingDeleteMidd
 	self assert: originalTree rootNode hasChanges equals: true.	
 	self assert: newTree rootNode hasChanges equals: false.		
 	self assert:  newTree rootNode collectNamedChild size equals: 4.
-	self assert:  newTree rootNode collectNamedChild second collectNamedChild third firstNamedChild firstNamedChild firstNamedChild type equals: 'binary_expression'. "after deleting we have 2 levels of firstNamedChild"
-	
-	
+	self assert:  newTree rootNode collectNamedChild second collectNamedChild third firstNamedChild firstNamedChild firstNamedChild type equals: 'binary_expression'. "after deleting we have 2 levels of firstNamedChild" 
 
 ]
 
@@ -618,6 +614,9 @@ TSIncrementalParsingTypescriptTest >> testTypescriptIncrementalParsingInsertEnd 
 	self assert:  newTree rootNode collectNamedChild size equals: 5.
 	self assert:  newTree rootNode collectNamedChild fifth type equals: 'expression_statement'.
 	
+	"Something wrong here; we have to compare the start point and end point of both trees + we have to compare the start byte and end byte of the generated new tree source text using textFromSourceText: and the begining and end of the edited string "
+	"Transcript show: (newTree rootNode textFromSourceText: self newStringInsertBeginning ). "
+	
 	
 
 ]
@@ -640,7 +639,7 @@ TSIncrementalParsingTypescriptTest >> testTypescriptIncrementalParsingInsertMidd
 	self assert: originalTree rootNode hasChanges equals: true.	
 	self assert: newTree rootNode hasChanges equals: false.		
 	self assert:  newTree rootNode collectNamedChild size equals: 5.
-	self assert:  newTree rootNode collectNamedChild third type equals: 'expression_statement'.
+	self assert:  newTree rootNode collectNamedChild third type equals: 'expression_statement'. 
 	
 	
 
@@ -690,7 +689,6 @@ TSIncrementalParsingTypescriptTest >> testTypescriptIncrementalParsingUpdateEnd 
 	self assert: newTree rootNode hasChanges equals: false.		
 	self assert:  newTree rootNode collectNamedChild size equals: 4.
 	self assert:  newTree rootNode collectNamedChild fourth type equals: 'ERROR'.
-	
 	
 
 ]
