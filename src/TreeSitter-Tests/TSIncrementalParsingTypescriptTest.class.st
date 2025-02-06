@@ -199,6 +199,87 @@ TSIncrementalParsingTypescriptTest >> editTreeForInsertMiddleExampleUsing: oldTr
 	^ newTree
 ]
 
+{ #category : 'editing' }
+TSIncrementalParsingTypescriptTest >> editTreeForUpdateBeginingExampleUsing: oldTree [   
+
+	|newString aTSInputEdit startPoint oldPoint newPoint newTree|
+	
+	newString := self newStringUpdateBegining.
+
+	aTSInputEdit := TSInputEdit new. 
+	
+	startPoint := aTSInputEdit createPointWithRow: 0 andColumn: 0.
+	oldPoint := aTSInputEdit createPointWithRow: 0 andColumn: 9. 
+	newPoint := aTSInputEdit createPointWithRow: 0 andColumn: 1.   
+	
+	aTSInputEdit
+		startByte: 0;
+		oldEndByte: 9;
+		newEndByte: 1;
+		startPoint: startPoint;
+		oldEndPoint: oldPoint;
+		newEndPoint: newPoint.
+	
+	parser editTree: oldTree usingInputEdit: aTSInputEdit.
+	newTree := parser parseString: newString usingTree: oldTree.
+	
+	^ newTree
+]
+
+{ #category : 'editing' }
+TSIncrementalParsingTypescriptTest >> editTreeForUpdateEndExampleUsing: oldTree [   
+
+	|newString aTSInputEdit startPoint oldPoint newPoint newTree|
+	
+	newString := self newStringUpdateEnd.
+
+	aTSInputEdit := TSInputEdit new. 
+	
+	startPoint := aTSInputEdit createPointWithRow: 11 andColumn: 26.
+	oldPoint := aTSInputEdit createPointWithRow: 11 andColumn: 27. 
+	newPoint := aTSInputEdit createPointWithRow: 11 andColumn: 27.   
+	
+	aTSInputEdit
+		startByte: 254;
+		oldEndByte: 255;
+		newEndByte: 255;
+		startPoint: startPoint;
+		oldEndPoint: oldPoint;
+		newEndPoint: newPoint.
+	
+	parser editTree: oldTree usingInputEdit: aTSInputEdit.
+	newTree := parser parseString: newString usingTree: oldTree.
+	
+	^ newTree
+]
+
+{ #category : 'editing' }
+TSIncrementalParsingTypescriptTest >> editTreeForUpdateMiddleExampleUsing: oldTree [   
+
+	|newString aTSInputEdit startPoint oldPoint newPoint newTree|
+	
+	newString := self newStringUpdateMiddle.
+
+	aTSInputEdit := TSInputEdit new. 
+	
+	startPoint := aTSInputEdit createPointWithRow: 9 andColumn: 43.
+	oldPoint := aTSInputEdit createPointWithRow: 9 andColumn: 47. 
+	newPoint := aTSInputEdit createPointWithRow: 9 andColumn: 48.   
+	
+	aTSInputEdit
+		startByte: 216;
+		oldEndByte: 220;
+		newEndByte: 221;
+		startPoint: startPoint;
+		oldEndPoint: oldPoint;
+		newEndPoint: newPoint.
+	
+	parser editTree: oldTree usingInputEdit: aTSInputEdit.
+	newTree := parser parseString: newString usingTree: oldTree.
+	
+	^ newTree
+]
+
 { #category : 'storing' }
 TSIncrementalParsingTypescriptTest >> newStringDeleteBeginning [
 
@@ -570,6 +651,82 @@ TSIncrementalParsingTypescriptTest >> testTypescriptIncrementalParsingInsertMidd
 	self assert: newTree rootNode hasChanges equals: false.		
 	self assert:  newTree rootNode collectNamedChild size equals: 5.
 	self assert:  newTree rootNode collectNamedChild third type equals: 'expression_statement'.
+	
+	
+
+]
+
+{ #category : 'tests' }
+TSIncrementalParsingTypescriptTest >> testTypescriptIncrementalParsingUpdateBeginning [
+
+	| originalTree newTree|
+
+	originalTree := parser parseString: self originalStringToParse.
+	originalTree rootNode. 
+	
+	"before edit"
+	self assert: originalTree rootNode hasChanges equals: false.
+	self assert: originalTree rootNode collectNamedChild size equals: 4.
+	self assert:  originalTree rootNode collectNamedChild first type equals: 'interface_declaration'.
+			
+	newTree := self editTreeForUpdateBeginingExampleUsing: originalTree.
+	
+	"after edit"
+	self assert: originalTree rootNode hasChanges equals: true.	
+	self assert: newTree rootNode hasChanges equals: false.		
+	self assert:  newTree rootNode collectNamedChild size equals: 5.
+	self assert:  newTree rootNode collectNamedChild first type equals: 'ERROR'.
+ 	self assert:  newTree rootNode collectNamedChild second type equals: 'statement_block'.
+	
+	
+
+]
+
+{ #category : 'tests' }
+TSIncrementalParsingTypescriptTest >> testTypescriptIncrementalParsingUpdateEnd [
+
+	| originalTree newTree|
+
+	originalTree := parser parseString: self originalStringToParse.
+	originalTree rootNode. 
+	
+	"before edit"
+	self assert: originalTree rootNode hasChanges equals: false.
+	self assert: originalTree rootNode collectNamedChild size equals: 4.
+	self assert:  originalTree rootNode collectNamedChild fourth type equals: 'expression_statement'.
+			
+	newTree := self editTreeForUpdateEndExampleUsing: originalTree.
+	
+	"after edit"
+	self assert: originalTree rootNode hasChanges equals: true.	
+	self assert: newTree rootNode hasChanges equals: false.		
+	self assert:  newTree rootNode collectNamedChild size equals: 4.
+	self assert:  newTree rootNode collectNamedChild fourth type equals: 'ERROR'.
+	
+	
+
+]
+
+{ #category : 'tests' }
+TSIncrementalParsingTypescriptTest >> testTypescriptIncrementalParsingUpdateMiddle [
+
+	| originalTree newTree|
+
+	originalTree := parser parseString: self originalStringToParse.
+	originalTree rootNode. 
+	
+	"before edit"
+	self assert: originalTree rootNode hasChanges equals: false.
+	self assert: originalTree rootNode collectNamedChild size equals: 4.
+	self assert:  originalTree rootNode collectNamedChild first type equals: 'interface_declaration'.
+			
+	newTree := self editTreeForUpdateMiddleExampleUsing: originalTree.
+	
+	"after edit"
+	self assert: originalTree rootNode hasChanges equals: true.	
+	self assert: newTree rootNode hasChanges equals: false.		
+	self assert:  newTree rootNode collectNamedChild size equals: 4.
+	self assert:  originalTree rootNode collectNamedChild first type equals: 'interface_declaration'.
 	
 	
 
