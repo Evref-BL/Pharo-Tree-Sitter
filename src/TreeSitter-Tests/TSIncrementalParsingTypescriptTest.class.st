@@ -38,6 +38,87 @@ TSIncrementalParsingTypescriptTest >> editTree: oldTree forBasicExample: oldStri
 ]
 
 { #category : 'editing' }
+TSIncrementalParsingTypescriptTest >> editTreeForDeleteBeginingExampleUsing: oldTree [   
+
+	|newString aTSInputEdit startPoint oldPoint newPoint newTree|
+	
+	newString := self newStringDeleteBeginning.
+
+	aTSInputEdit := TSInputEdit new. 
+	
+	startPoint := aTSInputEdit createPointWithRow: 0 andColumn: 0.
+	oldPoint := aTSInputEdit createPointWithRow: 1 andColumn: 33. 
+	newPoint := aTSInputEdit createPointWithRow: 0 andColumn: 0.   
+	
+	aTSInputEdit
+		startByte: 0;
+		oldEndByte: 69;
+		newEndByte: 0;
+		startPoint: startPoint;
+		oldEndPoint: oldPoint;
+		newEndPoint: newPoint.
+	
+	parser editTree: oldTree usingInputEdit: aTSInputEdit.
+	newTree := parser parseString: newString usingTree: oldTree.
+	
+	^ newTree
+]
+
+{ #category : 'editing' }
+TSIncrementalParsingTypescriptTest >> editTreeForDeleteEndExampleUsing: oldTree [   
+
+	|newString aTSInputEdit startPoint oldPoint newPoint newTree|
+	
+	newString := self newStringDeleteEnd.
+
+	aTSInputEdit := TSInputEdit new. 
+	
+	startPoint := aTSInputEdit createPointWithRow: 9 andColumn: 51.
+	oldPoint := aTSInputEdit createPointWithRow: 9 andColumn: 51. 
+	newPoint := aTSInputEdit createPointWithRow: 9 andColumn: 51.   
+	
+	aTSInputEdit
+		startByte: 224;
+		oldEndByte: 255;
+		newEndByte: 224;
+		startPoint: startPoint;
+		oldEndPoint: oldPoint;
+		newEndPoint: newPoint.
+	
+	parser editTree: oldTree usingInputEdit: aTSInputEdit.
+	newTree := parser parseString: newString usingTree: oldTree.
+	
+	^ newTree
+]
+
+{ #category : 'editing' }
+TSIncrementalParsingTypescriptTest >> editTreeForDeleteMiddleExampleUsing: oldTree [   
+
+	|newString aTSInputEdit startPoint oldPoint newPoint newTree|
+	
+	newString := self newStringDeleteMiddle.
+
+	aTSInputEdit := TSInputEdit new. 
+	
+	startPoint := aTSInputEdit createPointWithRow: 6 andColumn: 36.
+	oldPoint := aTSInputEdit createPointWithRow: 6 andColumn: 42. 
+	newPoint := aTSInputEdit createPointWithRow: 6 andColumn: 36.   
+	
+	aTSInputEdit
+		startByte: 141;
+		oldEndByte: 147;
+		newEndByte: 141;
+		startPoint: startPoint;
+		oldEndPoint: oldPoint;
+		newEndPoint: newPoint.
+	
+	parser editTree: oldTree usingInputEdit: aTSInputEdit.
+	newTree := parser parseString: newString usingTree: oldTree.
+	
+	^ newTree
+]
+
+{ #category : 'editing' }
 TSIncrementalParsingTypescriptTest >> editTreeForInsertBeginingExampleUsing: oldTree [   
 
 	|newString aTSInputEdit startPoint oldPoint newPoint newTree|
@@ -341,6 +422,80 @@ TSIncrementalParsingTypescriptTest >> testTypescriptIncrementalParsingBasic [
 	self assert: originalTree rootNode hasChanges equals: true.	
 	self assert: newTree rootNode hasChanges equals: false.		
 	self assert:  newTree rootNode collectNamedChild first collectNamedChild fourth collectNamedChild size equals: 2.
+	
+
+]
+
+{ #category : 'tests' }
+TSIncrementalParsingTypescriptTest >> testTypescriptIncrementalParsingDeleteBeginning [
+
+	| originalTree newTree|
+
+	originalTree := parser parseString: self originalStringToParse.
+	originalTree rootNode. 
+	
+	"before edit"
+	self assert: originalTree rootNode hasChanges equals: false.
+	self assert: originalTree rootNode collectNamedChild size equals: 4.
+	self assert:  originalTree rootNode collectNamedChild first type equals: 'interface_declaration'.
+			
+	newTree := self editTreeForDeleteBeginingExampleUsing: originalTree.
+	
+	"after edit"
+	self assert: originalTree rootNode hasChanges equals: true.	
+	self assert: newTree rootNode hasChanges equals: false.		
+	self assert:  newTree rootNode collectNamedChild size equals: 3.
+	self assert:  newTree rootNode collectNamedChild first type equals: 'function_declaration'.
+	
+	
+
+]
+
+{ #category : 'tests' }
+TSIncrementalParsingTypescriptTest >> testTypescriptIncrementalParsingDeleteEnd [
+
+	| originalTree newTree|
+
+	originalTree := parser parseString: self originalStringToParse.
+	originalTree rootNode. 
+	
+	"before edit"
+	self assert: originalTree rootNode hasChanges equals: false.
+	self assert: originalTree rootNode collectNamedChild size equals: 4.
+	self assert:  originalTree rootNode collectNamedChild fourth type equals: 'expression_statement'.  
+			
+	newTree := self editTreeForDeleteEndExampleUsing: originalTree.
+	
+	"after edit"
+	self assert: originalTree rootNode hasChanges equals: true.	
+	self assert: newTree rootNode hasChanges equals: false.		
+	self assert:  newTree rootNode collectNamedChild size equals: 3. 
+	
+	
+
+]
+
+{ #category : 'tests' }
+TSIncrementalParsingTypescriptTest >> testTypescriptIncrementalParsingDeleteMiddle [
+
+	| originalTree newTree|
+
+	originalTree := parser parseString: self originalStringToParse.
+	originalTree rootNode. 
+	
+	"before edit"
+	self assert: originalTree rootNode hasChanges equals: false.
+	self assert: originalTree rootNode collectNamedChild size equals: 4.
+	self assert:  originalTree rootNode collectNamedChild second collectNamedChild third firstNamedChild firstNamedChild firstNamedChild firstNamedChild type equals: 'binary_expression'. "before deleting we had 3 levels of firstNamedChild"
+			
+	newTree := self editTreeForDeleteMiddleExampleUsing: originalTree.
+	
+	"after edit"
+	self assert: originalTree rootNode hasChanges equals: true.	
+	self assert: newTree rootNode hasChanges equals: false.		
+	self assert:  newTree rootNode collectNamedChild size equals: 4.
+	self assert:  newTree rootNode collectNamedChild second collectNamedChild third firstNamedChild firstNamedChild firstNamedChild type equals: 'binary_expression'. "after deleting we have 2 levels of firstNamedChild"
+	
 	
 
 ]
