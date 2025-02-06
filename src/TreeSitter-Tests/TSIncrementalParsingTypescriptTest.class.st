@@ -491,7 +491,6 @@ TSIncrementalParsingTypescriptTest >> testTypescriptIncrementalParsingBasic [
 
 	originalString := 'function printHello(): void { console.log(''Hello!''); }'.
 	originalTree := parser parseString: originalString.
-	originalTree rootNode. 
 	
 	"before edit"
 	self assert: originalTree rootNode hasChanges equals: false.
@@ -510,10 +509,9 @@ TSIncrementalParsingTypescriptTest >> testTypescriptIncrementalParsingBasic [
 { #category : 'tests' }
 TSIncrementalParsingTypescriptTest >> testTypescriptIncrementalParsingDeleteBeginning [
 
-	| originalTree newTree|
+	| originalTree newTree |
 
 	originalTree := parser parseString: self originalStringToParse.
-	originalTree rootNode. 
 	
 	"before edit"
 	self assert: originalTree rootNode hasChanges equals: false.
@@ -526,10 +524,7 @@ TSIncrementalParsingTypescriptTest >> testTypescriptIncrementalParsingDeleteBegi
 	self assert: originalTree rootNode hasChanges equals: true.	
 	self assert: newTree rootNode hasChanges equals: false.		
 	self assert:  newTree rootNode collectNamedChild size equals: 3.
-	self assert:  newTree rootNode collectNamedChild first type equals: 'function_declaration'.
-	
-	
-
+	self assert:  newTree rootNode collectNamedChild first type equals: 'function_declaration'. 
 ]
 
 { #category : 'tests' }
@@ -538,7 +533,6 @@ TSIncrementalParsingTypescriptTest >> testTypescriptIncrementalParsingDeleteEnd 
 	| originalTree newTree|
 
 	originalTree := parser parseString: self originalStringToParse.
-	originalTree rootNode. 
 	
 	"before edit"
 	self assert: originalTree rootNode hasChanges equals: false.
@@ -562,7 +556,6 @@ TSIncrementalParsingTypescriptTest >> testTypescriptIncrementalParsingDeleteMidd
 	| originalTree newTree|
 
 	originalTree := parser parseString: self originalStringToParse.
-	originalTree rootNode. 
 	
 	"before edit"
 	self assert: originalTree rootNode hasChanges equals: false.
@@ -587,7 +580,6 @@ TSIncrementalParsingTypescriptTest >> testTypescriptIncrementalParsingInsertBegi
 	| originalTree newTree|
 
 	originalTree := parser parseString: self originalStringToParse.
-	originalTree rootNode. 
 	
 	"before edit"
 	self assert: originalTree rootNode hasChanges equals: false.
@@ -612,7 +604,6 @@ TSIncrementalParsingTypescriptTest >> testTypescriptIncrementalParsingInsertEnd 
 	| originalTree newTree|
 
 	originalTree := parser parseString: self originalStringToParse.
-	originalTree rootNode. 
 	
 	"before edit"
 	self assert: originalTree rootNode hasChanges equals: false.
@@ -637,7 +628,6 @@ TSIncrementalParsingTypescriptTest >> testTypescriptIncrementalParsingInsertMidd
 	| originalTree newTree|
 
 	originalTree := parser parseString: self originalStringToParse.
-	originalTree rootNode. 
 	
 	"before edit"
 	self assert: originalTree rootNode hasChanges equals: false.
@@ -662,7 +652,6 @@ TSIncrementalParsingTypescriptTest >> testTypescriptIncrementalParsingUpdateBegi
 	| originalTree newTree|
 
 	originalTree := parser parseString: self originalStringToParse.
-	originalTree rootNode. 
 	
 	"before edit"
 	self assert: originalTree rootNode hasChanges equals: false.
@@ -688,7 +677,6 @@ TSIncrementalParsingTypescriptTest >> testTypescriptIncrementalParsingUpdateEnd 
 	| originalTree newTree|
 
 	originalTree := parser parseString: self originalStringToParse.
-	originalTree rootNode. 
 	
 	"before edit"
 	self assert: originalTree rootNode hasChanges equals: false.
@@ -713,7 +701,6 @@ TSIncrementalParsingTypescriptTest >> testTypescriptIncrementalParsingUpdateMidd
 	| originalTree newTree|
 
 	originalTree := parser parseString: self originalStringToParse.
-	originalTree rootNode. 
 	
 	"before edit"
 	self assert: originalTree rootNode hasChanges equals: false.
