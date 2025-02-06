@@ -10,7 +10,7 @@ Class {
 	#tag : 'IncrementalParsing-Typescript'
 }
 
-{ #category : 'as yet unclassified' }
+{ #category : 'editing' }
 TSIncrementalParsingTypescriptTest >> editTree: oldTree forBasicExample: oldString [ 
 
 	|newString aTSInputEdit startPoint oldPoint newPoint newTree|
@@ -37,6 +37,274 @@ TSIncrementalParsingTypescriptTest >> editTree: oldTree forBasicExample: oldStri
 	^ newTree
 ]
 
+{ #category : 'editing' }
+TSIncrementalParsingTypescriptTest >> editTreeForInsertBeginingExampleUsing: oldTree [   
+
+	|newString aTSInputEdit startPoint oldPoint newPoint newTree|
+	
+	newString := self newStringInsertBeginning.
+
+	aTSInputEdit := TSInputEdit new. 
+	
+	startPoint := aTSInputEdit createPointWithRow: 0 andColumn: 0.
+	oldPoint := aTSInputEdit createPointWithRow: 0 andColumn: 0. 
+	newPoint := aTSInputEdit createPointWithRow: 0 andColumn: 10.   
+	
+	aTSInputEdit
+		startByte: 0;
+		oldEndByte: 0;
+		newEndByte: 10;
+		startPoint: startPoint;
+		oldEndPoint: oldPoint;
+		newEndPoint: newPoint.
+	
+	parser editTree: oldTree usingInputEdit: aTSInputEdit.
+	newTree := parser parseString: newString usingTree: oldTree.
+	
+	^ newTree
+]
+
+{ #category : 'editing' }
+TSIncrementalParsingTypescriptTest >> editTreeForInsertEndExampleUsing: oldTree [   
+
+	|newString aTSInputEdit startPoint oldPoint newPoint newTree|
+	
+	newString := self newStringInsertEnd.
+
+	aTSInputEdit := TSInputEdit new. 
+	
+	startPoint := aTSInputEdit createPointWithRow: 11 andColumn: 27.
+	oldPoint := aTSInputEdit createPointWithRow: 11 andColumn: 27. 
+	newPoint := aTSInputEdit createPointWithRow: 12 andColumn: 21.   
+	
+	aTSInputEdit
+		startByte: 255;
+		oldEndByte: 255;
+		newEndByte: 278;
+		startPoint: startPoint;
+		oldEndPoint: oldPoint;
+		newEndPoint: newPoint.
+	
+	parser editTree: oldTree usingInputEdit: aTSInputEdit.
+	newTree := parser parseString: newString usingTree: oldTree.
+	
+	^ newTree
+]
+
+{ #category : 'editing' }
+TSIncrementalParsingTypescriptTest >> editTreeForInsertMiddleExampleUsing: oldTree [   
+
+	|newString aTSInputEdit startPoint oldPoint newPoint newTree|
+	
+	newString := self newStringInsertMiddle.
+
+	aTSInputEdit := TSInputEdit new. 
+	
+	startPoint := aTSInputEdit createPointWithRow: 7 andColumn: 1.
+	oldPoint := aTSInputEdit createPointWithRow: 7 andColumn: 1. 
+	newPoint := aTSInputEdit createPointWithRow: 9 andColumn: 22.   
+	
+	aTSInputEdit
+		startByte: 169;
+		oldEndByte: 169;
+		newEndByte: 195;
+		startPoint: startPoint;
+		oldEndPoint: oldPoint;
+		newEndPoint: newPoint.
+	
+	parser editTree: oldTree usingInputEdit: aTSInputEdit.
+	newTree := parser parseString: newString usingTree: oldTree.
+	
+	^ newTree
+]
+
+{ #category : 'storing' }
+TSIncrementalParsingTypescriptTest >> newStringDeleteBeginning [
+
+	"deleting the interface at the beginning"
+
+	^ 'function greeter(person: Person) {
+	return "Hello, " + person.firstName + " " + person.lastName;
+}
+
+let user = { firstName: "Jane", lastName: "User" };
+
+console.log(greeter(user));'
+]
+
+{ #category : 'storing' }
+TSIncrementalParsingTypescriptTest >> newStringDeleteEnd [
+
+	"remove the log at the end"
+
+	^ 'interface Person {
+	firstName: string;
+	lastName: string;
+}
+   
+function greeter(person: Person) {
+	return "Hello, " + person.firstName + " " + person.lastName;
+}
+
+let user = { firstName: "Jane", lastName: "User" };'
+]
+
+{ #category : 'storing' }
+TSIncrementalParsingTypescriptTest >> newStringDeleteMiddle [
+
+	"remove space between firstName and LastName"
+
+	^ 'interface Person {
+	firstName: string;
+	lastName: string;
+}
+   
+function greeter(person: Person) {
+	return "Hello, " + person.firstName + person.lastName;
+}
+
+let user = { firstName: "Jane", lastName: "User" };
+
+console.log(greeter(user));'
+]
+
+{ #category : 'storing' }
+TSIncrementalParsingTypescriptTest >> newStringInsertBeginning [
+
+	"let's say a new statement is added at the begining"
+
+	^ 'let x = 1;
+interface Person {
+	firstName: string;
+	lastName: string;
+}
+   
+function greeter(person: Person) {
+	return "Hello, " + person.firstName + " " + person.lastName;
+}
+
+let user = { firstName: "Jane", lastName: "User" };
+
+console.log(greeter(user));'
+]
+
+{ #category : 'storing' }
+TSIncrementalParsingTypescriptTest >> newStringInsertEnd [
+
+	"Let's say another log is added at the end"
+
+	^ 'interface Person {
+	firstName: string;
+	lastName: string;
+}
+   
+function greeter(person: Person) {
+	return "Hello, " + person.firstName + " " + person.lastName;
+}
+
+let user = { firstName: "Jane", lastName: "User" };
+
+console.log(greeter(user));
+console.log("End !");'
+]
+
+{ #category : 'storing' }
+TSIncrementalParsingTypescriptTest >> newStringInsertMiddle [
+
+	"let's say the developer added a log in the middle"
+
+	^ 'interface Person {
+	firstName: string;
+	lastName: string;
+}
+   
+function greeter(person: Person) {
+	return "Hello, " + person.firstName + " " + person.lastName;
+}
+
+console.log("Begin!");
+
+let user = { firstName: "Jane", lastName: "User" };
+
+console.log(greeter(user));'
+]
+
+{ #category : 'storing' }
+TSIncrementalParsingTypescriptTest >> newStringUpdateBegining [
+	
+	"let's say the developer intends to make changes and replace the interface by a const"
+	
+	^ 'c Person {
+	firstName: string;
+	lastName: string;
+}
+   
+function greeter(person: Person) {
+	return "Hello, " + person.firstName + " " + person.lastName;
+}
+
+let user = { firstName: "Jane", lastName: "User" };
+
+console.log(greeter(user));'
+]
+
+{ #category : 'storing' }
+TSIncrementalParsingTypescriptTest >> newStringUpdateEnd [
+	
+	"let's say by mistake ; replaced by . at the end"
+	
+	^ 'interface Person {
+	firstName: string;
+	lastName: string;
+}
+   
+function greeter(person: Person) {
+	return "Hello, " + person.firstName + " " + person.lastName;
+}
+
+let user = { firstName: "Jane", lastName: "User" };
+
+console.log(greeter(user)).'
+]
+
+{ #category : 'storing' }
+TSIncrementalParsingTypescriptTest >> newStringUpdateMiddle [
+
+	"Updating value of last name "
+	
+	^ 'interface Person {
+	firstName: string;
+	lastName: string;
+}
+   
+function greeter(person: Person) {
+	return "Hello, " + person.firstName + " " + person.lastName;
+}
+
+let user = { firstName: "Jane", lastName: "Frost" };
+
+console.log(greeter(user));'
+]
+
+{ #category : 'storing' }
+TSIncrementalParsingTypescriptTest >> originalStringToParse [
+
+	"original string where modifications will applied at the begining, middle and end for many cases: add update and delete"
+
+	^ 'interface Person {
+	firstName: string;
+	lastName: string;
+}
+   
+function greeter(person: Person) {
+	return "Hello, " + person.firstName + " " + person.lastName;
+}
+
+let user = { firstName: "Jane", lastName: "User" };
+
+console.log(greeter(user));'
+]
+
 { #category : 'running' }
 TSIncrementalParsingTypescriptTest >> setUp [
 
@@ -57,7 +325,7 @@ TSIncrementalParsingTypescriptTest >> tearDown [
 { #category : 'tests' }
 TSIncrementalParsingTypescriptTest >> testTypescriptIncrementalParsingBasic [
 
-	| originalString originalTree  newTree|
+	| originalString originalTree newTree|
 
 	originalString := 'function printHello(): void { console.log(''Hello!''); }'.
 	originalTree := parser parseString: originalString.
@@ -67,12 +335,87 @@ TSIncrementalParsingTypescriptTest >> testTypescriptIncrementalParsingBasic [
 	self assert: originalTree rootNode hasChanges equals: false.
 	self assert:  originalTree rootNode collectNamedChild first collectNamedChild fourth collectNamedChild size equals: 1.
 	
-	newTree := self editTree: originalTree forBasicExample: originalString .
+	newTree := self editTree: originalTree forBasicExample: originalString.
 	
 	"after edit"
 	self assert: originalTree rootNode hasChanges equals: true.	
 	self assert: newTree rootNode hasChanges equals: false.		
 	self assert:  newTree rootNode collectNamedChild first collectNamedChild fourth collectNamedChild size equals: 2.
+	
+
+]
+
+{ #category : 'tests' }
+TSIncrementalParsingTypescriptTest >> testTypescriptIncrementalParsingInsertBeginning [
+
+	| originalTree newTree|
+
+	originalTree := parser parseString: self originalStringToParse.
+	originalTree rootNode. 
+	
+	"before edit"
+	self assert: originalTree rootNode hasChanges equals: false.
+	self assert: originalTree rootNode collectNamedChild size equals: 4.
+	self assert:  originalTree rootNode collectNamedChild first type equals: 'interface_declaration'.
+			
+	newTree := self editTreeForInsertBeginingExampleUsing: originalTree.
+	
+	"after edit"
+	self assert: originalTree rootNode hasChanges equals: true.	
+	self assert: newTree rootNode hasChanges equals: false.		
+	self assert:  newTree rootNode collectNamedChild size equals: 5.
+	self assert:  newTree rootNode collectNamedChild first type equals: 'lexical_declaration'.
+	
+	
+
+]
+
+{ #category : 'tests' }
+TSIncrementalParsingTypescriptTest >> testTypescriptIncrementalParsingInsertEnd [
+
+	| originalTree newTree|
+
+	originalTree := parser parseString: self originalStringToParse.
+	originalTree rootNode. 
+	
+	"before edit"
+	self assert: originalTree rootNode hasChanges equals: false.
+	self assert: originalTree rootNode collectNamedChild size equals: 4.
+	self assert:  originalTree rootNode collectNamedChild fourth type equals: 'expression_statement'.
+			
+	newTree := self editTreeForInsertEndExampleUsing: originalTree.
+	
+	"after edit"
+	self assert: originalTree rootNode hasChanges equals: true.	
+	self assert: newTree rootNode hasChanges equals: false.		
+	self assert:  newTree rootNode collectNamedChild size equals: 5.
+	self assert:  newTree rootNode collectNamedChild fifth type equals: 'expression_statement'.
+	
+	
+
+]
+
+{ #category : 'tests' }
+TSIncrementalParsingTypescriptTest >> testTypescriptIncrementalParsingInsertMiddle [
+
+	| originalTree newTree|
+
+	originalTree := parser parseString: self originalStringToParse.
+	originalTree rootNode. 
+	
+	"before edit"
+	self assert: originalTree rootNode hasChanges equals: false.
+	self assert: originalTree rootNode collectNamedChild size equals: 4.
+	self assert:  originalTree rootNode collectNamedChild third type equals: 'lexical_declaration'.
+			
+	newTree := self editTreeForInsertMiddleExampleUsing: originalTree.
+	
+	"after edit"
+	self assert: originalTree rootNode hasChanges equals: true.	
+	self assert: newTree rootNode hasChanges equals: false.		
+	self assert:  newTree rootNode collectNamedChild size equals: 5.
+	self assert:  newTree rootNode collectNamedChild third type equals: 'expression_statement'.
+	
 	
 
 ]
