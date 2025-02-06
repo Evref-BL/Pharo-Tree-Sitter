@@ -111,3 +111,54 @@ TSParserTypescriptTest >> testParseTypescriptFunction [
 	self assert: tree rootNode namedChildren first namedChildren second type equals: 'formal_parameters'.
 	self assert: tree rootNode namedChildren first namedChildren third type equals: 'statement_block'.
 ]
+
+{ #category : 'tests' }
+TSParserTypescriptTest >> testParseTypescriptLong [
+
+	| string tree |
+	string := 'import { execSync } from ''node:child_process''
+				import { inc } from ''semver''
+				import { consola } from ''consola''
+				import { determineBumpType, loadWorkspace } from ''./_utils''
+
+				const nightlyPackages = {
+  					// nitro: ''nitro-nightly'',
+  					// h3: ''h3-nightly'',
+  					nuxi: ''nuxi-nightly'',
+				}
+				async function main () {
+  					const workspace = await loadWorkspace(process.cwd())
+  					const commit = execSync(''git rev-parse --short HEAD'').toString(''utf-8'').trim().slice(0, 8)
+  					const date = Math.round(Date.now() / (1000 * 60))
+  					const bumpType = await determineBumpType()
+  					for (const pkg of workspace.packages.filter(p => !p.data.private)) {
+    					const newVersion = inc(pkg.data.version, bumpType || ''patch'')
+    					workspace.setVersion(pkg.data.name, `${newVersion}-${date}.${commit}`, {
+      						updateDeps: true,
+    					})
+    					for (const [name, nightlyName] of Object.entries(nightlyPackages)) {
+      						if (pkg.data.dependencies && name in pkg.data.dependencies) {
+        						pkg.data.dependencies[name] = `npm:${nightlyName}@latest`
+      						}
+    					}
+    					const newname = pkg.data.name + ''-nightly''
+    					workspace.rename(pkg.data.name, newname)
+  					}
+					await workspace.save()
+				}
+				main().catch((err) => {
+  					consola.error(err)
+  					process.exit(1)
+				})'.
+
+	tree := parser parseString: string.
+	self assert: tree rootNode  isNotNil . 
+	self assert: tree rootNode childCount equals: 7.
+	self assert: tree rootNode namedChildren first type equals: 'import_statement'.
+	self assert: tree rootNode namedChildren first namedChildCount equals: 2.
+	self assert: tree rootNode namedChildren first namedChildren first type equals: 'import_clause'.
+	self assert: tree rootNode namedChildren first namedChildren second type equals: 'string'. 
+
+
+
+]
