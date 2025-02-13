@@ -161,6 +161,13 @@ TSNode >> hasChanges [
 	^ TSLibrary uniqueInstance ts_node_has_changes: self
 ]
 
+{ #category : 'api' }
+TSNode >> hasChildren [ 
+
+	^ self collectNamedChild isNotEmpty
+
+]
+
 { #category : 'accessing - structure variables' }
 TSNode >> id [
 	"This method was automatically generated"
@@ -177,6 +184,12 @@ TSNode >> id: anObject [
 TSNode >> isEqualTo: anotherNode [
 
 	^ TSLibrary uniqueInstance ts_node_eq: self to: anotherNode
+]
+
+{ #category : 'api' }
+TSNode >> isErrorNode [
+
+	^ self type = 'ERROR'
 ]
 
 { #category : 'api' }
