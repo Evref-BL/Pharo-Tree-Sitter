@@ -494,14 +494,14 @@ TSIncrementalParsingTypescriptTest >> testTypescriptIncrementalParsingBasic [
 	
 	"before edit"
 	self assert: originalTree rootNode hasChanges equals: false.
-	self assert:  originalTree rootNode collectNamedChild first collectNamedChild fourth collectNamedChild size equals: 1.
+	self assert:  originalTree rootNode firstNamedChild collectNamedChild fourth collectNamedChild size equals: 1.
 	
 	newTree := self editTree: originalTree forBasicExample: originalString.
 	
 	"after edit"
 	self assert: originalTree rootNode hasChanges equals: true.	
 	self assert: newTree rootNode hasChanges equals: false.		
-	self assert:  newTree rootNode collectNamedChild first collectNamedChild fourth collectNamedChild size equals: 2.
+	self assert:  newTree rootNode firstNamedChild collectNamedChild fourth collectNamedChild size equals: 2.
 ]
 
 { #category : 'tests' }
@@ -514,7 +514,7 @@ TSIncrementalParsingTypescriptTest >> testTypescriptIncrementalParsingDeleteBegi
 	"before edit"
 	self assert: originalTree rootNode hasChanges equals: false.
 	self assert: originalTree rootNode collectNamedChild size equals: 4.
-	self assert:  originalTree rootNode collectNamedChild first type equals: 'interface_declaration'.
+	self assert:  originalTree rootNode firstNamedChild type equals: 'interface_declaration'.
 			
 	newTree := self editTreeForDeleteBeginingExampleUsing: originalTree.
 	
@@ -522,7 +522,7 @@ TSIncrementalParsingTypescriptTest >> testTypescriptIncrementalParsingDeleteBegi
 	self assert: originalTree rootNode hasChanges equals: true.	
 	self assert: newTree rootNode hasChanges equals: false.		
 	self assert:  newTree rootNode collectNamedChild size equals: 3.
-	self assert:  newTree rootNode collectNamedChild first type equals: 'function_declaration'. 
+	self assert:  newTree rootNode firstNamedChild type equals: 'function_declaration'. 
 	self assert:  newTree rootNode endByte equals: self newStringDeleteBeginning size .
 ]
 
@@ -582,7 +582,7 @@ TSIncrementalParsingTypescriptTest >> testTypescriptIncrementalParsingInsertBegi
 	"before edit"
 	self assert: originalTree rootNode hasChanges equals: false.
 	self assert: originalTree rootNode collectNamedChild size equals: 4.
-	self assert:  originalTree rootNode collectNamedChild first type equals: 'interface_declaration'.
+	self assert:  originalTree rootNode firstNamedChild type equals: 'interface_declaration'.
 			
 	newTree := self editTreeForInsertBeginingExampleUsing: originalTree.
 	
@@ -590,7 +590,7 @@ TSIncrementalParsingTypescriptTest >> testTypescriptIncrementalParsingInsertBegi
 	self assert: originalTree rootNode hasChanges equals: true.	
 	self assert: newTree rootNode hasChanges equals: false.		
 	self assert:  newTree rootNode collectNamedChild size equals: 5.
-	self assert:  newTree rootNode collectNamedChild first type equals: 'lexical_declaration'.	
+	self assert:  newTree rootNode firstNamedChild type equals: 'lexical_declaration'.	
 	self assert:  newTree rootNode endByte equals: self newStringInsertBeginning size .
 	
 	
@@ -658,7 +658,7 @@ TSIncrementalParsingTypescriptTest >> testTypescriptIncrementalParsingUpdateBegi
 	"before edit"
 	self assert: originalTree rootNode hasChanges equals: false.
 	self assert: originalTree rootNode collectNamedChild size equals: 4.
-	self assert:  originalTree rootNode collectNamedChild first type equals: 'interface_declaration'.
+	self assert:  originalTree rootNode firstNamedChild type equals: 'interface_declaration'.
 			
 	newTree := self editTreeForUpdateBeginingExampleUsing: originalTree.
 	
@@ -666,7 +666,7 @@ TSIncrementalParsingTypescriptTest >> testTypescriptIncrementalParsingUpdateBegi
 	self assert: originalTree rootNode hasChanges equals: true.	
 	self assert: newTree rootNode hasChanges equals: false.		
 	self assert:  newTree rootNode collectNamedChild size equals: 5.
-	self assert:  newTree rootNode collectNamedChild first type equals: 'ERROR'.
+	self assert:  newTree rootNode firstNamedChild type equals: 'ERROR'.
  	self assert:  newTree rootNode collectNamedChild second type equals: 'statement_block'.
 	self assert:  newTree rootNode endByte equals: self newStringUpdateBegining size .
 	
@@ -708,7 +708,7 @@ TSIncrementalParsingTypescriptTest >> testTypescriptIncrementalParsingUpdateMidd
 	"before edit"
 	self assert: originalTree rootNode hasChanges equals: false.
 	self assert: originalTree rootNode collectNamedChild size equals: 4.
-	self assert:  originalTree rootNode collectNamedChild first type equals: 'interface_declaration'.
+	self assert:  originalTree rootNode firstNamedChild type equals: 'interface_declaration'.
 			
 	newTree := self editTreeForUpdateMiddleExampleUsing: originalTree.
 	
@@ -716,7 +716,7 @@ TSIncrementalParsingTypescriptTest >> testTypescriptIncrementalParsingUpdateMidd
 	self assert: originalTree rootNode hasChanges equals: true.	
 	self assert: newTree rootNode hasChanges equals: false.		
 	self assert:  newTree rootNode collectNamedChild size equals: 4.
-	self assert:  originalTree rootNode collectNamedChild first type equals: 'interface_declaration'.
+	self assert:  originalTree rootNode firstNamedChild type equals: 'interface_declaration'.
 	self assert:  newTree rootNode endByte equals: self newStringUpdateMiddle size .
 	
 	

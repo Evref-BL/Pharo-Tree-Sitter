@@ -39,8 +39,8 @@ TSParserTypescriptTest >> testChildrenCollection [
 	tree := parser parseString: string. 
 	
 	self assert: tree rootNode collectNamedChild size equals: 1. 
-	self assert: tree rootNode collectNamedChild first collectNamedChild size equals: 1.
-	self assert: tree rootNode collectNamedChild first collectNamedChild first collectNamedChild size equals: 3. 
+	self assert: tree rootNode firstNamedChild collectNamedChild size equals: 1.
+	self assert: tree rootNode firstNamedChild firstNamedChild collectNamedChild size equals: 3. 
 ]
 
 { #category : 'tests' }
@@ -88,7 +88,7 @@ TSParserTypescriptTest >> testParseTypescriptClassAndExpression [
 
 	tree := parser parseString: string.
 	self assert: tree rootNode namedChildCount equals: 3.
-	self assert: tree rootNode namedChildren first type equals: 'class_declaration'.
+	self assert: tree rootNode firstNamedChild type equals: 'class_declaration'.
 	self assert: tree rootNode namedChildren second type equals: 'lexical_declaration'.
 	self assert: tree rootNode namedChildren third type equals: 'expression_statement'.
 	
@@ -105,11 +105,11 @@ TSParserTypescriptTest >> testParseTypescriptFunction [
 
 	tree := parser parseString: string.
 	self assert: tree rootNode childCount equals: 1.
-	self assert: tree rootNode namedChildren first type equals: 'function_declaration'.
-	self assert: tree rootNode namedChildren first namedChildCount equals: 3.
-	self assert: tree rootNode namedChildren first namedChildren first type equals: 'identifier'.
-	self assert: tree rootNode namedChildren first namedChildren second type equals: 'formal_parameters'.
-	self assert: tree rootNode namedChildren first namedChildren third type equals: 'statement_block'.
+	self assert: tree rootNode firstNamedChild type equals: 'function_declaration'.
+	self assert: tree rootNode firstNamedChild namedChildCount equals: 3.
+	self assert: tree rootNode firstNamedChild firstNamedChild type equals: 'identifier'.
+	self assert: tree rootNode firstNamedChild namedChildren second type equals: 'formal_parameters'.
+	self assert: tree rootNode firstNamedChild namedChildren third type equals: 'statement_block'.
 ]
 
 { #category : 'tests' }
@@ -154,10 +154,10 @@ TSParserTypescriptTest >> testParseTypescriptLong [
 	tree := parser parseString: string.
 	self assert: tree rootNode  isNotNil . 
 	self assert: tree rootNode childCount equals: 7.
-	self assert: tree rootNode namedChildren first type equals: 'import_statement'.
-	self assert: tree rootNode namedChildren first namedChildCount equals: 2.
-	self assert: tree rootNode namedChildren first namedChildren first type equals: 'import_clause'.
-	self assert: tree rootNode namedChildren first namedChildren second type equals: 'string'. 
+	self assert: tree rootNode firstNamedChild type equals: 'import_statement'.
+	self assert: tree rootNode firstNamedChild namedChildCount equals: 2.
+	self assert: tree rootNode firstNamedChild firstNamedChild type equals: 'import_clause'.
+	self assert: tree rootNode firstNamedChild namedChildren second type equals: 'string'. 
 
 
 
