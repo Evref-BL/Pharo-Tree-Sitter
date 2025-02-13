@@ -11,7 +11,7 @@ Class {
 }
 
 { #category : 'as yet unclassified' }
-TSParsingWithErrorTest >> editTree: originalTree forBasicExample1: originalString [
+TSParsingWithErrorTest >> editTree: originalTree forBasicExample: originalString [
 
 	|newString aTSInputEdit startPoint oldPoint newPoint newTree|
 	
@@ -37,25 +37,6 @@ TSParsingWithErrorTest >> editTree: originalTree forBasicExample1: originalStrin
 	^ newTree
 ]
 
-{ #category : 'storing' }
-TSParsingWithErrorTest >> originalStringToParse [
-
-	"original string where modifications will applied at the begining, middle and end for many cases: add update and delete"
-
-	^ 'interface Person {
-	firstName: string;
-	lastName: string;
-}
-   
-function greeter(person: Person) {
-	return "Hello, " + person.firstName + " " + person.lastName;
-}
-
-let user = { firstName: "Jane", lastName: "User" };
-
-console.log(greeter(user));'
-]
-
 { #category : 'running' }
 TSParsingWithErrorTest >> setUp [
 
@@ -74,7 +55,24 @@ TSParsingWithErrorTest >> tearDown [
 ]
 
 { #category : 'tests' }
-TSParsingWithErrorTest >> testError1 [
+TSParsingWithErrorTest >> testEmptyStatement [
+
+	| originalString tree |
+	
+	"the existence of double ; does not lead to error but to empty statement"
+	
+	originalString := 'console.log(''Hello!'');;'.
+	tree := parser parseString: originalString.
+	
+	self deny: (tree rootNode namedChildAt: 2) isErrorNode.
+	self assert: (tree rootNode namedChildAt: 2) type equals: 'empty_statement'
+	
+	
+	
+]
+
+{ #category : 'tests' }
+TSParsingWithErrorTest >> testErrorAfterEdit [
 
 	| originalString originalTree newTree|
 
@@ -84,12 +82,131 @@ TSParsingWithErrorTest >> testError1 [
 	"before edit"
 	self assert: originalTree rootNode hasChanges equals: false.
 	self assert:  originalTree rootNode collectNamedChild size equals: 1.
-	self assert:  originalTree rootNode collectNamedChild first type equals: 'function_declaration'.
 	
-	newTree := self editTree: originalTree forBasicExample1: originalString.
+	"Originally the node was correct"
+	self assert:  originalTree rootNode firstNamedChild type equals: 'function_declaration'.
+	
+	newTree := self editTree: originalTree forBasicExample: originalString.
 	
 	"after edit"
 	self assert: originalTree rootNode hasChanges equals: true.	
 	self assert: newTree rootNode hasChanges equals: false.		
-	self assert:  newTree rootNode collectNamedChild first type equals: 'ERROR'.
+	
+	"Now after midification it should become incorrect"
+	self assert:  newTree rootNode firstNamedChild type equals: 'ERROR'.
+]
+
+{ #category : 'tests' }
+TSParsingWithErrorTest >> testErrorBeginning [
+
+	| originalString tree |
+
+	originalString := 'const function printHello(): void { console.log(''Hello!'');} '.
+	tree := parser parseString: originalString.
+	
+	"make sure that the first node is error"
+	self assert:  tree rootNode firstNamedChild isErrorNode.
+	self assert:  (tree rootNode firstNamedChild textFromSourceText: originalString) equals: 'const function printHello(): void' . 
+	
+]
+
+{ #category : 'tests' }
+TSParsingWithErrorTest >> testErrorEnd [
+
+	| originalString tree |
+
+	originalString := 'function printHello(): void { console.log(''Hello!''); . } '.
+	tree := parser parseString: originalString.
+	
+	"make sure that the main node is not error"
+	self deny:  tree rootNode firstNamedChild type equals: 'ERROR'.
+	self assert:  tree rootNode firstNamedChild type equals: 'function_declaration'.
+		
+	"check that the correct nodes are intact"
+	self assert:  (tree rootNode namedChildren first namedChildAt: 4) firstNamedChild type equals: 'expression_statement'.
+	
+	"check that only the last node is ERROR"
+	self assert:  (tree rootNode namedChildren first namedChildAt: 4) collectNamedChild last type equals: 'ERROR'. 
+	self assert:  ((tree rootNode namedChildren first namedChildAt: 4) collectNamedChild last textFromSourceText: originalString) equals: '.' . 
+]
+
+{ #category : 'tests' }
+TSParsingWithErrorTest >> testErrorMiddle [
+
+	| originalString tree |
+
+	originalString := 'function printHello(): void { con console.log(''Hello!'');} '.
+	tree := parser parseString: originalString.
+	
+	"make sure that the first node is error"
+	self assert:  (tree rootNode firstNamedChild namedChildAt: 4) firstNamedChild isErrorNode. 	
+	self assert:  ((tree rootNode firstNamedChild namedChildAt: 4) firstNamedChild  textFromSourceText: originalString) equals: 'con'
+	
+]
+
+{ #category : 'tests' }
+TSParsingWithErrorTest >> testErrorNodeWithChildren [
+
+	| originalString tree |
+	
+	"We realized that error node can have children or not; inserting const at the begining leads to having children for Error node"
+
+	originalString := 'const function printHello(): void { console.log(''Hello!'');} '.
+	tree := parser parseString: originalString.
+	
+	"make sure that the first node is error"
+	self assert:  tree rootNode firstNamedChild isErrorNode. 
+	
+	"make sure that the error node has children"
+	self assert:  tree rootNode firstNamedChild hasChildren.
+	
+	self assert: (tree rootNode firstNamedChild textFromSourceText: originalString) equals: 'const function printHello(): void'.
+	
+	
+	
+]
+
+{ #category : 'tests' }
+TSParsingWithErrorTest >> testErrorNodeWithoutChildren [
+
+	| originalString tree |
+	
+	"We realized that error node can have children or not; inserting . at the begining leads to not having children for Error node"
+
+	originalString := '. function printHello(): void { console.log(''Hello!'');} '.
+	tree := parser parseString: originalString.
+	
+	"make sure that the first node is error"
+	self assert:  tree rootNode firstNamedChild isErrorNode. 
+	
+	"make sure that the error node has no children"
+	self deny:  tree rootNode firstNamedChild hasChildren.
+		
+	self assert: (tree rootNode firstNamedChild textFromSourceText: originalString) equals: '.'.
+	
+]
+
+{ #category : 'tests' }
+TSParsingWithErrorTest >> testMultipleErrors [
+
+	| originalString tree |
+	
+	"3 errors must be found here"
+	
+	originalString := '. function printHello(): void { v console.log(''Hello!'');.}'.
+	tree := parser parseString: originalString.
+	
+	"finding first error"
+	self assert:  tree rootNode firstNamedChild isErrorNode. 
+	self assert:  (tree rootNode firstNamedChild textFromSourceText: originalString) equals: '.'.
+	
+	"finding second error"
+	self assert:  ((tree rootNode namedChildAt: 2) namedChildAt: 4) firstNamedChild isErrorNode. 
+	self assert:  (((tree rootNode namedChildAt: 2) namedChildAt: 4) firstNamedChild textFromSourceText: originalString) equals: 'v'.
+	
+	"finding third error"
+	self assert:  (((tree rootNode namedChildAt: 2) namedChildAt: 4) namedChildAt: 3) isErrorNode.
+	self assert:  ((((tree rootNode namedChildAt: 2) namedChildAt: 4) namedChildAt: 3) textFromSourceText: originalString) equals: '.'.
+	
+	
 ]
