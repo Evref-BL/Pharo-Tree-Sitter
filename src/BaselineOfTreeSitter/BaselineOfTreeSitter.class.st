@@ -28,14 +28,13 @@ BaselineOfTreeSitter >> defineGroups: spec [
 		group: 'default'
 		with:
 			#( 'TreeSitter' 'TreeSitter-Tests' 'TreeSitter-Spec'
-			   'TreeSitter-Highlighter' 'TreeSitter-Visitor' ).
+			   'TreeSitter-Highlighter' 'TreeSitter-Visitor' 'TreeSitter-FAST-Utils' ).
 	spec group: 'moose' with: #( 'default' 'TreeSitter-FAST-Utils' ).
 	"language"
 	spec group: 'mermaid' with: #( 'default' 'TreeSitter-Mermaid' ).
 	spec group: 'groovy' with: #( 'default' 'TreeSitter-Groovy' ). 
 	spec group: 'python' with: #( 'default' 'TreeSitter-Python' ).
-	spec group: 'typescript' with: #( 'default' 'TreeSitter-Typescript' ).
-	spec group: 'fastUtils' with: #( 'default' 'TreeSitter-FAST-Utils' ). 
+	spec group: 'typescript' with: #( 'default' 'TreeSitter-Typescript' ).  
 ]
 
 { #category : 'baselines' }
