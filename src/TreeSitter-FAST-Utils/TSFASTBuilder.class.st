@@ -25,12 +25,15 @@ TSFASTBuilder >> addDefineClassIn: metamodelGeneratorClass [
 '.
 		          self typesToReify
 			          do: [ :type |
-				          stream
-					          << '	';
-					          << (self variableNameOfTSSymbol: type);
-					          << ' := '.
-				          stream << 'builder ensureClassNamed: #'
-				          << (tsLanguage nameOfSymbol: type) capitalized << '.' ]
+				          | variable |
+				          variable := self variableNameOfTSSymbol: type.
+				          variable ifNotEmpty: [
+					          stream
+						          << '	';
+						          << variable;
+						          << ' := '.
+					          stream << 'builder ensureClassNamed: #'
+					          << (tsLanguage nameOfSymbol: type) capitalized << '.' ] ]
 			          separatedBy: [
 				          stream << '
 ' ] ].
@@ -147,13 +150,15 @@ TSFASTBuilder >> build [
 { #category : 'building' }
 TSFASTBuilder >> createMetamodelGeneratorClass [
 
-	| classBuilder className |
+	| classBuilder className types|
 	className := #FAST , self languageName.
 	classBuilder := FamixMetamodelGenerator
 	                << (className , #MetamodelGenerator).
-	classBuilder slots: (self typesToReify
+	types := ((self typesToReify
 			 collect: [ :type | (self variableNameOfTSSymbol: type) asSymbol ]
-			 as: Set) , { #entity. #tEntity }.
+			 as: Set) asOrderedCollection ) reject: [ :each | each isEmpty ] .
+	
+	classBuilder slots: types, { #entity. #tEntity }.
 	classBuilder package: className , #'-Model-Generator'.
 	^ classBuilder install
 ]
@@ -208,6 +213,9 @@ TSFASTBuilder >> typesToReify [
 
 { #category : 'building' }
 TSFASTBuilder >> variableNameOfTSSymbol: aTSSymbol [
-
-	^ '_', (tsLanguage nameOfSymbol: aTSSymbol)
+    
+ 	| variable |
+    variable := tsLanguage nameOfSymbol: aTSSymbol.
+    ^ variable isEmpty ifTrue: [''] ifFalse: ['_', variable] 
+ 
 ]
