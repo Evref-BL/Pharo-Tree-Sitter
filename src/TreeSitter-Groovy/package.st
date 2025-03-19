@@ -1,1 +1,1 @@
-Package { #name : #'TreeSitter-Groovy' }
+Package { #name : 'TreeSitter-Groovy' }
