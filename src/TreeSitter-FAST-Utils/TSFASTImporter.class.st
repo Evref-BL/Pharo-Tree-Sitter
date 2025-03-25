@@ -11,6 +11,19 @@ Class {
 	#package : 'TreeSitter-FAST-Utils'
 }
 
+{ #category : 'filling' }
+TSFASTImporter >> fillSource: aTextSource [ 
+
+[((model allWithSubTypesOfAny: {
+			  FASTTypescriptClass_declaration.
+			  FASTTypescriptInterface_declaration.
+			  FASTTypescriptEnum_declaration }) detect: [ :aDeclaration | aDeclaration parentNode isNil ]) source: aTextSource ]
+		on: Error
+		do: [ :err |
+			('FAST Err parsing: ' , String crlf , aTextSource) record.
+			err signal ].
+]
+
 { #category : 'accessing' }
 TSFASTImporter >> import: aTSNode [
 
@@ -18,7 +31,8 @@ TSFASTImporter >> import: aTSNode [
 	model := ('FAST' , self languageName , 'Model' asClassInEnvironment:
 		          self class environment) new.
 	rootFastEntity := aTSNode accept: self.
-	rootFastEntity source: self originString.
+	"rootFastEntity source: self originString."
+	self fillSource: self originString .
 	^ model
 ]
 
