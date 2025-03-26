@@ -40,8 +40,16 @@ TSNode >> collectFieldNameOfNamedChild [
 	1 to: self namedChildCount do: [ :pharoIndex |
 		| namedChild field |
 		namedChild := self namedChildAt: pharoIndex.
-		field := self fieldNameOfChildNamedAt: pharoIndex.
-		collection at: field put: namedChild ].
+		field := (self fieldNameOfChildNamedAt: pharoIndex)
+			ifEmpty: [ '<unnamedChild>' ].
+		collection
+			at: field
+			ifPresent: [ :found |
+				found isCollection
+					ifTrue: [ found add: namedChild ]
+					ifFalse: [ collection at: field put: (OrderedCollection with: found with: namedChild) ]
+				]
+			ifAbsentPut: [namedChild] ].
 	^ collection
 ]
 
