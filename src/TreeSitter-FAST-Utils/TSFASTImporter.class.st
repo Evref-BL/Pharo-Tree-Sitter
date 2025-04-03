@@ -15,9 +15,11 @@ Class {
 TSFASTImporter >> fillSource: aTextSource [ 
 
 [((model allWithSubTypesOfAny: {
-			  FASTTypescriptClass_declaration.
+			  "FASTTypescriptClass_declaration.
 			  FASTTypescriptInterface_declaration.
-			  FASTTypescriptEnum_declaration }) detect: [ :aDeclaration | aDeclaration parentNode isNil ]) source: aTextSource ]
+			  FASTTypescriptEnum_declaration"
+				FASTTypescriptProgram.
+			 }) detect: [ :aDeclaration | aDeclaration parentNode isNil ]) source: aTextSource ]
 		on: Error
 		do: [ :err |
 			('FAST Err parsing: ' , String crlf , aTextSource) record.
