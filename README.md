@@ -39,6 +39,8 @@ For instance, move your `python.dylib` under `/Pharo/vms/110-x64/Pharo.app/Conte
 
 ### Windows
 
+If you find issues in generating the libraries, you can find them [here for Windows](https://doi.org/10.5281/zenodo.15148695). This is a temporary solution until creating another one to dowload libraries automatically once this project is loaded locally.
+
 #### Tree-Sitter Shared library
 
 To build the shared library for tree-sitter, you can follow the following script:
