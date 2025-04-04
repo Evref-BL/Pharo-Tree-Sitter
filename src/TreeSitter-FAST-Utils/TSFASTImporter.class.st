@@ -12,18 +12,19 @@ Class {
 }
 
 { #category : 'filling' }
-TSFASTImporter >> fillSource: aTextSource [ 
-
-[((model allWithSubTypesOfAny: {
-			  "FASTTypescriptClass_declaration.
+TSFASTImporter >> fillSource: aTextSource [
+	"not sure if this should be used"
+	[
+	((model allWithSubTypesOfAny: { FASTTypescriptProgram }) detect: [
+		 :aDeclaration | aDeclaration parentNode isNil ]) source:
+		aTextSource
+	"FASTTypescriptClass_declaration.
 			  FASTTypescriptInterface_declaration.
-			  FASTTypescriptEnum_declaration"
-				FASTTypescriptProgram.
-			 }) detect: [ :aDeclaration | aDeclaration parentNode isNil ]) source: aTextSource ]
+			  FASTTypescriptEnum_declaration" ]
 		on: Error
 		do: [ :err |
 			('FAST Err parsing: ' , String crlf , aTextSource) record.
-			err signal ].
+			err signal ]
 ]
 
 { #category : 'accessing' }
@@ -33,8 +34,8 @@ TSFASTImporter >> import: aTSNode [
 	model := ('FAST' , self languageName , 'Model' asClassInEnvironment:
 		          self class environment) new.
 	rootFastEntity := aTSNode accept: self.
-	"rootFastEntity source: self originString."
-	self fillSource: self originString .
+	rootFastEntity source: self originString.
+	"self fillSource: self originString ."
 	^ model
 ]
 
@@ -95,7 +96,9 @@ TSFASTImporter >> visitNode: aTSNode [
 		fieldName
 			ifEmpty: [ fastEntity addGenericChildren: childFast ]
 			ifNotEmpty: [
-			(fastEntity perform: fieldName asSymbol) add: childFast ] ].
+				[ (fastEntity perform: fieldName asSymbol) add: childFast ]
+					on: Error
+					do: [ :error | "handling error temporarly" fastEntity addGenericChildren: childFast ] ] ].
 	fastEntity startPos:
 		(self originString positionFromTSPoint: aTSNode startPoint) + 1.
 	fastEntity endPos:
