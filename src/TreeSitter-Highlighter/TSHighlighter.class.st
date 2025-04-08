@@ -74,17 +74,17 @@ TSHighlighter >> highlight: text usingNode: node [
 
 { #category : 'initialization' }
 TSHighlighter >> initialize [
-"dede"
+
 	super initialize.
 	attributeMapper := Dictionary new.
 	self
-		addAttribute: (TextColor new color: (Color fromHexString: '77858b'))
+		addAttribute: (SHRBTextStyler attributesFor: #comment) anyOne
 		for: 'comment'.
 	self
-		addAttribute: (TextColor new color: (Color fromHexString: '029eb2'))
+		addAttribute: (SHRBTextStyler attributesFor: #selector) anyOne
 		for: 'identifier'.
 	self
-		addAttribute: (TextColor new color: (Color fromHexString: 'bf6330'))
+		addAttribute: (SHRBTextStyler attributesFor: #string) anyOne
 		for: 'string'
 ]
 

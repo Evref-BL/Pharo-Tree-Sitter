@@ -34,6 +34,12 @@ TSParser >> delete [
 	^ TSLibrary uniqueInstance ts_parser_delete: self
 ]
 
+{ #category : 'editing' }
+TSParser >> editTree: aTree usingInputEdit: anInput [
+
+	TSLibrary uniqueInstance ts_tree_edit: aTree forInputEdit: anInput.
+]
+
 { #category : 'accessing' }
 TSParser >> language [
 
@@ -46,13 +52,28 @@ TSParser >> language: aTSLanguage [
 	^ TSLibrary uniqueInstance ts_parser: self _set_language: aTSLanguage
 ]
 
-{ #category : 'accessing' }
+{ #category : 'parsing' }
 TSParser >> parseString: aString [
+	"To be used for the first time"
+	^ self parseString: aString usingTree: ExternalAddress null
+]
+
+{ #category : 'parsing' }
+TSParser >> parseString: aString usingTree: aTree [
+
+	"to be used after editing the old tree which must be past here as a parameter to make an incremental parsing"
+	
 	| stringToConsider |
 	stringToConsider := aString withUnixLineEndings.
 	^ TSLibrary uniqueInstance
 		  ts_parser: self
 		  _parse_string: stringToConsider 
 		  ofLength: stringToConsider size
-		  usingOldTree: ExternalAddress null
+		  usingOldTree: aTree
+]
+
+{ #category : 'initialization' }
+TSParser >> reset [ 
+
+	TSLibrary uniqueInstance ts_parser_reset: self
 ]

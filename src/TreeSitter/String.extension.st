@@ -1,7 +1,8 @@
 Extension { #name : 'String' }
 
-{ #category : '*TreeSitter-Highlighter' }
+{ #category : '*TreeSitter' }
 String >> positionFromTSPoint: aTSPoint [
+	"Use me to convert a TSPoint to the position in the original string"
 
 	| sum currentLine lines |
 	sum := aTSPoint column.
@@ -13,7 +14,7 @@ String >> positionFromTSPoint: aTSPoint [
 	^ sum
 ]
 
-{ #category : '*TreeSitter-Highlighter' }
+{ #category : '*TreeSitter' }
 String >> tsLineIndicesDo: aBlock [
 	"execute aBlock with 3 arguments for each line:
 	- start index of line
@@ -53,7 +54,7 @@ String >> tsLineIndicesDo: aBlock [
 	aBlock value: start value: sz value: sz
 ]
 
-{ #category : '*TreeSitter-Highlighter' }
+{ #category : '*TreeSitter' }
 String >> tsLines [
 	"Same as lines but empty line exist"
 
@@ -63,7 +64,7 @@ String >> tsLines [
 		  self tsLinesDo: [ :aLine | lines nextPut: aLine ] ]
 ]
 
-{ #category : '*TreeSitter-Highlighter' }
+{ #category : '*TreeSitter' }
 String >> tsLinesDo: aBlock [
 	"Same as linesDo but empty line exist"
 

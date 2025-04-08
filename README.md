@@ -1,5 +1,11 @@
 # Pharo tree-sitter
 
+[![CI](https://github.com/Evref-BL/Pharo-Tree-Sitter/actions/workflows/ci.yml/badge.svg)](https://github.com/Evref-BL/Pharo-Tree-Sitter/actions/workflows/ci.yml)
+[![Coverage Status](https://coveralls.io/repos/github/Evref-BL/Pharo-Tree-Sitter/badge.svg?branch=main)](https://coveralls.io/github/Evref-BL/Pharo-Tree-Sitter?branch=main)
+[![DOI](https://zenodo.org/badge/843819305.svg)](https://doi.org/10.5281/zenodo.15089053)
+
+
+
 This is a binding to tree-sitter from Pharo.
 It allows one to perform analysis or highlight code using an existing tree sitter parser made by the community
 
@@ -14,22 +20,26 @@ The dependencies are:
 ```st
 Metacello new
   baseline: 'TreeSitter';
-  repository: 'github://badetitou/Pharo-Tree-Sitter:main/src';
+  repository: 'github://Evref-BL/Pharo-Tree-Sitter:main/src';
   load.
 ```
 
 ### MacOS
 We recommand you to download the tree-sitter core library using HomeBrew 
 
-`brew install tree-sitter`. 
+```sh
+brew install tree-sitter
+``` 
 
 Then, locate the `libtree-sitter.dylib` under the path `/opt/homebrew/Cellar/tree-sitter/0.x.x/lib/libtree-sitter.dylib`
 
-Finally, check the possibile lib location detected by Pharo using `FFIMacLibraryFinder  new  paths` in a playground. Both the core library and the parser library should be under any of these paths. Please move them their.  
+Finally, check the possible lib location detected by Pharo using `FFIMacLibraryFinder new paths` in a playground. Both the core library and the parser library should be under any of these paths. Please move them their.
 
 For instance, move your `python.dylib` under `/Pharo/vms/110-x64/Pharo.app/Contents/Resources/lib/`
 
 ### Windows
+
+If you find issues in generating the libraries, you can find them [here for Windows](https://doi.org/10.5281/zenodo.15148695). This is a temporary solution until creating another one to dowload libraries automatically once this project is loaded locally.
 
 #### Tree-Sitter Shared library
 
@@ -49,6 +59,15 @@ ninja
 ```
 
 Then move the `libtree-sitter.dll` file under the **VM** folder of Pharo.
+
+### Archlinux
+
+The tree-sitter libs are available in the extra repository.
+So you only have to install tree-sitter and the grammar you wanna use with your package manager.
+
+```sh
+yay tree-sitter tree-sitter-grammars
+```
 
 ## Quick Example
 

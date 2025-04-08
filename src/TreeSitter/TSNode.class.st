@@ -33,16 +33,24 @@ TSNode >> childCount [
 
 { #category : 'as yet unclassified' }
 TSNode >> collectFieldNameOfNamedChild [
-	|collection|
-	collection := OrderedDictionary new. 
-	
+
+	| collection |
+	collection := OrderedDictionary new.
+
 	1 to: self namedChildCount do: [ :pharoIndex |
-		| namedChild field|
+		| namedChild field |
 		namedChild := self namedChildAt: pharoIndex.
-		field := self fieldNameOfChildNamedAt: pharoIndex. 
-		collection at: field put: namedChild. 
-		 ].
-	^ collection 
+		field := (self fieldNameOfChildNamedAt: pharoIndex)
+			ifEmpty: [ '<unnamedChild>' ].
+		collection
+			at: field
+			ifPresent: [ :found |
+				found isCollection
+					ifTrue: [ found add: namedChild ]
+					ifFalse: [ collection at: field put: (OrderedCollection with: found with: namedChild) ]
+				]
+			ifAbsentPut: [namedChild] ].
+	^ collection
 ]
 
 { #category : 'api' }
@@ -129,6 +137,12 @@ TSNode >> detectNamedChild: nodeName ifOne: aBlock [
 ]
 
 { #category : 'api' }
+TSNode >> endByte [
+
+	^ TSLibrary uniqueInstance ts_node_end_byte: self
+]
+
+{ #category : 'api' }
 TSNode >> endPoint [
 
 	^ TSLibrary uniqueInstance ts_node_end_point: self
@@ -136,17 +150,37 @@ TSNode >> endPoint [
 
 { #category : 'accessing' }
 TSNode >> fieldName [
-	^ TSLibrary uniqueInstance 
-	ts_tree_cursor_current_field_name: self cursor
+
+	^ TSLibrary uniqueInstance ts_tree_cursor_current_field_name:
+		  self cursor
 ]
 
 { #category : 'accessing' }
-TSNode >> fieldNameOfChildNamedAt: childIndex [ 
+TSNode >> fieldNameOfChildNamedAt: childIndex [
 	"starting at 0"
-	
-	^ TSLibrary uniqueInstance 
-		ts_node: self
-	 _field_name_for_named_child: childIndex - 1 
+
+	^ TSLibrary uniqueInstance
+		  ts_node: self
+		  _field_name_for_named_child: childIndex - 1
+]
+
+{ #category : 'api' }
+TSNode >> firstNamedChild [
+
+	^ TSLibrary uniqueInstance ts_node: self _named_child_count: 0
+]
+
+{ #category : 'api' }
+TSNode >> hasChanges [ 
+
+	^ TSLibrary uniqueInstance ts_node_has_changes: self
+]
+
+{ #category : 'api' }
+TSNode >> hasChildren [ 
+
+	^ self collectNamedChild isNotEmpty
+
 ]
 
 { #category : 'accessing - structure variables' }
@@ -162,9 +196,27 @@ TSNode >> id: anObject [
 ]
 
 { #category : 'api' }
+TSNode >> isEqualTo: anotherNode [
+
+	^ TSLibrary uniqueInstance ts_node_eq: self to: anotherNode
+]
+
+{ #category : 'api' }
+TSNode >> isErrorNode [
+
+	^ self type = 'ERROR'
+]
+
+{ #category : 'api' }
 TSNode >> isNamed [
 
 	^ TSLibrary uniqueInstance ts_node_is_named: self
+]
+
+{ #category : 'api' }
+TSNode >> isNull [ 
+
+	^ TSLibrary uniqueInstance ts_node_is_null: self
 ]
 
 { #category : 'api' }
@@ -182,11 +234,36 @@ TSNode >> namedChildCount [
 	^ TSLibrary uniqueInstance ts_node_named_child_count: self
 ]
 
+{ #category : 'api' }
+TSNode >> namedChildren [
+
+	^ (1 to: self namedChildCount) collect: [ :idx |
+		  self namedChildAt: idx ]
+]
+
+{ #category : 'accessing' }
+TSNode >> nextSibling [ 
+	"make sure to use it while siblings exist otherwise image crashes"
+	^ TSLibrary uniqueInstance ts_node_next_sibling: self
+]
+
 { #category : 'as yet unclassified' }
 TSNode >> nodeChildByFieldName: aFieldName [
 	
 	
 	^ TSLibrary uniqueInstance ts_node_child_of: self _by_field_name: aFieldName ofLength: aFieldName size. 
+]
+
+{ #category : 'api' }
+TSNode >> parent [  
+
+	^ TSLibrary uniqueInstance ts_node_parent: self
+]
+
+{ #category : 'accessing' }
+TSNode >> previousSibling [ 
+	"make sure to use it while siblings exist otherwise image crashes"
+	^ TSLibrary uniqueInstance ts_node_prev_sibling: self
 ]
 
 { #category : 'printing' }
@@ -197,9 +274,21 @@ TSNode >> printOn: aStream [
 ]
 
 { #category : 'api' }
+TSNode >> startByte [
+
+	^ TSLibrary uniqueInstance ts_node_start_byte: self
+]
+
+{ #category : 'api' }
 TSNode >> startPoint [
 
 	^ TSLibrary uniqueInstance ts_node_start_point: self
+]
+
+{ #category : 'api' }
+TSNode >> string [   
+
+	^ TSLibrary uniqueInstance ts_node_string: self
 ]
 
 { #category : 'api' }
