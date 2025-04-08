@@ -26,9 +26,27 @@ TSNode class >> fieldsDesc [
 ]
 
 { #category : 'api' }
+TSNode >> childAt: childIndex [
+	"starting at 0"
+
+	^ TSLibrary uniqueInstance
+		  ts_node: self  _child_at: childIndex - 1
+]
+
+{ #category : 'api' }
 TSNode >> childCount [
 
 	^ TSLibrary uniqueInstance ts_node_child_count: self
+]
+
+{ #category : 'api' }
+TSNode >> collectChildren [
+
+	| children |
+	children := OrderedCollection new.
+	1 to: self namedChildCount do: [ :i |
+	children add: (self childAt: i) ].
+	^ children
 ]
 
 { #category : 'as yet unclassified' }

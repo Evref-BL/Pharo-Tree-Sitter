@@ -76,6 +76,13 @@ TSLibrary >> ts_language_version: aTSLanguage [
 ]
 
 { #category : 'node' }
+TSLibrary >> ts_node: aTSNode _child_at: child_index [
+
+	^ self ffiCall:
+		  'TSNode ts_node_child(TSNode aTSNode, uint32 child_index)'
+]
+
+{ #category : 'node' }
 TSLibrary >> ts_node: aTsNode _field_name_for_named_child: namedChildIndex [ 
 
 	^ self ffiCall: 'char * ts_node_field_name_for_named_child(TSNode aTsNode, uint32 namedChildIndex)'
