@@ -37,6 +37,8 @@ Finally, check the possible lib location detected by Pharo using `FFIMacLibraryF
 
 For instance, move your `python.dylib` under `/Pharo/vms/110-x64/Pharo.app/Contents/Resources/lib/`
 
+Pay attention !! Make sure that Pharo is closed when you move the libraries specially after modifications on the original project, for example adding a new api. Normally on Windows you cannot replace the existing dll (if you already generated it for the first time) unless Pharo is closed. But if you intend to make it on mac for example, you need to close it and reopen it so the new modifications are applied. 
+
 ### Windows
 
 If you find issues in generating the libraries, you can find them [here for Windows](https://doi.org/10.5281/zenodo.15148695). This is a temporary solution until creating another one to dowload libraries automatically once this project is loaded locally.
