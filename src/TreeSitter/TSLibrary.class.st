@@ -208,10 +208,24 @@ TSLibrary >> ts_parser: aParser _parse_string: aString ofLength: length usingOld
 ]
 
 { #category : 'parser' }
+TSLibrary >> ts_parser: aTSParser _print_dot_graphs: fd [
+
+	^ self ffiCall:
+		  'void ts_parser_print_dot_graphs (TSParser * aTSParser, int fd )'
+]
+
+{ #category : 'parser' }
 TSLibrary >> ts_parser: aTSParser _set_language: aTSLanguage [
 
 	^ self ffiCall:
 		  'bool ts_parser_set_language(TSParser * aTSParser, TSLanguage * aTSLanguage)'
+]
+
+{ #category : 'parser' }
+TSLibrary >> ts_parser: aTSParser _set_logger: aTSLogger [
+
+	^ self ffiCall:
+		  'void ts_parser_set_logger(TSParser * aTSParser, TSLogger * aTSLogger)'
 ]
 
 { #category : 'parser' }
@@ -226,6 +240,13 @@ TSLibrary >> ts_parser_language: aTSParser [
 
 	^ self ffiCall:
 		  'TSLanguage * ts_parser_language (TSParser * aTSParser )'
+]
+
+{ #category : 'parser' }
+TSLibrary >> ts_parser_logger: aTSParser [
+
+	^ self ffiCall:
+		  'TSLogger ts_parser_delete (TSParser * aTSParser )'
 ]
 
 { #category : 'parser' }

@@ -52,6 +52,18 @@ TSParser >> language: aTSLanguage [
 	^ TSLibrary uniqueInstance ts_parser: self _set_language: aTSLanguage
 ]
 
+{ #category : 'initialization' }
+TSParser >> logger [
+
+	^ TSLibrary uniqueInstance ts_parser_logger: self
+]
+
+{ #category : 'initialization' }
+TSParser >> logger: aTSLogger [
+
+	^ TSLibrary uniqueInstance ts_parser: self _set_logger: aTSLogger
+]
+
 { #category : 'parsing' }
 TSParser >> parseString: aString [
 	"To be used for the first time"
@@ -70,6 +82,15 @@ TSParser >> parseString: aString usingTree: aTree [
 		  _parse_string: stringToConsider 
 		  ofLength: stringToConsider size
 		  usingOldTree: aTree
+]
+
+{ #category : 'parsing' }
+TSParser >> printDotGraphTo: aFileDescriptor [
+	"-1 for no"
+
+	^ TSLibrary uniqueInstance
+		  ts_parser: self
+		  _print_dot_graphs: aFileDescriptor
 ]
 
 { #category : 'initialization' }
