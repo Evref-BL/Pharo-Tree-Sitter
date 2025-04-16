@@ -225,7 +225,7 @@ TSLibrary >> ts_parser: aTSParser _set_language: aTSLanguage [
 TSLibrary >> ts_parser: aTSParser _set_logger: aTSLogger [
 
 	^ self ffiCall:
-		  'void ts_parser_set_logger(TSParser * aTSParser, TSLogger * aTSLogger)'
+		  'void ts_parser_set_logger(TSParser * aTSParser, TSLogger aTSLogger)'
 ]
 
 { #category : 'parser' }

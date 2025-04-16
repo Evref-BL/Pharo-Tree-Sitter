@@ -1,3 +1,12 @@
+"
+You can define a logger for the parser with the following code
+
+```
+callback := (TSLogCallback on: [ :payload :log_type :buffer | Transcript crShow: buffer ] ).
+logger := TSLogger new log: callback .
+parser logger: logger.
+```
+"
 Class {
 	#name : 'TSLogger',
 	#superclass : 'FFIStructure',

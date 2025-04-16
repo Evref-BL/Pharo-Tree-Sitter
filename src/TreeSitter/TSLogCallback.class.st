@@ -7,7 +7,7 @@ Class {
 
 { #category : 'instance creation' }
 TSLogCallback class >> fnSpec [
-	^#(void (void *payload, TSLogType log_type, char *buffer))
+	^#(void (void *payload, TSLogType log_type, const String *buffer))
 ]
 
 { #category : 'instance creation' }
