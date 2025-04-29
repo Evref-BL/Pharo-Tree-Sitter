@@ -42,8 +42,19 @@ TSFASTImporter >> import: aTSNode [
 { #category : 'accessing' }
 TSFASTImporter >> instantiateFastEntityFrom: aTSNode [
 
-	^ ('FAST' , self languageName , aTSNode type capitalized
-		   asClassInEnvironment: self class environment) new
+	| fast children |
+	fast := ('FAST' , self languageName , aTSNode type capitalized
+		         asClassInEnvironment: self class environment) new.
+	
+	children := aTSNode collectFieldNameOfNamedChild.
+	children keysDo: [ :key |
+		key = '<unnamedChild>' ifFalse: [
+			(fast class methodDict  keys  select: [ :e | e  = key asSymbol ])
+				ifNotEmpty: [
+					fast
+						perform: key asSymbol asMutator
+						with: (self instantiateFastEntityFrom: (children at: key)) ] ] ].
+	^ fast
 ]
 
 { #category : 'accessing' }
