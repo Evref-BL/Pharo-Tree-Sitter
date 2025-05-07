@@ -107,9 +107,9 @@ TSFASTImporter >> visitNode: aTSNode [
 		fieldName
 			ifEmpty: [ fastEntity addGenericChildren: childFast ]
 			ifNotEmpty: [
-				[ (fastEntity perform: fieldName asSymbol) add: childFast ]
+				[ fastEntity perform: (fieldName, ':') asSymbol withArguments: { childFast }  ]
 					on: Error
-					do: [ :error | "handling error temporarly" fastEntity addGenericChildren: childFast ] ] ].
+					do: [ :error | fastEntity addGenericChildren: childFast ] ] ].
 	fastEntity startPos:
 		(self originString positionFromTSPoint: aTSNode startPoint) + 1.
 	fastEntity endPos:
