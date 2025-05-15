@@ -4,8 +4,6 @@
 [![Coverage Status](https://coveralls.io/repos/github/Evref-BL/Pharo-Tree-Sitter/badge.svg?branch=main)](https://coveralls.io/github/Evref-BL/Pharo-Tree-Sitter?branch=main)
 [![DOI](https://zenodo.org/badge/843819305.svg)](https://doi.org/10.5281/zenodo.15089053)
 
-
-
 This is a binding to tree-sitter from Pharo.
 It allows one to perform analysis or highlight code using an existing tree sitter parser made by the community
 
@@ -24,8 +22,12 @@ Metacello new
   load.
 ```
 
+Important: 
+If you find issues in generating the libraries, you can find them [thz libraries for Windows and MacOS](https://doi.org/10.5281/zenodo.15148695). This is a temporary solution until creating another one to dowload libraries automatically once this project is loaded locally.
+Pay attention !! Make sure that Pharo is closed when you move the libraries.
+
 ### MacOS
-We recommand you to download the tree-sitter core library using HomeBrew 
+We recommand you to download the tree-sitter core library using HomeBrew.
 
 ```sh
 brew install tree-sitter
@@ -38,10 +40,6 @@ Finally, check the possible lib location detected by Pharo using `FFIMacLibraryF
 For instance, move your `python.dylib` under `/Pharo/vms/110-x64/Pharo.app/Contents/Resources/lib/`
 
 Pay attention !! Make sure that Pharo is closed when you move the libraries specially after modifications on the original project, for example adding a new api. Normally on Windows you cannot replace the existing dll (if you already generated it for the first time) unless Pharo is closed. But if you intend to make it on mac for example, you need to close it and reopen it so the new modifications are applied. 
-
-### Windows
-
-If you find issues in generating the libraries, you can find them [here for Windows](https://doi.org/10.5281/zenodo.15148695). This is a temporary solution until creating another one to dowload libraries automatically once this project is loaded locally.
 
 #### Tree-Sitter Shared library
 
