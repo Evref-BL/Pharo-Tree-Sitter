@@ -6,6 +6,13 @@ Class {
 }
 
 { #category : 'accessing - platform' }
+TSTypescriptLibrary >> macLibraryName [ 
+	"Users should use unix32* or unix64*"
+
+	^ FFIMacLibraryFinder findAnyLibrary: #( 'tree-sitter-typescript.dylib' )  
+]
+
+{ #category : 'accessing - platform' }
 TSTypescriptLibrary >> tree_sitter_typescript [
 
 	^ self ffiCall: 'TSLanguage * tree_sitter_typescript ()'

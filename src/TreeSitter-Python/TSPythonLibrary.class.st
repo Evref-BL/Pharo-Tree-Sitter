@@ -6,6 +6,13 @@ Class {
 }
 
 { #category : 'accessing - platform' }
+TSPythonLibrary >> macLibraryName [ 
+	"Users should use unix32* or unix64*"
+
+	^ FFIMacLibraryFinder findAnyLibrary: #( 'tree-sitter-python.dylib' )  
+]
+
+{ #category : 'accessing - platform' }
 TSPythonLibrary >> tree_sitter_python [
 
 	^ self ffiCall: 'TSLanguage * tree_sitter_python ()'
