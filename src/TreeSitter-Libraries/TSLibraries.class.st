@@ -86,115 +86,6 @@ TSLibraries >> cloneTreeSitterTypescript [
 				, status asString ]
 ]
 
-{ #category : 'as yet unclassified' }
-TSLibraries >> cmdLinuxTreeSitter [
-
-	self shouldBeImplemented.
-	^ ''
-]
-
-{ #category : 'as yet unclassified' }
-TSLibraries >> cmdLinuxTreeSitterPython [
-
-	self shouldBeImplemented.
-	^ ''
-]
-
-{ #category : 'as yet unclassified' }
-TSLibraries >> cmdLinuxTreeSitterTypescript [
-
-	self shouldBeImplemented.
-	^ ''
-]
-
-{ #category : 'as yet unclassified' }
-TSLibraries >> cmdMacTreeSitter [
-	| path command |
-	
-	path := self dependenciesDirectory , '/tree-sitter/lib'.
-	command := 'cd ' , path.
-	command := command, '&& mkdir -p build'.
-	command := command, '&& cd build'.
-	command := command, '&& cmake -G Ninja .. -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64"'.
-	command := command, '&& ninja'. 
-	
-	^ command
-]
-
-{ #category : 'as yet unclassified' }
-TSLibraries >> cmdMacTreeSitterPython [
-	| path command |
-	
-	path := self dependenciesDirectory , '/tree-sitter-python'.
-	command := 'cd ' , path.
-	command := command, '&& gcc -shared -o tree-sitter-python.dylib src/parser.c src/scanner.c -fPIC -dynamiclib'.
-	
-	^ command
-	
- 
-]
-
-{ #category : 'as yet unclassified' }
-TSLibraries >> cmdMacTreeSitterTypescript [
-	| path srcPath destPath command |
-	
-	path := self dependenciesDirectory , '/tree-sitter-typescript/typescript'.
-	
-	"this is needed to move the tree-sitter folder to common, otherwise the library generation fails"
-	srcPath := self dependenciesDirectory , '/tree-sitter-typescript/typescript/src/tree_sitter'.
-	destPath := self dependenciesDirectory , '/tree-sitter-typescript/common'.
-	command := 'cp -r "', srcPath, '"* "', destPath, '"'.
-	
-	command := command, '&& cd ', path.
-	command := command, '&& gcc -o tree-sitter-typescript.dylib src/parser.c src/scanner.c -fPIC -dynamiclib'.
-	
-	^ command
-	
- 
-]
-
-{ #category : 'as yet unclassified' }
-TSLibraries >> cmdWindowsTreeSitter [
-
-	| path command |
-	path := self dependenciesDirectory , '/tree-sitter/lib'.
-	command := 'cd ' , path.
-	command := command , '&& mkdir -p build'.
-	command := command , '&& cd build'.
-	command := command , '&& cmake -G Ninja ..'.
-	command := command , '&& ninja'.
-
-	^ command
-]
-
-{ #category : 'as yet unclassified' }
-TSLibraries >> cmdWindowsTreeSitterPython [
-
-	| path command |
-	path := self dependenciesDirectory , '/tree-sitter-python'.
-	command := 'cd ' , path.
-	command := command
-	           ,
-	           '&& gcc -shared -o tree-sitter-python.dll src/parser.c src/scanner.c'.
-
-	^ command
-]
-
-{ #category : 'as yet unclassified' }
-TSLibraries >> cmdWindowsTreeSitterTypescript [
-
-	| path command |
-	path := self dependenciesDirectory
-	        , '/tree-sitter-typescript/typescript'.
-
-	command := 'cd ' , path.
-	command := command
-	           ,
-	           '&& gcc -shared -o tree-sitter-typescript.dll src/parser.c src/scanner.c'.
-
-	^ command
-]
-
 { #category : 'copying' }
 TSLibraries >> copyFoldersInTreeSitterTypescript [
 
@@ -224,14 +115,16 @@ TSLibraries >> dependenciesDirectory [
 { #category : 'as yet unclassified' }
 TSLibraries >> generateTreeSitterLibraries [
 
-	| command status |
-
+	| command status cmdLines|
+	
+	cmdLines := TSLibrariesCommandLines new.
+	
 	self isMacOS
-		ifTrue: [ command := self cmdMacTreeSitter ]
+		ifTrue: [ command := cmdLines cmdMacTreeSitter ]
 		ifFalse: [
 			self isWindows
-				ifTrue: [ command := self cmdWindowsTreeSitter ]
-				ifFalse: [ command := self cmdLinuxTreeSitter ] ].
+				ifTrue: [ command := cmdLines cmdWindowsTreeSitter ]
+				ifFalse: [ command := cmdLines cmdLinuxTreeSitter ] ].
 
 	self logInTreanscript: 'Start generating TreeSitter library'.
 
@@ -248,21 +141,22 @@ TSLibraries >> generateTreeSitterLibraries [
 		ifFalse: [
 			self logInTreanscript:
 				'TreeSitter library was not generated successfully' ].
-	
-	^ status.
+
+	^ status
 ]
 
 { #category : 'as yet unclassified' }
 TSLibraries >> generateTreeSitterPythonLibraries [
 
-	| command status |
-
+	| command status cmdLines|
+	
+	cmdLines := TSLibrariesCommandLines new.
 	self isMacOS
-		ifTrue: [ command := self cmdMacTreeSitterPython ]
+		ifTrue: [ command := cmdLines cmdMacTreeSitterPython ]
 		ifFalse: [
 			self isWindows
-				ifTrue: [ command := self cmdWindowsTreeSitterPython ]
-				ifFalse: [ command := self cmdLinuxTreeSitterPython ] ].
+				ifTrue: [ command := cmdLines cmdWindowsTreeSitterPython ]
+				ifFalse: [ command := cmdLines cmdLinuxTreeSitterPython ] ].
 
 	self logInTreanscript: 'Start generating Tree Sitter Python library'.
 
@@ -275,28 +169,30 @@ TSLibraries >> generateTreeSitterPythonLibraries [
 	"Verify success"
 	status = 0
 		ifTrue: [
-		self logInTreanscript: 'Tree Sitter Python library generated successfully' ]
+			self logInTreanscript:
+				'Tree Sitter Python library generated successfully' ]
 		ifFalse: [
 			self logInTreanscript:
 				'Tree Sitter Python library was not generated successfully' ].
-	
-	^ status.
+
+	^ status
 ]
 
 { #category : 'as yet unclassified' }
 TSLibraries >> generateTreeSitterTypescriptLibraries [
 
-	| command status |
+	| command status cmdLines|
 	
+	cmdLines := TSLibrariesCommandLines new.
 	"make sure to copy the tree_sitter folder in common"
 	self copyFoldersInTreeSitterTypescript.
-	
+
 	self isMacOS
-		ifTrue: [ command := self cmdMacTreeSitterTypescript ]
+		ifTrue: [ command := cmdLines cmdMacTreeSitterTypescript ]
 		ifFalse: [
 			self isWindows
-				ifTrue: [ command := self cmdWindowsTreeSitterTypescript ]
-				ifFalse: [ command := self cmdLinuxTreeSitterTypescript ] ].
+				ifTrue: [ command := cmdLines cmdWindowsTreeSitterTypescript ]
+				ifFalse: [ command := cmdLines cmdLinuxTreeSitterTypescript ] ].
 
 	self logInTreanscript:
 		'Start generating Tree Sitter Typescript library'.
