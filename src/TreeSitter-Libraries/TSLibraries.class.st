@@ -31,62 +31,6 @@ TSLibraries >> cloneTreeSitter [
 				'Tree Sitter clone failed with exit code: ' , status asString ]
 ]
 
-{ #category : 'as yet unclassified' }
-TSLibraries >> cloneTreeSitterPython [
-
-	| clonePath cloneCommand status |
-	"Construct clone path"
-	clonePath := self librariesDirectory , '/tree-sitter-python'.
-
-	"Execute clone command"
-	cloneCommand := 'git clone https://github.com/tree-sitter/tree-sitter-python.git '
-	                , clonePath.
-
-	self logInTranscript:
-		'Start cloning Tree-Sitter-python in' , clonePath.
-
-	"Run the command"
-	status := LibC uniqueInstance system: cloneCommand.
-
-	"Verify success"
-	status = 0
-		ifTrue: [
-			self logInTranscript:
-				'Tree Sitter Python successfully cloned to: ' , clonePath ]
-		ifFalse: [
-			self logInTranscript:
-				'Tree Sitter Python clone failed with exit code: '
-				, status asString ]
-]
-
-{ #category : 'as yet unclassified' }
-TSLibraries >> cloneTreeSitterTypescript [
-
-	| clonePath cloneCommand status |
-	"Construct clone path"
-	clonePath := self librariesDirectory , '/tree-sitter-typescript'.
-
-	"Execute clone command"
-	cloneCommand := 'git clone https://github.com/tree-sitter/tree-sitter-typescript.git '
-	                , clonePath.
-
-	self logInTranscript:
-		'Start cloning Tree-Sitter-typescript in' , clonePath.
-
-	"Run the command"
-	status := LibC uniqueInstance system: cloneCommand.
-
-	"Verify success"
-	status = 0
-		ifTrue: [
-			self logInTranscript:
-				'Tree Sitter Typescript successfully cloned to: ' , clonePath ]
-		ifFalse: [
-			self logInTranscript:
-				'Tree Sitter Typescript clone failed with exit code: '
-				, status asString ]
-]
-
 { #category : 'copying' }
 TSLibraries >> copyFoldersInTreeSitterTypescript [
 
@@ -133,74 +77,6 @@ TSLibraries >> generateTreeSitterLibraries [
 		ifFalse: [
 			self logInTranscript:
 				'TreeSitter library was not generated successfully' ].
-
-	^ status
-]
-
-{ #category : 'as yet unclassified' }
-TSLibraries >> generateTreeSitterPythonLibraries [
-
-	| command status cmdLines |
-	cmdLines := TSLibrariesCommandLines new.
-	self isMacOS
-		ifTrue: [ command := cmdLines cmdMacTreeSitterPython ]
-		ifFalse: [
-			self isWindows
-				ifTrue: [ command := cmdLines cmdWindowsTreeSitterPython ]
-				ifFalse: [ command := cmdLines cmdLinuxTreeSitterPython ] ].
-
-	self logInTranscript: 'Start generating Tree Sitter Python library'.
-
-	"Run the command"
-	status := LibC uniqueInstance system: command.
-
-	self logInTranscript:
-		'Tree Sitter Python library generation command is finished'.
-
-	"Verify success"
-	status = 0
-		ifTrue: [
-			self logInTranscript:
-				'Tree Sitter Python library generated successfully' ]
-		ifFalse: [
-			self logInTranscript:
-				'Tree Sitter Python library was not generated successfully' ].
-
-	^ status
-]
-
-{ #category : 'as yet unclassified' }
-TSLibraries >> generateTreeSitterTypescriptLibraries [
-
-	| command status cmdLines |
-	cmdLines := TSLibrariesCommandLines new.
-	"make sure to copy the tree_sitter folder in common"
-	self copyFoldersInTreeSitterTypescript.
-
-	self isMacOS
-		ifTrue: [ command := cmdLines cmdMacTreeSitterTypescript ]
-		ifFalse: [
-			self isWindows
-				ifTrue: [ command := cmdLines cmdWindowsTreeSitterTypescript ]
-				ifFalse: [ command := cmdLines cmdLinuxTreeSitterTypescript ] ].
-
-	self logInTranscript:
-		'Start generating Tree Sitter Typescript library'.
-
-	"Run the command"
-	status := LibC uniqueInstance system: command.
-
-	self logInTranscript:
-		'Tree Sitter Typescript library generation command is finished'.
-
-	"Verify success"
-	status = 0
-		ifTrue: [
-			self logInTranscript:
-				'Tree Sitter Typescript library generated successfully' ]
-		ifFalse: [
-			self logInTranscript:
-				'Tree Sitter Typescript library was not generated successfully' ].
 
 	^ status
 ]
