@@ -31,24 +31,6 @@ TSLibraries >> cloneTreeSitter [
 				'Tree Sitter clone failed with exit code: ' , status asString ]
 ]
 
-{ #category : 'copying' }
-TSLibraries >> copyFoldersInTreeSitterTypescript [
-
-	| source target destination |
-	source := (self originalLibrariesDirectory
-	           , '/tree-sitter-typescript/typescript/src/tree_sitter')
-		          asFileReference.
-
-	target := (self originalLibrariesDirectory
-	           , '/tree-sitter-typescript/common/') asFileReference.
-
-	destination := target / source basename.
-	destination ensureCreateDirectory.
-
-	"Copy the the content of tree_sitter folder in the new destination in common"
-	source copyAllTo: destination.
-]
-
 { #category : 'as yet unclassified' }
 TSLibraries >> generateTreeSitterLibraries [
 
@@ -101,6 +83,17 @@ TSLibraries >> isWindows [
 ]
 
 { #category : 'as yet unclassified' }
+TSLibraries >> libraryName: aName [
+
+	self isWindows
+		ifTrue: [ ^ aName , '.dll' ]
+		ifFalse: [
+			self isMacOS
+				ifTrue: [ ^ aName , '.dylib' ]
+				ifFalse: [ ^ aName , '.so' "to be checked" ] ]
+]
+
+{ #category : 'as yet unclassified' }
 TSLibraries >> logInTranscript: aMessage [
 
 	Transcript
@@ -109,8 +102,33 @@ TSLibraries >> logInTranscript: aMessage [
 ]
 
 { #category : 'as yet unclassified' }
+TSLibraries >> moveLibrary: aLibraryName from: initialLocation [
+
+	| source target |
+	source := (self originalLibrariesDirectory , initialLocation
+	           , aLibraryName) asFileReference.
+	target := self vmLibrariesDirectory / aLibraryName .
+	source copyTo: target
+]
+
+{ #category : 'as yet unclassified' }
 TSLibraries >> originalLibrariesDirectory [
 	"check if this works for any OS"
 
 	^ FileLocator documents fullName , '/tree-sitter-libraries'
+]
+
+{ #category : 'as yet unclassified' }
+TSLibraries >> vmLibrariesDirectory [
+
+	| dir |
+	"Different for each OS"
+	self isWindows
+		ifTrue: [ dir := Smalltalk vm directory ]
+		ifFalse: [
+			self isMacOS
+				ifTrue: [ dir := Smalltalk vm directory, '/Pharo.app/Contents/MacOS/Plugins' ]
+				ifFalse: [ dir := Smalltalk vm directory "not sure yet what it can be here" ] ].
+			
+		^ dir asFileReference 
 ]

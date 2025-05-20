@@ -33,6 +33,24 @@ TSLibrariesTypescript >> cloneTreeSitterTypescript [
 				, status asString ]
 ]
 
+{ #category : 'copying' }
+TSLibrariesTypescript >> copyFoldersInTreeSitterTypescript [
+
+	| source target destination |
+	source := (self originalLibrariesDirectory
+	           , '/tree-sitter-typescript/typescript/src/tree_sitter')
+		          asFileReference.
+
+	target := (self originalLibrariesDirectory
+	           , '/tree-sitter-typescript/common/') asFileReference.
+
+	destination := target / source basename.
+	destination ensureCreateDirectory.
+
+	"Copy the the content of tree_sitter folder in the new destination in common"
+	source copyAllTo: destination.
+]
+
 { #category : 'as yet unclassified' }
 TSLibrariesTypescript >> generateTreeSitterTypescriptLibraries [
 
@@ -67,4 +85,25 @@ TSLibrariesTypescript >> generateTreeSitterTypescriptLibraries [
 				'Tree Sitter Typescript library was not generated successfully' ].
 
 	^ status
+]
+
+{ #category : 'as yet unclassified' }
+TSLibrariesTypescript >> moveTypescriptLibraryToPharoVM [
+
+	self
+		moveLibrary: self typescriptLibraryName
+		from: '/tree-sitter-typescript/typescript/'
+]
+
+{ #category : 'as yet unclassified' }
+TSLibrariesTypescript >> typescriptLibraryExists [
+
+	^ (self vmLibrariesDirectory / self typescriptLibraryName )
+		  asFileReference exists
+]
+
+{ #category : 'as yet unclassified' }
+TSLibrariesTypescript >> typescriptLibraryName [
+
+	^ self libraryName: 'tree-sitter-typescript'
 ]

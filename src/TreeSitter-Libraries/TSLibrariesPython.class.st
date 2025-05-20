@@ -66,7 +66,23 @@ TSLibrariesPython >> generateTreeSitterPythonLibraries [
 ]
 
 { #category : 'as yet unclassified' }
-TSLibrariesPython >> movePythonLibrariesToPharoVM [
+TSLibrariesPython >> movePythonLibraryToPharoVM [
 
-self shouldBeImplemented 
+	self moveLibrary: self pythonLibraryName from: '/tree-sitter-python/'
+
+]
+
+{ #category : 'as yet unclassified' }
+TSLibrariesPython >> pythonLibraryExists [
+
+	^ (self vmLibrariesDirectory / self pythonLibraryName)
+		  asFileReference exists
+]
+
+{ #category : 'as yet unclassified' }
+TSLibrariesPython >> pythonLibraryName [
+
+	^ self libraryName: 'tree-sitter-python'.
+
+	 
 ]
