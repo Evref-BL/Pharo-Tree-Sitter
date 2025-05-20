@@ -63,6 +63,19 @@ TSLibraries >> generateTreeSitterLibraries [
 	^ status
 ]
 
+{ #category : 'as yet unclassified' }
+TSLibraries >> getTreeSitterPythonLibrary [
+	 
+	self libraryExists ifFalse: [ 
+		self cloneTreeSitter; "ok perhaps I have to check if the libraries exist in the original place. This can be tricky because we have different vm versions which  reauire having the libraries inside, so we need to copy to the right folder version."
+			generateTreeSitterLibraries; 
+			moveLibraryToPharoVM.
+		].
+	
+	
+	
+]
+
 { #category : 'testing' }
 TSLibraries >> isLinux [
 	"Smalltalk os isLinux"
