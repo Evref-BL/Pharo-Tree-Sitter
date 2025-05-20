@@ -23,7 +23,7 @@ Metacello new
 ```
 
 Important: 
-If you find issues in generating the libraries, you can find them [thz libraries for Windows and MacOS](https://doi.org/10.5281/zenodo.15148695). This is a temporary solution until creating another one to dowload libraries automatically once this project is loaded locally.
+If you find issues in generating the libraries, you can find them [here for Windows and MacOS](https://doi.org/10.5281/zenodo.15423234). This is a temporary solution until creating another one to dowload libraries automatically once this project is loaded locally.
 Pay attention !! Make sure that Pharo is closed when you move the libraries.
 
 ### MacOS
