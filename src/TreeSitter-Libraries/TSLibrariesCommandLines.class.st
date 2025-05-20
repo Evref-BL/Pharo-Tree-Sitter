@@ -30,7 +30,7 @@ TSLibrariesCommandLines >> cmdLinuxTreeSitterTypescript [
 TSLibrariesCommandLines >> cmdMacTreeSitter [
 	| path command |
 	
-	path := self librariesDirectory , '/tree-sitter/lib'.
+	path := TSLibraries new librariesDirectory , '/tree-sitter/lib'.
 	command := 'cd ' , path.
 	command := command, '&& mkdir -p build'.
 	command := command, '&& cd build'.
@@ -44,7 +44,7 @@ TSLibrariesCommandLines >> cmdMacTreeSitter [
 TSLibrariesCommandLines >> cmdMacTreeSitterPython [
 	| path command |
 	
-	path := self librariesDirectory , '/tree-sitter-python'.
+	path := TSLibraries new librariesDirectory , '/tree-sitter-python'.
 	command := 'cd ' , path.
 	command := command, '&& gcc -shared -o tree-sitter-python.dylib src/parser.c src/scanner.c -fPIC -dynamiclib'.
 	
@@ -57,11 +57,11 @@ TSLibrariesCommandLines >> cmdMacTreeSitterPython [
 TSLibrariesCommandLines >> cmdMacTreeSitterTypescript [
 	| path srcPath destPath command |
 	
-	path := self librariesDirectory , '/tree-sitter-typescript/typescript'.
+	path := TSLibraries new librariesDirectory , '/tree-sitter-typescript/typescript'.
 	
 	"this is needed to move the tree-sitter folder to common, otherwise the library generation fails"
-	srcPath := self librariesDirectory , '/tree-sitter-typescript/typescript/src/tree_sitter'.
-	destPath := self librariesDirectory , '/tree-sitter-typescript/common'.
+	srcPath := TSLibraries new librariesDirectory , '/tree-sitter-typescript/typescript/src/tree_sitter'.
+	destPath := TSLibraries new librariesDirectory , '/tree-sitter-typescript/common'.
 	command := 'cp -r "', srcPath, '"* "', destPath, '"'.
 	
 	command := command, '&& cd ', path.
@@ -76,7 +76,7 @@ TSLibrariesCommandLines >> cmdMacTreeSitterTypescript [
 TSLibrariesCommandLines >> cmdWindowsTreeSitter [
 
 	| path command |
-	path := self librariesDirectory , '/tree-sitter/lib'.
+	path := TSLibraries new librariesDirectory , '/tree-sitter/lib'.
 	command := 'cd ' , path.
 	command := command , '&& mkdir -p build'.
 	command := command , '&& cd build'.
@@ -90,7 +90,7 @@ TSLibrariesCommandLines >> cmdWindowsTreeSitter [
 TSLibrariesCommandLines >> cmdWindowsTreeSitterPython [
 
 	| path command |
-	path := self librariesDirectory , '/tree-sitter-python'.
+	path := TSLibraries new librariesDirectory , '/tree-sitter-python'.
 	command := 'cd ' , path.
 	command := command
 	           ,
@@ -103,7 +103,7 @@ TSLibrariesCommandLines >> cmdWindowsTreeSitterPython [
 TSLibrariesCommandLines >> cmdWindowsTreeSitterTypescript [
 
 	| path command |
-	path := self librariesDirectory
+	path := TSLibraries new librariesDirectory
 	        , '/tree-sitter-typescript/typescript'.
 
 	command := 'cd ' , path.
