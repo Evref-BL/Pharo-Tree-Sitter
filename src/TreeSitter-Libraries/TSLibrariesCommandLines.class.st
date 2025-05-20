@@ -21,8 +21,9 @@ TSLibrariesCommandLines >> cmdMacTreeSitter [
 	command := command, '&& mkdir -p build'.
 	command := command, '&& cd build'.
 	command := command, '&& cmake -G Ninja .. -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64"'.
-	command := command, '&& ninja'. 
-	
+	command := command, '&& ninja'.
+	command := command, '&& mv libtree-sitter.*.dylib libtree-sitter.dylib'.
+	 
 	^ command
 ]
 

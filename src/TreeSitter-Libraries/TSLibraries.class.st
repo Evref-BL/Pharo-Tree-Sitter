@@ -83,6 +83,19 @@ TSLibraries >> isWindows [
 ]
 
 { #category : 'as yet unclassified' }
+TSLibraries >> libraryExists [
+
+	^ (self vmLibrariesDirectory / self libraryName)
+		  asFileReference exists
+]
+
+{ #category : 'accessing' }
+TSLibraries >> libraryName [
+
+	^ self libraryName: 'libtree-sitter'.
+]
+
+{ #category : 'as yet unclassified' }
 TSLibraries >> libraryName: aName [
 
 	self isWindows
@@ -109,6 +122,12 @@ TSLibraries >> moveLibrary: aLibraryName from: initialLocation [
 	           , aLibraryName) asFileReference.
 	target := self vmLibrariesDirectory / aLibraryName .
 	source copyTo: target
+]
+
+{ #category : 'as yet unclassified' }
+TSLibraries >> moveLibraryToPharoVM [
+
+	self moveLibrary: self libraryName from: '/tree-sitter/lib/build/'
 ]
 
 { #category : 'as yet unclassified' }
