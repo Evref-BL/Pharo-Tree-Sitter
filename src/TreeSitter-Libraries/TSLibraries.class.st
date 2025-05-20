@@ -171,10 +171,11 @@ TSLibraries >> cmdWindowsTreeSitter [
 TSLibraries >> cmdWindowsTreeSitterPython [
 
 	| path command |
-	
-	path := self dependenciesDirectory , '/tree-sitter/lib'.
+	path := self dependenciesDirectory , '/tree-sitter-python'.
 	command := 'cd ' , path.
-	command := command , '&& gcc -shared -o tree-sitter-python.dll src/parser.c src/scanner.c'.
+	command := command
+	           ,
+	           '&& gcc -shared -o tree-sitter-python.dll src/parser.c src/scanner.c'.
 
 	^ command
 ]
@@ -182,20 +183,34 @@ TSLibraries >> cmdWindowsTreeSitterPython [
 { #category : 'as yet unclassified' }
 TSLibraries >> cmdWindowsTreeSitterTypescript [
 
-	| path srcPath destPath command |
-	
-	path := self dependenciesDirectory , '/tree-sitter-typescript/typescript'.
-	
-	"this is needed to move the tree-sitter folder to common, otherwise the library generation fails"
-	srcPath := self dependenciesDirectory , '/tree-sitter-typescript/typescript/src/tree_sitter'.
-	destPath := self dependenciesDirectory , '/tree-sitter-typescript/common'.
-	command := 'cp -r "', srcPath, '"* "', destPath, '"'.
-	
-	command := command, '&& cd ', path.
-	command := command, '&& gcc -shared -o tree-sitter-typescript.dll src/parser.c src/scanner.c'.
-	
+	| path command |
+	path := self dependenciesDirectory
+	        , '/tree-sitter-typescript/typescript'.
+
+	command := 'cd ' , path.
+	command := command
+	           ,
+	           '&& gcc -shared -o tree-sitter-typescript.dll src/parser.c src/scanner.c'.
+
 	^ command
-	
+]
+
+{ #category : 'copying' }
+TSLibraries >> copyFoldersInTreeSitterTypescript [
+
+	| source target destination |
+	source := (self dependenciesDirectory
+	           , '/tree-sitter-typescript/typescript/src/tree_sitter')
+		          asFileReference.
+
+	target := (self dependenciesDirectory
+	           , '/tree-sitter-typescript/common/') asFileReference.
+
+	destination := target / source basename.
+	destination ensureCreateDirectory.
+
+	"Copy the the content of tree_sitter folder in the new destination in common"
+	source copyAllTo: destination.
 ]
 
 { #category : 'as yet unclassified' }
@@ -272,7 +287,10 @@ TSLibraries >> generateTreeSitterPythonLibraries [
 TSLibraries >> generateTreeSitterTypescriptLibraries [
 
 	| command status |
-
+	
+	"make sure to copy the tree_sitter folder in common"
+	self copyFoldersInTreeSitterTypescript.
+	
 	self isMacOS
 		ifTrue: [ command := self cmdMacTreeSitterTypescript ]
 		ifFalse: [
@@ -280,7 +298,8 @@ TSLibraries >> generateTreeSitterTypescriptLibraries [
 				ifTrue: [ command := self cmdWindowsTreeSitterTypescript ]
 				ifFalse: [ command := self cmdLinuxTreeSitterTypescript ] ].
 
-	self logInTreanscript: 'Start generating Tree Sitter Typescript library'.
+	self logInTreanscript:
+		'Start generating Tree Sitter Typescript library'.
 
 	"Run the command"
 	status := LibC uniqueInstance system: command.
@@ -291,12 +310,13 @@ TSLibraries >> generateTreeSitterTypescriptLibraries [
 	"Verify success"
 	status = 0
 		ifTrue: [
-		self logInTreanscript: 'Tree Sitter Typescript library generated successfully' ]
+			self logInTreanscript:
+				'Tree Sitter Typescript library generated successfully' ]
 		ifFalse: [
 			self logInTreanscript:
 				'Tree Sitter Typescript library was not generated successfully' ].
-	
-	^ status.
+
+	^ status
 ]
 
 { #category : 'testing' }
