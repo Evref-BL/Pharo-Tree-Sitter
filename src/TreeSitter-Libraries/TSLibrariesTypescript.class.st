@@ -10,7 +10,7 @@ TSLibrariesTypescript >> cloneTreeSitterTypescript [
 
 	| clonePath cloneCommand status |
 	"Construct clone path"
-	clonePath := self librariesDirectory , '/tree-sitter-typescript'.
+	clonePath := self originalLibrariesDirectory , '/tree-sitter-typescript'.
 
 	"Execute clone command"
 	cloneCommand := 'git clone https://github.com/tree-sitter/tree-sitter-typescript.git '

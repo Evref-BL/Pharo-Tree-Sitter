@@ -16,7 +16,7 @@ TSLibrariesCommandLinesPython >> cmdLinuxTreeSitterPython [
 TSLibrariesCommandLinesPython >> cmdMacTreeSitterPython [
 	| path command |
 	
-	path := TSLibraries new librariesDirectory , '/tree-sitter-python'.
+	path := TSLibraries new originalLibrariesDirectory , '/tree-sitter-python'.
 	command := 'cd ' , path.
 	command := command, '&& gcc -shared -o tree-sitter-python.dylib src/parser.c src/scanner.c -fPIC -dynamiclib'.
 	
@@ -29,7 +29,7 @@ TSLibrariesCommandLinesPython >> cmdMacTreeSitterPython [
 TSLibrariesCommandLinesPython >> cmdWindowsTreeSitterPython [
 
 	| path command |
-	path := TSLibraries new librariesDirectory , '/tree-sitter-python'.
+	path := TSLibraries new originalLibrariesDirectory , '/tree-sitter-python'.
 	command := 'cd ' , path.
 	command := command
 	           ,

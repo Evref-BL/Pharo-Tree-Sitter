@@ -10,7 +10,7 @@ TSLibraries >> cloneTreeSitter [
 
 	| clonePath cloneCommand status |
 	"Construct clone path"
-	clonePath := self librariesDirectory , '/tree-sitter'.
+	clonePath := self originalLibrariesDirectory , '/tree-sitter'.
 
 	"Execute clone command"
 	cloneCommand := 'git clone https://github.com/tree-sitter/tree-sitter.git '
@@ -35,11 +35,11 @@ TSLibraries >> cloneTreeSitter [
 TSLibraries >> copyFoldersInTreeSitterTypescript [
 
 	| source target destination |
-	source := (self librariesDirectory
+	source := (self originalLibrariesDirectory
 	           , '/tree-sitter-typescript/typescript/src/tree_sitter')
 		          asFileReference.
 
-	target := (self librariesDirectory
+	target := (self originalLibrariesDirectory
 	           , '/tree-sitter-typescript/common/') asFileReference.
 
 	destination := target / source basename.
@@ -101,16 +101,16 @@ TSLibraries >> isWindows [
 ]
 
 { #category : 'as yet unclassified' }
-TSLibraries >> librariesDirectory [
-	"check if this works for any OS"
-
-	^ FileLocator documents fullName , '/tree-sitter-libraries'
-]
-
-{ #category : 'as yet unclassified' }
 TSLibraries >> logInTranscript: aMessage [
 
 	Transcript
 		show: aMessage;
 		cr
+]
+
+{ #category : 'as yet unclassified' }
+TSLibraries >> originalLibrariesDirectory [
+	"check if this works for any OS"
+
+	^ FileLocator documents fullName , '/tree-sitter-libraries'
 ]

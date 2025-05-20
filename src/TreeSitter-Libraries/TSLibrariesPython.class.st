@@ -10,7 +10,7 @@ TSLibrariesPython >> cloneTreeSitterPython [
 
 	| clonePath cloneCommand status |
 	"Construct clone path"
-	clonePath := self librariesDirectory , '/tree-sitter-python'.
+	clonePath := self originalLibrariesDirectory , '/tree-sitter-python'.
 
 	"Execute clone command"
 	cloneCommand := 'git clone https://github.com/tree-sitter/tree-sitter-python.git '
@@ -63,4 +63,10 @@ TSLibrariesPython >> generateTreeSitterPythonLibraries [
 				'Tree Sitter Python library was not generated successfully' ].
 
 	^ status
+]
+
+{ #category : 'as yet unclassified' }
+TSLibrariesPython >> movePythonLibrariesToPharoVM [
+
+self shouldBeImplemented 
 ]

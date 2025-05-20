@@ -16,11 +16,11 @@ TSLibrariesCommandLinesTypescript >> cmdLinuxTreeSitterTypescript [
 TSLibrariesCommandLinesTypescript >> cmdMacTreeSitterTypescript [
 	| path srcPath destPath command |
 	
-	path := TSLibraries new librariesDirectory , '/tree-sitter-typescript/typescript'.
+	path := TSLibraries new originalLibrariesDirectory , '/tree-sitter-typescript/typescript'.
 	
 	"this is needed to move the tree-sitter folder to common, otherwise the library generation fails"
-	srcPath := TSLibraries new librariesDirectory , '/tree-sitter-typescript/typescript/src/tree_sitter'.
-	destPath := TSLibraries new librariesDirectory , '/tree-sitter-typescript/common'.
+	srcPath := TSLibraries new originalLibrariesDirectory , '/tree-sitter-typescript/typescript/src/tree_sitter'.
+	destPath := TSLibraries new originalLibrariesDirectory , '/tree-sitter-typescript/common'.
 	command := 'cp -r "', srcPath, '"* "', destPath, '"'.
 	
 	command := command, '&& cd ', path.
@@ -35,7 +35,7 @@ TSLibrariesCommandLinesTypescript >> cmdMacTreeSitterTypescript [
 TSLibrariesCommandLinesTypescript >> cmdWindowsTreeSitterTypescript [
 
 	| path command |
-	path := TSLibraries new librariesDirectory
+	path := TSLibraries new originalLibrariesDirectory
 	        , '/tree-sitter-typescript/typescript'.
 
 	command := 'cd ' , path.

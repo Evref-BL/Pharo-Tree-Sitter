@@ -16,7 +16,7 @@ TSLibrariesCommandLines >> cmdLinuxTreeSitter [
 TSLibrariesCommandLines >> cmdMacTreeSitter [
 	| path command |
 	
-	path := TSLibraries new librariesDirectory , '/tree-sitter/lib'.
+	path := TSLibraries new originalLibrariesDirectory , '/tree-sitter/lib'.
 	command := 'cd ' , path.
 	command := command, '&& mkdir -p build'.
 	command := command, '&& cd build'.
@@ -30,7 +30,7 @@ TSLibrariesCommandLines >> cmdMacTreeSitter [
 TSLibrariesCommandLines >> cmdWindowsTreeSitter [
 
 	| path command |
-	path := TSLibraries new librariesDirectory , '/tree-sitter/lib'.
+	path := TSLibraries new originalLibrariesDirectory , '/tree-sitter/lib'.
 	command := 'cd ' , path.
 	command := command , '&& mkdir -p build'.
 	command := command , '&& cd build'.
