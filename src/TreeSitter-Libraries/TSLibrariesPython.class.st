@@ -34,6 +34,18 @@ TSLibrariesPython >> cloneTreeSitterPython [
 ]
 
 { #category : 'as yet unclassified' }
+TSLibrariesPython >> ensurePythonLibraryExists [
+	 
+	self pythonLibraryExists ifFalse: [ 
+		self cloneTreeSitterPython; "ok perhaps I have to check if the libraries exist in the original place. This can be tricky because we have different vm versions which  reauire having the libraries inside, so we need to copy to the right folder version."
+		"ok perhaps: 1-  ensure TreeSitterPython project exists; if no clone and generate, if yes pull latest version, then generate libraries again; then copy them to library"
+		
+			generateTreeSitterPythonLibraries; 
+			movePythonLibraryToPharoVM.
+		].
+]
+
+{ #category : 'as yet unclassified' }
 TSLibrariesPython >> generateTreeSitterPythonLibraries [
 
 	| command status cmdLines |
@@ -63,16 +75,6 @@ TSLibrariesPython >> generateTreeSitterPythonLibraries [
 				'Tree Sitter Python library was not generated successfully' ].
 
 	^ status
-]
-
-{ #category : 'as yet unclassified' }
-TSLibrariesPython >> getTreeSitterPythonLibrary [
-	 
-	self pythonLibraryExists ifFalse: [ 
-		self cloneTreeSitterPython; "ok perhaps I have to check if the libraries exist in the original place. This can be tricky because we have different vm versions which  reauire having the libraries inside, so we need to copy to the right folder version."
-			generateTreeSitterPythonLibraries; 
-			movePythonLibraryToPharoVM.
-		].
 ]
 
 { #category : 'as yet unclassified' }

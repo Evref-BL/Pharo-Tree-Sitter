@@ -25,7 +25,7 @@ Class {
 
 { #category : 'instance creation' }
 TSParser class >> new [
-
+	"TSLibraries new ensureTreeSitterLibraryExists."
 	^ TSLibrary uniqueInstance ts_parser_new
 ]
 

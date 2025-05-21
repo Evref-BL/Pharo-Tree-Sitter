@@ -52,6 +52,16 @@ TSLibrariesTypescript >> copyFoldersInTreeSitterTypescript [
 ]
 
 { #category : 'as yet unclassified' }
+TSLibrariesTypescript >> ensureTypescriptLibraryExists [
+	 
+	self typescriptLibraryExists ifFalse: [ 
+		self cloneTreeSitterTypescript; "ok perhaps I have to check if the libraries exist in the original place. This can be tricky because we have different vm versions which  reauire having the libraries inside, so we need to copy to the right folder version."
+			generateTreeSitterTypescriptLibraries ; 
+			moveTypescriptLibraryToPharoVM .
+		].
+]
+
+{ #category : 'as yet unclassified' }
 TSLibrariesTypescript >> generateTreeSitterTypescriptLibraries [
 
 	| command status cmdLines |
@@ -85,16 +95,6 @@ TSLibrariesTypescript >> generateTreeSitterTypescriptLibraries [
 				'Tree Sitter Typescript library was not generated successfully' ].
 
 	^ status
-]
-
-{ #category : 'as yet unclassified' }
-TSLibrariesTypescript >> getTreeSitterTypescriptLibrary [
-	 
-	self typescriptLibraryExists ifFalse: [ 
-		self cloneTreeSitterTypescript; "ok perhaps I have to check if the libraries exist in the original place. This can be tricky because we have different vm versions which  reauire having the libraries inside, so we need to copy to the right folder version."
-			generateTreeSitterTypescriptLibraries ; 
-			moveTypescriptLibraryToPharoVM .
-		].
 ]
 
 { #category : 'as yet unclassified' }
