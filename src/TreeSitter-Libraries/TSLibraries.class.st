@@ -35,7 +35,7 @@ TSLibraries >> cloneTreeSitter [
 TSLibraries >> ensureTreeSitterLibraryExists [
 	 
 	self libraryExists ifFalse: [ 
-		self cloneTreeSitter; "ok perhaps I have to check if the libraries exist in the original place. This can be tricky because we have different vm versions which  reauire having the libraries inside, so we need to copy to the right folder version."
+		self cloneTreeSitter; 
 			generateTreeSitterLibraries; 
 			moveLibraryToPharoVM.
 		].
