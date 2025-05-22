@@ -116,7 +116,7 @@ TSLibraries >> libraryName: aName [
 		ifFalse: [
 			self isMacOS
 				ifTrue: [ ^ aName , '.dylib' ]
-				ifFalse: [ ^ aName , '.so' "to be checked" ] ]
+				ifFalse: [ ^ aName , '.so' ] ]
 ]
 
 { #category : 'as yet unclassified' }
@@ -159,8 +159,11 @@ TSLibraries >> vmLibrariesDirectory [
 		ifTrue: [ dir := Smalltalk vm directory ]
 		ifFalse: [
 			self isMacOS
-				ifTrue: [ dir := Smalltalk vm directory, '/Pharo.app/Contents/MacOS/Plugins' ]
-				ifFalse: [ dir := Smalltalk vm directory "not sure yet what it can be here" ] ].
-			
-		^ dir asFileReference 
+				ifTrue: [
+				dir := Smalltalk vm directory
+				       , '/Pharo.app/Contents/MacOS/Plugins' ]
+				ifFalse: [
+				dir := Smalltalk vm directory ] ].
+
+	^ dir asFileReference
 ]

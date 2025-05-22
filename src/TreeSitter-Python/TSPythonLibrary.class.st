@@ -22,11 +22,12 @@ TSPythonLibrary >> tree_sitter_python [
 TSPythonLibrary >> unix64LibraryName [
 	"Users should use unix32* or unix64*"
 
-	^ FFIUnix64LibraryFinder findAnyLibrary: #( 'libtree-sitter-python.so' )
+	^ FFIUnix64LibraryFinder findAnyLibrary:
+		  #( 'tree-sitter-python.so' )
 ]
 
 { #category : 'accessing - platform' }
 TSPythonLibrary >> win32LibraryName [
 
-	^ FFIWindowsLibraryFinder findAnyLibrary: #('python.dll')
+	^ FFIWindowsLibraryFinder findAnyLibrary: #( 'tree-sitter-python.dll' )
 ]

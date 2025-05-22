@@ -8,8 +8,12 @@ Class {
 { #category : 'as yet unclassified' }
 TSLibrariesCommandLinesPython >> cmdLinuxTreeSitterPython [
 
-	self shouldBeImplemented.
-	^ ''
+	| path command |
+	path := TSLibraries new originalLibrariesDirectory , '/tree-sitter-python'.
+	command := 'cd ' , path.
+	command := command , ' && gcc -fPIC -shared -o tree-sitter-python.so src/parser.c src/scanner.c'.
+
+	^ command
 ]
 
 { #category : 'as yet unclassified' }

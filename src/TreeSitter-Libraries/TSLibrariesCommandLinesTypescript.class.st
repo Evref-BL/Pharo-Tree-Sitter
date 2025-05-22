@@ -8,8 +8,17 @@ Class {
 { #category : 'as yet unclassified' }
 TSLibrariesCommandLinesTypescript >> cmdLinuxTreeSitterTypescript [
 
-	self shouldBeImplemented.
-	^ ''
+	| path command |
+	path := TSLibraries new originalLibrariesDirectory
+	        , '/tree-sitter-typescript/typescript'.
+
+	command := 'cd ' , path.
+	command := command
+	           ,
+	           ' && gcc -fPIC -shared -o tree-sitter-typescript.so src/parser.c src/scanner.c'.
+
+	^ command
+
 ]
 
 { #category : 'as yet unclassified' }

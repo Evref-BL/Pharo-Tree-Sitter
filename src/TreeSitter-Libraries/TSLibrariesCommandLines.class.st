@@ -8,8 +8,15 @@ Class {
 { #category : 'as yet unclassified' }
 TSLibrariesCommandLines >> cmdLinuxTreeSitter [
 
-	self shouldBeImplemented.
-	^ ''
+	| path command |
+	path := TSLibraries new originalLibrariesDirectory , '/tree-sitter/lib'.
+	command := 'cd ' , path.
+	command := command , '&& mkdir -p build'.
+	command := command , '&& cd build'.
+	command := command , '&& cmake -G Ninja ..'.
+	command := command , '&& ninja'.
+
+	^ command
 ]
 
 { #category : 'as yet unclassified' }
