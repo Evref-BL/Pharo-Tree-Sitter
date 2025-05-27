@@ -33,15 +33,14 @@ TSLibraries >> cloneTreeSitter [
 
 { #category : 'as yet unclassified' }
 TSLibraries >> ensureTreeSitterLibraryExists [
-	 
-	self libraryExists ifFalse: [ 
-		self cloneTreeSitter; 
-			generateTreeSitterLibraries; 
-			moveLibraryToPharoVM.
-		].
-	
-	
-	
+
+	self libraryExists ifFalse: [
+		self libraryExistsInDocuments ifFalse: [
+			self
+				cloneTreeSitter;
+				generateTreeSitterLibraries ].
+
+		self moveLibraryToPharoVM ].
 ]
 
 { #category : 'as yet unclassified' }
@@ -99,6 +98,13 @@ TSLibraries >> isWindows [
 TSLibraries >> libraryExists [
 
 	^ (self vmLibrariesDirectory / self libraryName)
+		  asFileReference exists
+]
+
+{ #category : 'as yet unclassified' }
+TSLibraries >> libraryExistsInDocuments [
+
+	^ (self originalLibrariesDirectory asFileReference / self libraryName)
 		  asFileReference exists
 ]
 

@@ -52,13 +52,24 @@ TSLibrariesTypescript >> copyFoldersInTreeSitterTypescript [
 ]
 
 { #category : 'as yet unclassified' }
+TSLibrariesTypescript >> deleteTreeSitterFolderInCommon [ 
+
+	(TSLibrariesTypescript new originalLibrariesDirectory
+	           , '/tree-sitter-typescript/common/tree_sitter') asFileReference deleteAll.
+]
+
+{ #category : 'as yet unclassified' }
 TSLibrariesTypescript >> ensureTypescriptLibraryExists [
-	 
-	self typescriptLibraryExists ifFalse: [ 
-		self cloneTreeSitterTypescript; 
-			generateTreeSitterTypescriptLibraries ; 
-			moveTypescriptLibraryToPharoVM .
-		].
+
+	self typescriptLibraryExists ifFalse: [
+		self typescriptLibraryExistsInDocuments ifFalse: [
+			self
+				cloneTreeSitterTypescript;
+				generateTreeSitterTypescriptLibraries.
+			 ].
+		
+		
+		self moveTypescriptLibraryToPharoVM ]
 ]
 
 { #category : 'as yet unclassified' }
@@ -85,6 +96,8 @@ TSLibrariesTypescript >> generateTreeSitterTypescriptLibraries [
 	self logInTranscript:
 		'Tree Sitter Typescript library generation command is finished'.
 
+	self deleteTreeSitterFolderInCommon.
+
 	"Verify success"
 	status = 0
 		ifTrue: [
@@ -109,6 +122,13 @@ TSLibrariesTypescript >> moveTypescriptLibraryToPharoVM [
 TSLibrariesTypescript >> typescriptLibraryExists [
 
 	^ (self vmLibrariesDirectory / self typescriptLibraryName )
+		  asFileReference exists
+]
+
+{ #category : 'as yet unclassified' }
+TSLibrariesTypescript >> typescriptLibraryExistsInDocuments [
+
+	^ (self originalLibrariesDirectory asFileReference / self typescriptLibraryName)
 		  asFileReference exists
 ]
 
