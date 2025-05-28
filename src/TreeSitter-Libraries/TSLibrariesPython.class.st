@@ -70,7 +70,7 @@ TSLibrariesPython >> generateTreeSitterPythonLibraries [
 			self logInTranscript:
 				'Tree Sitter Python library generated successfully' ]
 		ifFalse: [
-			self logInTranscript:
+			Error signal:
 				'Tree Sitter Python library was not generated successfully' ].
 
 	^ status

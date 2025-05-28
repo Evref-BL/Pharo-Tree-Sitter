@@ -104,7 +104,7 @@ TSLibrariesTypescript >> generateTreeSitterTypescriptLibraries [
 			self logInTranscript:
 				'Tree Sitter Typescript library generated successfully' ]
 		ifFalse: [
-			self logInTranscript:
+			Error signal:
 				'Tree Sitter Typescript library was not generated successfully' ].
 
 	^ status

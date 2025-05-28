@@ -69,7 +69,7 @@ TSLibraries >> generateTreeSitterLibraries [
 		ifTrue: [
 		self logInTranscript: 'TreeSitter library generated successfully' ]
 		ifFalse: [
-			self logInTranscript:
+			Error signal:
 				'TreeSitter library was not generated successfully' ].
 
 	^ status
