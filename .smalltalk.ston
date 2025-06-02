@@ -13,6 +13,5 @@ SmalltalkCISpec {
       #packages : [ 'TreeSitter.*' ],
       #format : #lcov
     }
-  },
-#customScripts: 'TestCase timeLimit: 20 seconds.'
+  }
 }
