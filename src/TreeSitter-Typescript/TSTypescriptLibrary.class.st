@@ -18,6 +18,13 @@ TSTypescriptLibrary >> tree_sitter_typescript [
 	^ self ffiCall: 'TSLanguage * tree_sitter_typescript ()'
 ]
 
+{ #category : 'accessing' }
+TSTypescriptLibrary >> uniqueInstance [
+
+	TSLibrariesTypescript new ensureTypescriptLibraryExists .
+	^ self
+]
+
 { #category : 'accessing - platform' }
 TSTypescriptLibrary >> unix64LibraryName [
  

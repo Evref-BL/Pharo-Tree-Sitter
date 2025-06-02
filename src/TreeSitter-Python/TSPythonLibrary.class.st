@@ -18,6 +18,13 @@ TSPythonLibrary >> tree_sitter_python [
 	^ self ffiCall: 'TSLanguage * tree_sitter_python ()'
 ]
 
+{ #category : 'accessing' }
+TSPythonLibrary >> uniqueInstance [
+
+	TSLibrariesPython new ensurePythonLibraryExists.
+	^ self
+]
+
 { #category : 'accessing - platform' }
 TSPythonLibrary >> unix64LibraryName [
 	"Users should use unix32* or unix64*"
