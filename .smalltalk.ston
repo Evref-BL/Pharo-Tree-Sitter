@@ -13,5 +13,6 @@ SmalltalkCISpec {
       #packages : [ 'TreeSitter.*' ],
       #format : #lcov
     }
-  }
+  },
+  #setUpScript : 'TestCase defaultTimeout: 5.'
 }
