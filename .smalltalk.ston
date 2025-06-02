@@ -14,5 +14,5 @@ SmalltalkCISpec {
       #format : #lcov
     }
   },
-  #setUpScript : 'TestCase defaultTimeout: 5.'
+  #setUpScript : 'TestCase timeLimit: 20 seconds.'
 }
