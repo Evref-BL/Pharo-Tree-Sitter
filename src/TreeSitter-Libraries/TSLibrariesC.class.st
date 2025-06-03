@@ -67,6 +67,38 @@ TSLibrariesC >> ensureCLibraryExists [
 ]
 
 { #category : 'as yet unclassified' }
+TSLibrariesC >> generateTreeSitterCLibraries [
+
+	| command status cmdLines |
+	cmdLines := TSLibrariesCommandLinesC new.
+	self isMacOS
+		ifTrue: [ command := cmdLines cmdMacTreeSitterC ]
+		ifFalse: [
+			self isWindows
+				ifTrue: [ command := cmdLines cmdWindowsTreeSitterC ]
+				ifFalse: [ command := cmdLines cmdLinuxTreeSitterC ] ].
+
+	self logInTranscript: 'Start generating Tree Sitter C library'.
+
+	"Run the command"
+	status := LibC uniqueInstance system: command.
+
+	self logInTranscript:
+		'Tree Sitter C library generation command is finished'.
+
+	"Verify success"
+	status = 0
+		ifTrue: [
+			self logInTranscript:
+				'Tree Sitter C library generated successfully' ]
+		ifFalse: [
+			Error signal:
+				'Tree Sitter C library was not generated successfully' ].
+
+	^ status
+]
+
+{ #category : 'as yet unclassified' }
 TSLibrariesC >> moveCLibraryToPharoVM [
 
 	self moveLibrary: self cLibraryName from: '/tree-sitter-c/'
