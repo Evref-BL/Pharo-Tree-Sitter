@@ -6,7 +6,7 @@ Class {
 }
 
 { #category : 'as yet unclassified' }
-TSLibrariesCommandLinesC >> cmdLinuxTreeSitterPython [
+TSLibrariesCommandLinesC >> cmdLinuxTreeSitterC [
 
 	| path command |
 	path := TSLibraries new originalLibrariesDirectory , '/tree-sitter-c'.
