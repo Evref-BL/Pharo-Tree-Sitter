@@ -8,36 +8,27 @@ Class {
 { #category : 'as yet unclassified' }
 TSLibrariesCommandLinesTypescript >> cmdLinuxTreeSitterTypescript [
 
-	| path command |
-	path := TSLibraries new originalLibrariesDirectory
-	        , '/tree-sitter-typescript/typescript'.
-
-	command := 'cd ' , path.
-	command := command
-	           ,
-	           ' && gcc -fPIC -shared -o tree-sitter-typescript.so src/parser.c src/scanner.c'.
-
-	^ command
-
+	^ self cmdMacAndLinuxTreeSitterTypescript
 ]
 
 { #category : 'as yet unclassified' }
-TSLibrariesCommandLinesTypescript >> cmdMacTreeSitterTypescript [
-	| path srcPath destPath command |
+TSLibrariesCommandLinesTypescript >> cmdMacAndLinuxTreeSitterTypescript [
+	| path command |
 	
-	path := TSLibraries new originalLibrariesDirectory , '/tree-sitter-typescript/typescript'.
+	path := TSLibraries new originalLibrariesDirectory , '/tree-sitter-typescript'.
 	
-	"this is needed to move the tree-sitter folder to common, otherwise the library generation fails"
-	srcPath := TSLibraries new originalLibrariesDirectory , '/tree-sitter-typescript/typescript/src/tree_sitter'.
-	destPath := TSLibraries new originalLibrariesDirectory , '/tree-sitter-typescript/common'.
-	command := 'cp -r "', srcPath, '"* "', destPath, '"'.
-	
-	command := command, '&& cd ', path.
-	command := command, '&& gcc -o tree-sitter-typescript.dylib src/parser.c src/scanner.c -fPIC -dynamiclib'.
+	command := 'cd ' , path.
+	command := command, '&& make'. 
 	
 	^ command
 	
  
+]
+
+{ #category : 'as yet unclassified' }
+TSLibrariesCommandLinesTypescript >> cmdMacTreeSitterTypescript [
+
+	^ self cmdMacAndLinuxTreeSitterTypescript
 ]
 
 { #category : 'as yet unclassified' }

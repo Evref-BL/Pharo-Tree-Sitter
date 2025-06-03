@@ -16,7 +16,7 @@ TSLibraries >> cloneTreeSitter [
 	cloneCommand := 'git clone https://github.com/tree-sitter/tree-sitter.git '
 	                , clonePath.
 
-	self logInTranscript: 'Start cloning TreeSitter in' , clonePath.
+	self logInTranscript: 'Start cloning TreeSitter in ' , clonePath.
 
 	"Run the command"
 	status := LibC uniqueInstance system: cloneCommand.
@@ -146,7 +146,7 @@ TSLibraries >> moveLibrary: aLibraryName from: initialLocation [
 { #category : 'as yet unclassified' }
 TSLibraries >> moveLibraryToPharoVM [
 
-	self moveLibrary: self libraryName from: '/tree-sitter/lib/build/'
+	self moveLibrary: self libraryName from: '/tree-sitter'
 ]
 
 { #category : 'as yet unclassified' }
