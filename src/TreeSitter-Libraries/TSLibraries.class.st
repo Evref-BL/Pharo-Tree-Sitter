@@ -146,7 +146,7 @@ TSLibraries >> moveLibrary: aLibraryName from: initialLocation [
 { #category : 'as yet unclassified' }
 TSLibraries >> moveLibraryToPharoVM [
 
-	self moveLibrary: self libraryName from: '/tree-sitter'
+	self moveLibrary: self libraryName from: '/tree-sitter/'
 ]
 
 { #category : 'as yet unclassified' }
