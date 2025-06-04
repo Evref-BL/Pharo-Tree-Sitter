@@ -25,7 +25,7 @@ TSLibrariesCommandLinesC >> cmdWindowsTreeSitterC [
 	command := 'cd ' , path.
 	command := command
 	           ,
-	           '&& gcc -shared -o tree-sitter-c.dll src/parser.c src/scanner.c'.
+	           '&& gcc -shared -o libtree-sitter-c.dll src/parser.c'.
 
 	^ command
 ]
