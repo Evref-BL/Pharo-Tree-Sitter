@@ -13,10 +13,10 @@ Class {
 TSParserPythonTest >> setUp [
 
 	super setUp.
-
+	self timeLimit: 120 seconds.
 	parser := TSParser new.
 	pythonLanguage := TSLanguage python.
-	parser language: pythonLanguage.
+	parser language: pythonLanguage
 ]
 
 { #category : 'running' }

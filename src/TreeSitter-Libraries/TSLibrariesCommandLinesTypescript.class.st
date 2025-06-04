@@ -27,7 +27,7 @@ TSLibrariesCommandLinesTypescript >> cmdWindowsTreeSitterTypescript [
 	command := 'cd ' , path.
 	command := command
 	           ,
-	           '&& gcc -shared -o tree-sitter-typescript.dll src/parser.c src/scanner.c'.
+	           '&& gcc -shared -o libtree-sitter-typescript.dll src/parser.c src/scanner.c'.
 
 	^ command
 ]

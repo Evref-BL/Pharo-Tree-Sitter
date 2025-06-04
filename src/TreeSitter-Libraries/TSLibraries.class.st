@@ -95,6 +95,14 @@ TSLibraries >> isWindows [
 ]
 
 { #category : 'as yet unclassified' }
+TSLibraries >> librariesLocationInDocuments [
+
+	self isWindows
+		ifTrue: [ ^ '\tree-sitter\lib\build\' ]
+		ifFalse: [ ^ '/tree-sitter/' ]
+]
+
+{ #category : 'as yet unclassified' }
 TSLibraries >> libraryExists [
 
 	^ (self vmLibrariesDirectory / self libraryName)
@@ -104,8 +112,8 @@ TSLibraries >> libraryExists [
 { #category : 'as yet unclassified' }
 TSLibraries >> libraryExistsInDocuments [
 
-	^ (self originalLibrariesDirectory asFileReference / self libraryName)
-		  asFileReference exists
+	^ ((self originalLibrariesDirectory , self librariesLocationInDocuments)
+		   asFileReference / self libraryName) asFileReference exists
 ]
 
 { #category : 'accessing' }
@@ -146,7 +154,7 @@ TSLibraries >> moveLibrary: aLibraryName from: initialLocation [
 { #category : 'as yet unclassified' }
 TSLibraries >> moveLibraryToPharoVM [
 
-	self moveLibrary: self libraryName from: '/tree-sitter/'
+	self moveLibrary: self libraryName from: self librariesLocationInDocuments
 ]
 
 { #category : 'as yet unclassified' }

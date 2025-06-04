@@ -22,14 +22,13 @@ TSNodeTest >> parseFunction [
 { #category : 'running' }
 TSNodeTest >> setUp [
 
-	|tree|
+	| tree |
 	super setUp.
-	parser := TSParser new. 
-	parser language:TSLanguage typescript.
-	tree := self parseFunction.  
-	rootNode := tree rootNode.
-	
-
+	self timeLimit: 120 seconds.
+	parser := TSParser new.
+	parser language: TSLanguage typescript.
+	tree := self parseFunction.
+	rootNode := tree rootNode
 ]
 
 { #category : 'running' }

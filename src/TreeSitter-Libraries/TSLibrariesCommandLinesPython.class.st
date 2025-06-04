@@ -21,11 +21,12 @@ TSLibrariesCommandLinesPython >> cmdMacTreeSitterPython [
 TSLibrariesCommandLinesPython >> cmdWindowsTreeSitterPython [
 
 	| path command |
-	path := TSLibraries new originalLibrariesDirectory , '/tree-sitter-python'.
+	path := TSLibraries new originalLibrariesDirectory
+	        , '/tree-sitter-python'.
 	command := 'cd ' , path.
 	command := command
 	           ,
-	           '&& gcc -shared -o tree-sitter-python.dll src/parser.c src/scanner.c'.
+	           '&& gcc -shared -o libtree-sitter-python.dll src/parser.c src/scanner.c'.
 
 	^ command
 ]
