@@ -100,7 +100,7 @@ TSLibrariesPython >> pythonLibraryExistsInDocuments [
 { #category : 'as yet unclassified' }
 TSLibrariesPython >> pythonLibraryName [
 
-	^ self libraryName: 'tree-sitter-python'.
+	^ self libraryName: 'libtree-sitter-python'.
 
 	 
 ]
