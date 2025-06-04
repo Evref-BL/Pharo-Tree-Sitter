@@ -55,7 +55,23 @@ This ensures libraries are only built when needed.
 > **Note:** Automation is only available for a limited set of languages for now.  
 > Contributions are welcome! See the `TreeSitter-Libraries` package and create a new subclass like `TreeSitter-NewLanguage`.
 
-### Required Tools
+### Required Tools for MacOS and Linux
+
+To make sure the automation process works, please ensure the following tools are installed on your system:
+
+| Tool   | Role                              | Check Command         |
+|--------|-----------------------------------|------------------------|
+| Git    | Repository cloning                | `git --version`        |
+| make  | Build configuration               | `make --version`      |
+
+These are mandatory to clone the repos and generate the libraries on these operating systems.
+Also this automated process allows the tests on piplines to succeed.
+
+**However**, it turns out that make command for TreeSitter is not supported on windows. 
+But do not worry, we found an alternative to make, but you need to make sure that you have the correspondant tools on your machine, so the automation procces can function properly.
+Check the below section;
+
+### Required Tools for Windows
 
 To make sure the automation process works, please ensure the following tools are installed on your system:
 
