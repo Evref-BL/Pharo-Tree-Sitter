@@ -9,7 +9,7 @@ Class {
 TSPythonLibrary >> macLibraryName [ 
 	"Users should use unix32* or unix64*"
 
-	^ FFIMacLibraryFinder findAnyLibrary: #( 'tree-sitter-python.dylib' )  
+	^ FFIMacLibraryFinder findAnyLibrary: #( 'libtree-sitter-python.dylib' )  
 ]
 
 { #category : 'accessing - platform' }
@@ -30,11 +30,11 @@ TSPythonLibrary >> unix64LibraryName [
 	"Users should use unix32* or unix64*"
 
 	^ FFIUnix64LibraryFinder findAnyLibrary:
-		  #( 'tree-sitter-python.so' )
+		  #( 'libtree-sitter-python.so' )
 ]
 
 { #category : 'accessing - platform' }
 TSPythonLibrary >> win32LibraryName [
 
-	^ FFIWindowsLibraryFinder findAnyLibrary: #( 'tree-sitter-python.dll' )
+	^ FFIWindowsLibraryFinder findAnyLibrary: #( 'libtree-sitter-python.dll' )
 ]

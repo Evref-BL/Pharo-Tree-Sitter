@@ -135,5 +135,5 @@ TSLibrariesTypescript >> typescriptLibraryExistsInDocuments [
 { #category : 'as yet unclassified' }
 TSLibrariesTypescript >> typescriptLibraryName [
 
-	^ self libraryName: 'tree-sitter-typescript'
+	^ self libraryName: 'libtree-sitter-typescript'
 ]

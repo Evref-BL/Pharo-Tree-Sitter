@@ -8,25 +8,27 @@ Class {
 { #category : 'as yet unclassified' }
 TSLibrariesCommandLinesPython >> cmdLinuxTreeSitterPython [
 
-	| path command |
-	path := TSLibraries new originalLibrariesDirectory , '/tree-sitter-python'.
-	command := 'cd ' , path.
-	command := command , ' && gcc -fPIC -shared -o tree-sitter-python.so src/parser.c src/scanner.c'.
-
-	^ command
+	^ self cmdMacAndLinuxTreeSitterPython
 ]
 
 { #category : 'as yet unclassified' }
-TSLibrariesCommandLinesPython >> cmdMacTreeSitterPython [
+TSLibrariesCommandLinesPython >> cmdMacAndLinuxTreeSitterPython [
 	| path command |
 	
 	path := TSLibraries new originalLibrariesDirectory , '/tree-sitter-python'.
+	
 	command := 'cd ' , path.
-	command := command, '&& gcc -shared -o tree-sitter-python.dylib src/parser.c src/scanner.c -fPIC -dynamiclib'.
+	command := command, ' && make'. 
 	
 	^ command
 	
  
+]
+
+{ #category : 'as yet unclassified' }
+TSLibrariesCommandLinesPython >> cmdMacTreeSitterPython [
+
+	^ self cmdMacAndLinuxTreeSitterPython
 ]
 
 { #category : 'as yet unclassified' }
