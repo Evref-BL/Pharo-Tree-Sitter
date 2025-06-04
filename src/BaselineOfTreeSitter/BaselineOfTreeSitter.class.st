@@ -47,7 +47,7 @@ BaselineOfTreeSitter >> definePackages: spec [
 		package: 'TreeSitter-Tests' with: [
 			spec requires:
 					#( 'TreeSitter' 'TreeSitter-Python' 'TreeSitter-Groovy'
-					   'TreeSitter-Typescript' ) ];
+					   'TreeSitter-Typescript' 'TreeSitter-C' ) ];
 		package: 'TreeSitter-Groovy'
 		with: [ spec requires: #( 'TreeSitter' ) ];
 		package: 'TreeSitter-Python'
