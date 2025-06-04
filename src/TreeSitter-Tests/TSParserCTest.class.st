@@ -15,8 +15,15 @@ TSParserCTest >> setUp [
 	super setUp.
 
 	parser := TSParser new.
-	cLanguage := TSLanguage python.
+	cLanguage := TSLanguage cLang.
 	parser language: cLanguage
+]
+
+{ #category : 'running' }
+TSParserCTest >> tearDown [
+
+	parser delete.
+	super tearDown
 ]
 
 { #category : 'tests' }
@@ -33,5 +40,50 @@ TSParserCTest >> testPositionEndPointInString [
 	self
 		assert: (string positionFromTSPoint:
 				 tree rootNode namedChildren second endPoint)
-		equals: 37
+		equals: 34
+]
+
+{ #category : 'running' }
+TSParserCTest >> testPositionInString [
+
+	| string tree |
+	string := 'printf("Hello, I''m C!"); //comment'.
+
+	tree := TSLibrary uniqueInstance
+		        ts_parser: parser
+		        _parse_string: string
+		        ofLength: string size
+		        usingOldTree: ExternalAddress null.
+	self
+		assert: (string positionFromTSPoint:
+				 tree rootNode namedChildren second startPoint)
+		equals: 25
+]
+
+{ #category : 'running' }
+TSParserCTest >> testRootOfSimpleCHasOneChild [
+
+	| string tree |
+	string := 'printf("Hello, I''m C!");'.
+
+	tree := TSLibrary uniqueInstance
+		        ts_parser: parser
+		        _parse_string: string
+		        ofLength: string size
+		        usingOldTree: ExternalAddress null.
+	self assert: tree rootNode childCount equals: 1
+]
+
+{ #category : 'running' }
+TSParserCTest >> testRootOfSimplePythonHasOneNamedChild [
+
+	| string tree |
+	string := 'printf("Hello, I''m C!");'.
+
+	tree := TSLibrary uniqueInstance
+		        ts_parser: parser
+		        _parse_string: string
+		        ofLength: string size
+		        usingOldTree: ExternalAddress null.
+	self assert: tree rootNode namedChildCount equals: 1
 ]

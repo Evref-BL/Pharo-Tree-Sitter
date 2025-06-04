@@ -15,7 +15,7 @@ TSLanguageCTest >> setUp [
 	super setUp.
 
 	parser := TSParser new.
-	cLanguage := TSLanguage c.
+	cLanguage := TSLanguage cLang.
 	parser language: cLanguage.
 ]
 
@@ -27,11 +27,29 @@ TSLanguageCTest >> tearDown [
 ]
 
 { #category : 'running' }
+TSLanguageCTest >> testCNumberOfSymbol [
+
+	self assert: parser language symbolCount equals: 363
+]
+
+{ #category : 'running' }
 TSLanguageCTest >> testCollectAllSymbolOfOneSymbolType [
 
 	self
 		assert:
 		(parser language symbolsOfType: TSSymbolType tssymboltyperegular)
 			size
-		equals: 130
+		equals: 160
+]
+
+{ #category : 'running' }
+TSLanguageCTest >> testRetrieveSymbolName [
+
+	self assert: (parser language nameOfSymbol: 1) equals: 'identifier'
+]
+
+{ #category : 'running' }
+TSLanguageCTest >> testRetrieveSymbolType [
+
+	self assert: (parser language typeOfSymbol: 1) equals: TSSymbolType tssymboltyperegular
 ]
