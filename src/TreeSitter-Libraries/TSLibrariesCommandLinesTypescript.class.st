@@ -8,27 +8,13 @@ Class {
 { #category : 'as yet unclassified' }
 TSLibrariesCommandLinesTypescript >> cmdLinuxTreeSitterTypescript [
 
-	^ self cmdMacAndLinuxTreeSitterTypescript
-]
-
-{ #category : 'as yet unclassified' }
-TSLibrariesCommandLinesTypescript >> cmdMacAndLinuxTreeSitterTypescript [
-	| path command |
-	
-	path := TSLibraries new originalLibrariesDirectory , '/tree-sitter-typescript'.
-	
-	command := 'cd ' , path.
-	command := command, '&& make'. 
-	
-	^ command
-	
- 
+	^ self tsBuildCommandForMacAndLinux: '/tree-sitter-typescript'
 ]
 
 { #category : 'as yet unclassified' }
 TSLibrariesCommandLinesTypescript >> cmdMacTreeSitterTypescript [
 
-	^ self cmdMacAndLinuxTreeSitterTypescript
+	^ self tsBuildCommandForMacAndLinux: '/tree-sitter-typescript'
 ]
 
 { #category : 'as yet unclassified' }
