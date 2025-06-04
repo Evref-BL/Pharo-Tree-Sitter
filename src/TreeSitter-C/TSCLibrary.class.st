@@ -6,10 +6,9 @@ Class {
 }
 
 { #category : 'accessing - platform' }
-TSCLibrary >> macLibraryName [ 
-	"Users should use unix32* or unix64*"
+TSCLibrary >> macLibraryName [
 
-	^ FFIMacLibraryFinder findAnyLibrary: #( 'libtree-sitter-c.dylib' )  
+	^ FFIMacLibraryFinder findAnyLibrary: #( 'libtree-sitter-c.dylib' )
 ]
 
 { #category : 'as yet unclassified' }

@@ -36,7 +36,7 @@ BaselineOfTreeSitter >> defineGroups: spec [
 	spec group: 'groovy' with: #( 'default' 'TreeSitter-Groovy' ).
 	spec group: 'python' with: #( 'default' 'TreeSitter-Python' ).
 	spec group: 'typescript' with: #( 'default' 'TreeSitter-Typescript' ).
-	spec group: 'c' with: #( 'default' 'TreeSitter-C' )
+	spec group: 'cLang' with: #( 'default' 'TreeSitter-C' )
 ]
 
 { #category : 'baselines' }
