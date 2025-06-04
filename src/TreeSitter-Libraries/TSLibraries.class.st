@@ -97,11 +97,9 @@ TSLibraries >> isWindows [
 { #category : 'as yet unclassified' }
 TSLibraries >> librariesLocationInDocuments [
 
-	self isWindows ifTrue: [ 
-			^ '\tree-sitter\lib\build\'.		
-		 ] ifFalse: [ 
-			^ '\tree-sitter\'
-		 ]
+	self isWindows
+		ifTrue: [ ^ '\tree-sitter\lib\build\' ]
+		ifFalse: [ ^ '/tree-sitter/' ]
 ]
 
 { #category : 'as yet unclassified' }
