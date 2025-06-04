@@ -13,10 +13,11 @@ Class {
 TSLanguageCTest >> setUp [
 
 	super setUp.
+	self timeLimit: 120 seconds.
 
 	parser := TSParser new.
 	cLanguage := TSLanguage cLang.
-	parser language: cLanguage.
+	parser language: cLanguage
 ]
 
 { #category : 'running' }

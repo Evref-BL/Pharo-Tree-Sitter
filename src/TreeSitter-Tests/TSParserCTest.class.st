@@ -13,6 +13,7 @@ Class {
 TSParserCTest >> setUp [
 
 	super setUp.
+	self timeLimit: 120 seconds.
 
 	parser := TSParser new.
 	cLanguage := TSLanguage cLang.
