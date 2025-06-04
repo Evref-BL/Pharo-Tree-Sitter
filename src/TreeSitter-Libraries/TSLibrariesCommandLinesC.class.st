@@ -8,25 +8,13 @@ Class {
 { #category : 'as yet unclassified' }
 TSLibrariesCommandLinesC >> cmdLinuxTreeSitterC [
 
-	| path command |
-	path := TSLibraries new originalLibrariesDirectory , '/tree-sitter-c'.
-	command := 'cd ' , path.
-	command := command , ' && gcc -fPIC -shared -o tree-sitter-c.so src/parser.c src/scanner.c'.
-
-	^ command
+	^ self tsBuildCommandForMacAndLinux: '/tree-sitter-c'
 ]
 
 { #category : 'as yet unclassified' }
 TSLibrariesCommandLinesC >> cmdMacTreeSitterC [
-	| path command |
-	
-	path := TSLibraries new originalLibrariesDirectory , '/tree-sitter-c'.
-	command := 'cd ' , path.
-	command := command, '&& gcc -shared -o tree-sitter-c.dylib src/parser.c src/scanner.c -fPIC -dynamiclib'.
-	
-	^ command
-	
- 
+
+	^ self tsBuildCommandForMacAndLinux: '/tree-sitter-c'
 ]
 
 { #category : 'as yet unclassified' }

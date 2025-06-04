@@ -22,7 +22,7 @@ TSLibrariesC >> cLibraryExistsInDocuments [
 { #category : 'as yet unclassified' }
 TSLibrariesC >> cLibraryName [
 
-	^ self libraryName: 'tree-sitter-c'.
+	^ self libraryName: 'libtree-sitter-c'.
 
 	 
 ]

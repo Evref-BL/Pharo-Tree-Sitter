@@ -8,27 +8,13 @@ Class {
 { #category : 'as yet unclassified' }
 TSLibrariesCommandLinesPython >> cmdLinuxTreeSitterPython [
 
-	^ self cmdMacAndLinuxTreeSitterPython
-]
-
-{ #category : 'as yet unclassified' }
-TSLibrariesCommandLinesPython >> cmdMacAndLinuxTreeSitterPython [
-	| path command |
-	
-	path := TSLibraries new originalLibrariesDirectory , '/tree-sitter-python'.
-	
-	command := 'cd ' , path.
-	command := command, ' && make'. 
-	
-	^ command
-	
- 
+	^ self tsBuildCommandForMacAndLinux: '/tree-sitter-python'
 ]
 
 { #category : 'as yet unclassified' }
 TSLibrariesCommandLinesPython >> cmdMacTreeSitterPython [
 
-	^ self cmdMacAndLinuxTreeSitterPython
+	^ self tsBuildCommandForMacAndLinux: '/tree-sitter-python'
 ]
 
 { #category : 'as yet unclassified' }

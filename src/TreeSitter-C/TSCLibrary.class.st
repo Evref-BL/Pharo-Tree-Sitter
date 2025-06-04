@@ -9,7 +9,7 @@ Class {
 TSCLibrary >> macLibraryName [ 
 	"Users should use unix32* or unix64*"
 
-	^ FFIMacLibraryFinder findAnyLibrary: #( 'tree-sitter-c.dylib' )  
+	^ FFIMacLibraryFinder findAnyLibrary: #( 'libtree-sitter-c.dylib' )  
 ]
 
 { #category : 'as yet unclassified' }
@@ -29,12 +29,11 @@ TSCLibrary >> uniqueInstance [
 TSCLibrary >> unix64LibraryName [
 	"Users should use unix32* or unix64*"
 
-	^ FFIUnix64LibraryFinder findAnyLibrary:
-		  #( 'tree-sitter-c.so' )
+	^ FFIUnix64LibraryFinder findAnyLibrary: #( 'libtree-sitter-c.so' )
 ]
 
 { #category : 'as yet unclassified' }
 TSCLibrary >> win32LibraryName [
 
-	^ FFIWindowsLibraryFinder findAnyLibrary: #( 'tree-sitter-c.dll' )
+	^ FFIWindowsLibraryFinder findAnyLibrary: #( 'libtree-sitter-c.dll' )
 ]
