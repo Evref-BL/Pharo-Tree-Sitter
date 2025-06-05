@@ -33,11 +33,8 @@ TSParserCTest >> testPositionEndPointInString [
 	| string tree |
 	string := 'printf("Hello, I''m C!"); //comment'.
 
-	tree := TSLibrary uniqueInstance
-		        ts_parser: parser
-		        _parse_string: string
-		        ofLength: string size
-		        usingOldTree: ExternalAddress null.
+	tree := parser parseString: string.
+
 	self
 		assert: (string positionFromTSPoint:
 				 tree rootNode namedChildren second endPoint)
@@ -50,11 +47,8 @@ TSParserCTest >> testPositionInString [
 	| string tree |
 	string := 'printf("Hello, I''m C!"); //comment'.
 
-	tree := TSLibrary uniqueInstance
-		        ts_parser: parser
-		        _parse_string: string
-		        ofLength: string size
-		        usingOldTree: ExternalAddress null.
+	tree :=  parser parseString: string.
+	
 	self
 		assert: (string positionFromTSPoint:
 				 tree rootNode namedChildren second startPoint)
@@ -67,11 +61,8 @@ TSParserCTest >> testRootOfSimpleCHasOneChild [
 	| string tree |
 	string := 'printf("Hello, I''m C!");'.
 
-	tree := TSLibrary uniqueInstance
-		        ts_parser: parser
-		        _parse_string: string
-		        ofLength: string size
-		        usingOldTree: ExternalAddress null.
+	tree :=  parser parseString: string.
+	
 	self assert: tree rootNode childCount equals: 1
 ]
 
@@ -81,10 +72,7 @@ TSParserCTest >> testRootOfSimplePythonHasOneNamedChild [
 	| string tree |
 	string := 'printf("Hello, I''m C!");'.
 
-	tree := TSLibrary uniqueInstance
-		        ts_parser: parser
-		        _parse_string: string
-		        ofLength: string size
-		        usingOldTree: ExternalAddress null.
+	tree :=  parser parseString: string.
+	
 	self assert: tree rootNode namedChildCount equals: 1
 ]
