@@ -4,6 +4,7 @@ Extension { #name : 'TSNode' }
 TSNode >> tsTreeExtension: aBuilder [
 
 	<inspectorPresentationOrder: 15 title: 'TS Tree'>
+
 	^ aBuilder newTreeTable
 		  addColumn: (SpCompositeTableColumn new
 				   addColumn: (SpStringTableColumn evaluated: #type);
