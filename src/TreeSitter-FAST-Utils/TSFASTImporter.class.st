@@ -43,8 +43,17 @@ TSFASTImporter >> import: aTSNode [
 TSFASTImporter >> instantiateFastEntityFrom: aTSNode [
 
 	| fast children |
-	fast := ('FAST' , self languageName , aTSNode type capitalized
+	
+	fast := [
+    	('FAST' , self languageName , aTSNode type capitalized
 		         asClassInEnvironment: self class environment) new.
+	] on: Error do: [
+    ('FAST' , self languageName , aTSNode type pascalized 
+		         asClassInEnvironment: self class environment) new. ].
+		
+	"fast := ('FAST' , self languageName , aTSNode type capitalized
+		         asClassInEnvironment: self class environment) new."
+	
 	
 	children := aTSNode collectFieldNameOfNamedChild.
 	children keysDo: [ :key |
