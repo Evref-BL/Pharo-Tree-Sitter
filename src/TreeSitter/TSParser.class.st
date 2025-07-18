@@ -24,6 +24,14 @@ Class {
 }
 
 { #category : 'instance creation' }
+TSParser class >> language: aLanguage [
+
+	^ self new
+		  language: aLanguage;
+		  yourself
+]
+
+{ #category : 'instance creation' }
 TSParser class >> new [
 	
 	TSLibraries new ensureTreeSitterLibraryExists.
