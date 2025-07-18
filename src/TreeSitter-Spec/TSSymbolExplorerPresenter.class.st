@@ -2,7 +2,7 @@
 I am a presenter used by `TSSymbolExplorerPresenter` to display its result in the inspector.
 "
 Class {
-	#name : 'TSSymbolExplorerPreesenter',
+	#name : 'TSSymbolExplorerPresenter',
 	#superclass : 'SpPresenter',
 	#instVars : [
 		'symbolDictionary',
@@ -15,7 +15,7 @@ Class {
 }
 
 { #category : 'initialization' }
-TSSymbolExplorerPreesenter >> connectPresenters [
+TSSymbolExplorerPresenter >> connectPresenters [
 
 	super connectPresenters.
 
@@ -30,7 +30,7 @@ TSSymbolExplorerPreesenter >> connectPresenters [
 ]
 
 { #category : 'layout' }
-TSSymbolExplorerPreesenter >> defaultLayout [
+TSSymbolExplorerPresenter >> defaultLayout [
 
 	^ SpBoxLayout newLeftToRight
 		  spacing: 3;
@@ -47,7 +47,7 @@ TSSymbolExplorerPreesenter >> defaultLayout [
 ]
 
 { #category : 'initialization' }
-TSSymbolExplorerPreesenter >> initializePresenters [
+TSSymbolExplorerPresenter >> initializePresenters [
 
 	super initializePresenters.
 
@@ -59,7 +59,7 @@ TSSymbolExplorerPreesenter >> initializePresenters [
 ]
 
 { #category : 'accessing - model' }
-TSSymbolExplorerPreesenter >> setModelBeforeInitialization: aDictionary [
+TSSymbolExplorerPresenter >> setModelBeforeInitialization: aDictionary [
 
 	symbolDictionary := aDictionary
 ]

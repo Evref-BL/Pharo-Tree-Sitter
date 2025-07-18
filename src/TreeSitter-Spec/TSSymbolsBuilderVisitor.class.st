@@ -85,7 +85,7 @@ TSSymbolsBuilderVisitor >> language: anObject [
 TSSymbolsBuilderVisitor >> symbolsInspector: aBuilder [
 
 	<inspectorPresentationOrder: 50 title: 'Symbols explorer'>
-	^ aBuilder instantiate: TSSymbolExplorerPreesenter on: symbolDictionary
+	^ aBuilder instantiate: TSSymbolExplorerPresenter on: symbolDictionary
 ]
 
 { #category : 'visiting' }
