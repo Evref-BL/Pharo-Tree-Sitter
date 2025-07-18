@@ -4,7 +4,7 @@ I am a little visitor used to see all the symbols present in a project and explo
 You can use me like this: 
 
 ```st
-	folder := FamixPythonBridge parsingExamples / 'project1'.
+	folder := '/resources/examples/project1' asFileReference.
 
 	TSSymbolsBuilderVisitor language: TSLanguage python extensions: #( 'py' ) buildOn: folder
 ```
@@ -31,7 +31,7 @@ TSSymbolsBuilderVisitor class >> language: aTSLanguage extensions: aCollection b
 		  buildOn: aFileReference
 ]
 
-{ #category : 'building - menus' }
+{ #category : 'initialization' }
 TSSymbolsBuilderVisitor >> buildOn: aFileReference [
 
 	self collectFilesIn: aFileReference.
@@ -81,7 +81,7 @@ TSSymbolsBuilderVisitor >> language: anObject [
 	language := anObject
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'inspector' }
 TSSymbolsBuilderVisitor >> symbolsInspector: aBuilder [
 
 	<inspectorPresentationOrder: 50 title: 'Symbols explorer'>
@@ -91,6 +91,15 @@ TSSymbolsBuilderVisitor >> symbolsInspector: aBuilder [
 { #category : 'visiting' }
 TSSymbolsBuilderVisitor >> visitNode: aTSNode [
 
-	aTSNode collectNamedChild do: [ :subNode | (symbolDictionary at: aTSNode type ifAbsentPut: [ Set new ]) add: subNode type ].
+	aTSNode collectFieldNameOfNamedChild keysAndValuesDo: [ :field :nodes |
+			| fields wrap |
+			fields := symbolDictionary at: aTSNode type ifAbsentPut: [ OrderedCollection new ].
+			wrap := fields
+				        detect: [ :wrapper | wrapper field = field ]
+				        ifNone: [ fields add: (TSFieldExplorerWrapper field: field) ].
+
+			wrap addAll: (nodes isCollection
+					 ifTrue: [ nodes collect: #type ]
+					 ifFalse: [ { nodes type } ]) ].
 	super visitNode: aTSNode
 ]
