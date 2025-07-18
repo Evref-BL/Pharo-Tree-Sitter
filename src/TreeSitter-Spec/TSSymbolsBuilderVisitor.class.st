@@ -8,6 +8,8 @@ You can use me like this:
 
 	TSSymbolsBuilderVisitor language: TSLanguage python extensions: #( 'py' ) buildOn: folder
 ```
+
+Warning: This visitor will build a map of all the symbols present in a project and the nodes in which they can be and the node types they can contain. But this will just represent what is present in a particular project, not all the possibilities in the language. So run me on the biggest source of code possible to have the maximum of possibilities covered.
 "
 Class {
 	#name : 'TSSymbolsBuilderVisitor',
