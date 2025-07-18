@@ -93,9 +93,11 @@ TSSymbolsBuilderVisitor >> symbolsInspector: aBuilder [
 { #category : 'visiting' }
 TSSymbolsBuilderVisitor >> visitNode: aTSNode [
 
+	| fields |
+	"This needs to be done here and not in the bloc for nodes that cannot have a child"
+	fields := symbolDictionary at: aTSNode type ifAbsentPut: [ OrderedCollection new ].
 	aTSNode collectFieldNameOfNamedChild keysAndValuesDo: [ :field :nodes |
-			| fields wrap |
-			fields := symbolDictionary at: aTSNode type ifAbsentPut: [ OrderedCollection new ].
+			| wrap |
 			wrap := fields
 				        detect: [ :wrapper | wrapper field = field ]
 				        ifNone: [ fields add: (TSFieldExplorerWrapper field: field) ].
