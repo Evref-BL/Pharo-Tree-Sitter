@@ -4,10 +4,12 @@ I am a little visitor used to see all the symbols present in a project and explo
 You can use me like this: 
 
 ```st
-	folder := FamixPythonBridge parsingExamples / 'project1'.
+	folder := '/resources/examples/project1' asFileReference.
 
 	TSSymbolsBuilderVisitor language: TSLanguage python extensions: #( 'py' ) buildOn: folder
 ```
+
+Warning: This visitor will build a map of all the symbols present in a project and the nodes in which they can be and the node types they can contain. But this will just represent what is present in a particular project, not all the possibilities in the language. So run me on the biggest source of code possible to have the maximum of possibilities covered.
 "
 Class {
 	#name : 'TSSymbolsBuilderVisitor',
@@ -31,7 +33,7 @@ TSSymbolsBuilderVisitor class >> language: aTSLanguage extensions: aCollection b
 		  buildOn: aFileReference
 ]
 
-{ #category : 'building - menus' }
+{ #category : 'initialization' }
 TSSymbolsBuilderVisitor >> buildOn: aFileReference [
 
 	self collectFilesIn: aFileReference.
@@ -81,7 +83,7 @@ TSSymbolsBuilderVisitor >> language: anObject [
 	language := anObject
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'inspector' }
 TSSymbolsBuilderVisitor >> symbolsInspector: aBuilder [
 
 	<inspectorPresentationOrder: 50 title: 'Symbols explorer'>
@@ -91,6 +93,24 @@ TSSymbolsBuilderVisitor >> symbolsInspector: aBuilder [
 { #category : 'visiting' }
 TSSymbolsBuilderVisitor >> visitNode: aTSNode [
 
-	aTSNode collectNamedChild do: [ :subNode | (symbolDictionary at: aTSNode type ifAbsentPut: [ Set new ]) add: subNode type ].
+	| fields |
+	"This needs to be done here and not in the bloc for nodes that cannot have a child"
+	fields := symbolDictionary
+		          at: aTSNode type
+		          ifPresent: [ :flds | "We check if some fields are missing in the current node to mark them as optional"
+				          flds
+					          reject: [ :field | aTSNode collectFieldNameOfNamedChild keys includes: field field ]
+					          thenDo: [ :field | field isOptional: true ] ]
+		          ifAbsentPut: [ OrderedCollection new ].
+
+	aTSNode collectFieldNameOfNamedChild keysAndValuesDo: [ :field :nodes |
+			| wrap |
+			wrap := fields
+				        detect: [ :wrapper | wrapper field = field ]
+				        ifNone: [ fields add: (TSFieldExplorerWrapper field: field) ].
+
+			wrap addAll: (nodes isCollection
+					 ifTrue: [ nodes collect: #type ]
+					 ifFalse: [ { nodes type } ]) ].
 	super visitNode: aTSNode
 ]
