@@ -69,7 +69,10 @@ TSSymbolExplorerPresenter >> initializePresenters [
 
 	childrenTree display: [ :item |
 			item class = TSFieldExplorerWrapper
-				ifTrue: [ 'Field: ' , item field ]
+				ifTrue: [
+						'Field: ' , item field , (item isOptional
+							 ifTrue: [ ' (optional)' ]
+							 ifFalse: [ '' ]) ]
 				ifFalse: [ item ] ].
 
 	childrenTree children: [ :item |

@@ -8,7 +8,8 @@ Class {
 	#superclass : 'Object',
 	#instVars : [
 		'field',
-		'symbols'
+		'symbols',
+		'isOptional'
 	],
 	#category : 'TreeSitter-Spec',
 	#package : 'TreeSitter-Spec'
@@ -42,7 +43,18 @@ TSFieldExplorerWrapper >> field: anObject [
 TSFieldExplorerWrapper >> initialize [
 
 	super initialize.
-	symbols := Set new
+	symbols := Set new.
+	isOptional := false
+]
+
+{ #category : 'accessing' }
+TSFieldExplorerWrapper >> isOptional [
+	^ isOptional
+]
+
+{ #category : 'accessing' }
+TSFieldExplorerWrapper >> isOptional: anObject [
+	isOptional := anObject
 ]
 
 { #category : 'accessing' }
