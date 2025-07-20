@@ -54,11 +54,46 @@ TSSymbolExplorerPresenter >> defaultLayout [
 		  yourself
 ]
 
+{ #category : 'as yet unclassified' }
+TSSymbolExplorerPresenter >> initializeMenus [
+
+	childrenTree actions: (SpActionGroup new
+			 addActionWith: [ :anItem |
+					 anItem
+						 name: 'Copy filed items';
+						 actionEnabled: [ childrenTree selectedItem class = TSFieldExplorerWrapper ];
+						 action: [
+							 Clipboard clipboardText: (String streamContents: [ :s | childrenTree selectedItem symbols do: [ :e | s nextPutAll: e ] separatedBy: [ s << ' / ' ] ]) ] ];
+			 addActionWith: [ :anItem |
+					 anItem
+						 name: 'Copy All fields';
+						 action: [
+								 Clipboard clipboardText: (String streamContents: [ :s |
+													  childrenTree roots
+														  do: [ :field |
+																  s << '- ' << field field << ': '.
+																  field symbols do: [ :e | s nextPutAll: e ] separatedBy: [ s << ' / ' ] ]
+														  separatedBy: [ s cr ] ]) ] ];
+			 addActionWith: [ :anItem |
+					 anItem
+						 name: 'Inspect field items';
+						 actionEnabled: [ childrenTree selectedItem class = TSFieldExplorerWrapper ];
+						 action: [ childrenTree selectedItem symbols inspect ] ]).
+	^ parentsList actions: (SpActionGroup new
+			   addActionWith: [ :anItem |
+					   anItem
+						   name: 'Copy parents';
+						   action: [ Clipboard clipboardText: (String streamContents: [ :s | parentsList items do: [ :e | s nextPutAll: e ] separatedBy: [ s << ' / ' ] ]) ] ];
+			   addActionWith: [ :anItem |
+					   anItem
+						   name: 'Inspect list of parents';
+						   action: [ parentsList items inspect ] ])
+]
+
 { #category : 'initialization' }
 TSSymbolExplorerPresenter >> initializePresenters [
 
 	super initializePresenters.
-
 	symbolList := self newList.
 	childrenTree := self newTree.
 	parentsList := self newList.
@@ -67,18 +102,20 @@ TSSymbolExplorerPresenter >> initializePresenters [
 		items: symbolDictionary keys;
 		sortingBlock: #yourself ascending.
 
-	childrenTree display: [ :item |
-			item class = TSFieldExplorerWrapper
-				ifTrue: [
-						'Field: ' , item field , (item isOptional
-							 ifTrue: [ ' (optional)' ]
-							 ifFalse: [ '' ]) ]
-				ifFalse: [ item ] ].
+	childrenTree
+		display: [ :item |
+				item class = TSFieldExplorerWrapper
+					ifTrue: [
+							'Field: ' , item field , (item isOptional
+									 ifTrue: [ ' (optional)' ]
+									 ifFalse: [ '' ]) ]
+					ifFalse: [ item ] ];
+		children: [ :item |
+				item class = TSFieldExplorerWrapper
+					ifTrue: [ item symbols asOrderedCollection ]
+					ifFalse: [ #(  ) ] ].
 
-	childrenTree children: [ :item |
-			item class = TSFieldExplorerWrapper
-				ifTrue: [ item symbols asOrderedCollection ]
-				ifFalse: [ #(  ) ] ]
+	self initializeMenus
 ]
 
 { #category : 'accessing - model' }
