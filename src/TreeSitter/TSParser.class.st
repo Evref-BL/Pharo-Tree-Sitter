@@ -24,8 +24,17 @@ Class {
 }
 
 { #category : 'instance creation' }
-TSParser class >> new [
+TSParser class >> language: aLanguage [
 
+	^ self new
+		  language: aLanguage;
+		  yourself
+]
+
+{ #category : 'instance creation' }
+TSParser class >> new [
+	
+	TSLibraries new ensureTreeSitterLibraryExists.
 	^ TSLibrary uniqueInstance ts_parser_new
 ]
 
@@ -76,7 +85,7 @@ TSParser >> parseString: aString usingTree: aTree [
 	"to be used after editing the old tree which must be past here as a parameter to make an incremental parsing"
 	
 	| stringToConsider |
-	stringToConsider := aString withUnixLineEndings.
+	stringToConsider := aString withUnixLineEndings utf8Encoded.
 	^ TSLibrary uniqueInstance
 		  ts_parser: self
 		  _parse_string: stringToConsider 

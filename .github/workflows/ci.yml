@@ -24,38 +24,6 @@ jobs:
       - uses: actions/checkout@v4
 
       - uses: tree-sitter/setup-action@v2
-
-      - name: Clone Tree sitter python
-        uses: GuillaumeFalourd/clone-github-repo-action@v2.3
-        with:
-          depth: 1
-          branch: 'master'
-          owner: 'tree-sitter'
-          repository: 'tree-sitter-python'
-
-      - name: build lib
-        shell: bash
-        run: |
-          cd tree-sitter-python
-          tree-sitter build
-          sudo mv python.so /usr/local/lib/libtree-sitter-python.so
-          cd ..
-       
-      - name: Clone Tree-sitter TypeScript
-        uses: GuillaumeFalourd/clone-github-repo-action@v2.3
-        with:
-          depth: 1
-          branch: 'master'
-          owner: 'tree-sitter'
-          repository: 'tree-sitter-typescript'
-
-      - name: Build TypeScript Library
-        shell: bash
-        run: |
-          cd tree-sitter-typescript/typescript
-          tree-sitter build
-          sudo mv parser.so /usr/local/lib/tree-sitter-typescript.so
-          cd ../..
       
       - uses: hpi-swa/setup-smalltalkCI@v1
         with:

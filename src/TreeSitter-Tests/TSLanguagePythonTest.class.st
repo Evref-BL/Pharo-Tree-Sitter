@@ -13,10 +13,10 @@ Class {
 TSLanguagePythonTest >> setUp [
 
 	super setUp.
-
+	self timeLimit: 120 seconds.
 	parser := TSParser new.
 	pythonLanguage := TSLanguage python.
-	parser language: pythonLanguage.
+	parser language: pythonLanguage
 ]
 
 { #category : 'running' }
@@ -33,7 +33,7 @@ TSLanguagePythonTest >> testCollectAllSymbolOfOneSymbolType [
 		assert:
 		(parser language symbolsOfType: TSSymbolType tssymboltyperegular)
 			size
-		equals: 129
+		equals: 130
 ]
 
 { #category : 'tests' }

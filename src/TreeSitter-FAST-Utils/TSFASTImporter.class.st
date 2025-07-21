@@ -42,8 +42,28 @@ TSFASTImporter >> import: aTSNode [
 { #category : 'accessing' }
 TSFASTImporter >> instantiateFastEntityFrom: aTSNode [
 
-	^ ('FAST' , self languageName , aTSNode type capitalized
-		   asClassInEnvironment: self class environment) new
+	| fast children |
+	
+	fast := [
+    	('FAST' , self languageName , aTSNode type capitalized
+		         asClassInEnvironment: self class environment) new.
+	] on: Error do: [
+    ('FAST' , self languageName , aTSNode type pascalized 
+		         asClassInEnvironment: self class environment) new. ].
+		
+	"fast := ('FAST' , self languageName , aTSNode type capitalized
+		         asClassInEnvironment: self class environment) new."
+	
+	
+	children := aTSNode collectFieldNameOfNamedChild.
+	children keysDo: [ :key |
+		key = '<unnamedChild>' ifFalse: [
+			(fast class methodDict  keys  select: [ :e | e  = key asSymbol ])
+				ifNotEmpty: [
+					fast
+						perform: key asSymbol asMutator
+						with: (self instantiateFastEntityFrom: (children at: key)) ] ] ].
+	^ fast
 ]
 
 { #category : 'accessing' }
@@ -96,9 +116,12 @@ TSFASTImporter >> visitNode: aTSNode [
 		fieldName
 			ifEmpty: [ fastEntity addGenericChildren: childFast ]
 			ifNotEmpty: [
-				[ (fastEntity perform: fieldName asSymbol) add: childFast ]
+				[
+				fastEntity
+					perform:  fieldName asSymbol asMutator 
+					with: childFast ]
 					on: Error
-					do: [ :error | "handling error temporarly" fastEntity addGenericChildren: childFast ] ] ].
+					do: [ :error | fastEntity addGenericChildren: childFast ] ] ].
 	fastEntity startPos:
 		(self originString positionFromTSPoint: aTSNode startPoint) + 1.
 	fastEntity endPos:

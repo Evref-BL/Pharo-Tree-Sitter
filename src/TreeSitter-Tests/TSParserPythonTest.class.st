@@ -13,10 +13,10 @@ Class {
 TSParserPythonTest >> setUp [
 
 	super setUp.
-
+	self timeLimit: 120 seconds.
 	parser := TSParser new.
 	pythonLanguage := TSLanguage python.
-	parser language: pythonLanguage.
+	parser language: pythonLanguage
 ]
 
 { #category : 'running' }
@@ -33,11 +33,7 @@ TSParserPythonTest >> testPositionEndPointInString [
 	string := 'print("Hello, I''m Python!")
 # comment'.
 
-	tree := TSLibrary uniqueInstance
-		        ts_parser: parser
-		        _parse_string: string
-		        ofLength: string size
-		        usingOldTree: ExternalAddress null.
+	tree := parser parseString: string.
 	self
 		assert: (string positionFromTSPoint:
 				 tree rootNode namedChildren second endPoint)
@@ -51,11 +47,7 @@ TSParserPythonTest >> testPositionInString [
 	string := 'print("Hello, I''m Python!")
 # comment'.
 
-	tree := TSLibrary uniqueInstance
-		        ts_parser: parser
-		        _parse_string: string
-		        ofLength: string size
-		        usingOldTree: ExternalAddress null.
+	tree := parser parseString: string.
 	self
 		assert: (string positionFromTSPoint:
 				 tree rootNode namedChildren second startPoint)
@@ -66,14 +58,9 @@ TSParserPythonTest >> testPositionInString [
 TSParserPythonTest >> testRootNodeSymbolSimplePythonProgram [
 
 	| string tree |
-
 	string := 'print("Hello, I''m Python!")'.
 
-	tree := TSLibrary uniqueInstance
-		        ts_parser: parser
-		        _parse_string: string
-		        ofLength: string size
-		        usingOldTree: ExternalAddress null.
+	tree := parser parseString: string.
 	"108 is a magic number for now"
 	self assert: tree rootNode symbol equals: 108
 ]
@@ -84,11 +71,7 @@ TSParserPythonTest >> testRootOfSimplePythonHasOneChild [
 	| string tree |
 	string := 'print("Hello, I''m Python!")'.
 
-	tree := TSLibrary uniqueInstance
-		        ts_parser: parser
-		        _parse_string: string
-		        ofLength: string size
-		        usingOldTree: ExternalAddress null.
+	tree := parser parseString: string.
 	self assert: tree rootNode childCount equals: 1
 ]
 
@@ -98,10 +81,6 @@ TSParserPythonTest >> testRootOfSimplePythonHasOneNamedChild [
 	| string tree |
 	string := 'print("Hello, I''m Python!")'.
 
-	tree := TSLibrary uniqueInstance
-		        ts_parser: parser
-		        _parse_string: string
-		        ofLength: string size
-		        usingOldTree: ExternalAddress null.
+	tree := parser parseString: string.
 	self assert: tree rootNode namedChildCount equals: 1
 ]

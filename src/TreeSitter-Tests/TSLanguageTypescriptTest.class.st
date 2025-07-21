@@ -13,10 +13,10 @@ Class {
 TSLanguageTypescriptTest >> setUp [
 
 	super setUp.
-
+	self timeLimit: 120 seconds.
 	parser := TSParser new.
-	typescriptLanguage := TSLanguage typescript .
-	parser language: typescriptLanguage.
+	typescriptLanguage := TSLanguage typescript.
+	parser language: typescriptLanguage
 ]
 
 { #category : 'running' }
@@ -33,7 +33,7 @@ TSLanguageTypescriptTest >> testCollectAllSymbolOfOneSymbolType [
 		assert:
 		(parser language symbolsOfType: TSSymbolType tssymboltyperegular)
 			size
-		equals: 191
+		equals: 192
 ]
 
 { #category : 'tests' }
