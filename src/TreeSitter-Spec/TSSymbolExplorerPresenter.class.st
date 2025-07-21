@@ -101,6 +101,7 @@ TSSymbolExplorerPresenter >> initializePresenters [
 	symbolList
 		items: symbolDictionary keys;
 		sortingBlock: #yourself ascending.
+	parentsList sortingBlock: #yourself ascending.
 
 	childrenTree
 		display: [ :item |
@@ -112,7 +113,7 @@ TSSymbolExplorerPresenter >> initializePresenters [
 					ifFalse: [ item ] ];
 		children: [ :item |
 				item class = TSFieldExplorerWrapper
-					ifTrue: [ item symbols asOrderedCollection ]
+					ifTrue: [ item symbols asOrderedCollection sort: #yourself ascending ]
 					ifFalse: [ #(  ) ] ].
 
 	self initializeMenus
