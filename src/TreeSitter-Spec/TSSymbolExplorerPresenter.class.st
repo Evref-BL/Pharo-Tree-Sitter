@@ -24,17 +24,22 @@ TSSymbolExplorerPresenter >> connectPresenters [
 	super connectPresenters.
 
 	symbolList whenSelectionChangedDo: [ :selection |
-			| parents |
-			childrenTree
-				roots: (symbolDictionary at: selection selectedItem);
-				expandAll.
+			selection selectedItem
+				ifNil: [
+						childrenTree roots: #(  ).
+						parentsList items: #(  ) ]
+				ifNotNil: [
+						| parents |
+						childrenTree
+							roots: (symbolDictionary at: selection selectedItem);
+							expandAll.
 
-			parents := Set new.
-			symbolDictionary keysAndValuesDo: [ :symbol :fields |
-				(fields anySatisfy: [ :field | field symbols includes: selection selectedItem ]) ifTrue: [ parents add: symbol ] ].
-			parentsList items: parents asOrderedCollection ].
+						parents := Set new.
+						symbolDictionary keysAndValuesDo: [ :symbol :fields |
+							(fields anySatisfy: [ :field | field symbols includes: selection selectedItem ]) ifTrue: [ parents add: symbol ] ].
+						parentsList items: parents asOrderedCollection ] ].
 
-	symbolList selectFirst
+	symbolList listPresenter selectFirst
 ]
 
 { #category : 'layout' }
@@ -54,7 +59,7 @@ TSSymbolExplorerPresenter >> defaultLayout [
 		  yourself
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'initialization' }
 TSSymbolExplorerPresenter >> initializeMenus [
 
 	childrenTree actions: (SpActionGroup new
@@ -94,13 +99,14 @@ TSSymbolExplorerPresenter >> initializeMenus [
 TSSymbolExplorerPresenter >> initializePresenters [
 
 	super initializePresenters.
-	symbolList := self newList.
+	symbolList := self newFilteringList.
 	childrenTree := self newTree.
-	parentsList := self newList.
+	parentsList := self newFilteringList.
 
 	symbolList
 		items: symbolDictionary keys;
 		sortingBlock: #yourself ascending.
+	parentsList sortingBlock: #yourself ascending.
 
 	childrenTree
 		display: [ :item |
@@ -112,7 +118,7 @@ TSSymbolExplorerPresenter >> initializePresenters [
 					ifFalse: [ item ] ];
 		children: [ :item |
 				item class = TSFieldExplorerWrapper
-					ifTrue: [ item symbols asOrderedCollection ]
+					ifTrue: [ item symbols asOrderedCollection sort: #yourself ascending ]
 					ifFalse: [ #(  ) ] ].
 
 	self initializeMenus
