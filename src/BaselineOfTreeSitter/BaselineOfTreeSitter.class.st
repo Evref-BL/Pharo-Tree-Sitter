@@ -44,29 +44,16 @@ BaselineOfTreeSitter >> definePackages: spec [
 
 	spec
 		package: 'TreeSitter';
-		package: 'TreeSitter-Tests' with: [
-			spec requires:
-					#( 'TreeSitter' 'TreeSitter-Python' 'TreeSitter-Groovy'
-					   'TreeSitter-Typescript' 'TreeSitter-C' ) ];
-		package: 'TreeSitter-Groovy'
-		with: [ spec requires: #( 'TreeSitter' ) ];
-		package: 'TreeSitter-Python'
-		with: [ spec requires: #( 'TreeSitter' ) ];
-		package: 'TreeSitter-Typescript'
-		with: [ spec requires: #( 'TreeSitter' ) ];
-		package: 'TreeSitter-C'
-		with: [ spec requires: #( 'TreeSitter' ) ];
-		package: 'TreeSitter-Spec'
-		with: [ spec requires: #( 'TreeSitter' ) ];
-		package: 'TreeSitter-Visitor'
-		with: [ spec requires: #( 'TreeSitter' ) ];
-		package: 'TreeSitter-Libraries'
-		with: [ spec requires: #( 'TreeSitter' ) ];
-		package: 'TreeSitter-Highlighter'
-		with: [ spec requires: #( 'TreeSitter' ) ].
+		package: 'TreeSitter-Tests' with: [ spec requires: #( 'TreeSitter' 'TreeSitter-Python' 'TreeSitter-Groovy' 'TreeSitter-Typescript' 'TreeSitter-C' ) ];
+		package: 'TreeSitter-Groovy' with: [ spec requires: #( 'TreeSitter' ) ];
+		package: 'TreeSitter-Python' with: [ spec requires: #( 'TreeSitter' ) ];
+		package: 'TreeSitter-Typescript' with: [ spec requires: #( 'TreeSitter' ) ];
+		package: 'TreeSitter-C' with: [ spec requires: #( 'TreeSitter' ) ];
+		package: 'TreeSitter-Spec' with: [ spec requires: #( 'TreeSitter-Visitor' ) ];
+		package: 'TreeSitter-Visitor' with: [ spec requires: #( 'TreeSitter' ) ];
+		package: 'TreeSitter-Libraries' with: [ spec requires: #( 'TreeSitter' ) ];
+		package: 'TreeSitter-Highlighter' with: [ spec requires: #( 'TreeSitter' ) ].
 
 	"Moose integration for reyfication"
-	spec
-		package: 'TreeSitter-FAST-Utils'
-		with: [ spec requires: #( 'TreeSitter-Visitor' ) ]
+	spec package: 'TreeSitter-FAST-Utils' with: [ spec requires: #( 'TreeSitter-Visitor' ) ]
 ]
