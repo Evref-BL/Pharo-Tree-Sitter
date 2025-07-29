@@ -12,7 +12,9 @@ Class {
 		'symbolDictionary',
 		'symbolList',
 		'parentsList',
-		'childrenTree'
+		'childrenTree',
+		'code',
+		'label'
 	],
 	#category : 'TreeSitter-Spec',
 	#package : 'TreeSitter-Spec'
@@ -27,7 +29,9 @@ TSSymbolExplorerPresenter >> connectPresenters [
 			selection selectedItem
 				ifNil: [
 						childrenTree roots: #(  ).
-						parentsList items: #(  ) ]
+						parentsList items: #(  ).
+						label label: ''.
+						code text: 'Nothing to show' ]
 				ifNotNil: [
 						| parents |
 						childrenTree
@@ -39,23 +43,39 @@ TSSymbolExplorerPresenter >> connectPresenters [
 							(fields anySatisfy: [ :field | field symbols includes: selection selectedItem ]) ifTrue: [ parents add: symbol ] ].
 						parentsList items: parents asOrderedCollection ] ].
 
+	childrenTree whenSelectionChangedDo: [ :selection |
+			| items |
+			items := selection selectedItemsInPath.
+			code text: (items size = 2
+					 ifFalse: [ 'Nothing to show' ]
+					 ifTrue: [
+							 label label: 'Example of code with a ' , items second , ' inside a ' , symbolList selectedItem.
+							 items first codeOf: items second ]) ].
+
 	symbolList listPresenter selectFirst
 ]
 
 { #category : 'layout' }
 TSSymbolExplorerPresenter >> defaultLayout [
 
-	^ SpBoxLayout newLeftToRight
-		  spacing: 3;
+	^ SpPanedLayout newTopToBottom
+		  positionOfSlider: 80 percent;
+		  add: (SpBoxLayout newLeftToRight
+				   spacing: 3;
+				   add: (SpBoxLayout newTopToBottom
+						    add: 'Symbols' expand: false;
+						    add: symbolList);
+				   add: (SpBoxLayout newTopToBottom
+						    add: 'Possible children by fields' expand: false;
+						    add: childrenTree);
+				   add: (SpBoxLayout newTopToBottom
+						    add: 'Possible parents' expand: false;
+						    add: parentsList);
+				   yourself);
 		  add: (SpBoxLayout newTopToBottom
-				   add: 'Symbols' expand: false;
-				   add: symbolList);
-		  add: (SpBoxLayout newTopToBottom
-				   add: 'Possible children by fields' expand: false;
-				   add: childrenTree);
-		  add: (SpBoxLayout newTopToBottom
-				   add: 'Possible parents' expand: false;
-				   add: parentsList);
+				   add: label expand: false;
+				   add: code;
+				   yourself);
 		  yourself
 ]
 
@@ -116,6 +136,8 @@ TSSymbolExplorerPresenter >> initializePresenters [
 	symbolList := self newFilteringList.
 	childrenTree := self newTree.
 	parentsList := self newFilteringList.
+	code := self newText.
+	label := self newLabel.
 
 	symbolList
 		items: symbolDictionary keys;
