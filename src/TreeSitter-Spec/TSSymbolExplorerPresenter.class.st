@@ -81,18 +81,32 @@ TSSymbolExplorerPresenter >> initializeMenus [
 														  separatedBy: [ s cr ] ]) ] ];
 			 addActionWith: [ :anItem |
 					 anItem
+						 name: 'Copy name';
+						 action: [ Clipboard clipboardText: childrenTree selectedItem asString ] ];
+			 addActionWith: [ :anItem |
+					 anItem
 						 name: 'Inspect field items';
 						 actionEnabled: [ childrenTree selectedItem class = TSFieldExplorerWrapper ];
 						 action: [ childrenTree selectedItem symbols inspect ] ]).
-	^ parentsList actions: (SpActionGroup new
-			   addActionWith: [ :anItem |
-					   anItem
-						   name: 'Copy parents';
-						   action: [ Clipboard clipboardText: (String streamContents: [ :s | parentsList items do: [ :e | s nextPutAll: e ] separatedBy: [ s << ' / ' ] ]) ] ];
-			   addActionWith: [ :anItem |
-					   anItem
-						   name: 'Inspect list of parents';
-						   action: [ parentsList items inspect ] ])
+
+	parentsList actions: (SpActionGroup new
+			 addActionWith: [ :anItem |
+					 anItem
+						 name: 'Copy name';
+						 action: [ Clipboard clipboardText: parentsList selectedItem ] ];
+			 addActionWith: [ :anItem |
+					 anItem
+						 name: 'Copy parents';
+						 action: [ Clipboard clipboardText: (String streamContents: [ :s | parentsList items do: [ :e | s nextPutAll: e ] separatedBy: [ s << ' / ' ] ]) ] ];
+			 addActionWith: [ :anItem |
+					 anItem
+						 name: 'Inspect list of parents';
+						 action: [ parentsList items inspect ] ]).
+
+	symbolList actions: (SpActionGroup new addActionWith: [ :anItem |
+				 anItem
+					 name: 'Copy name';
+					 action: [ Clipboard clipboardText: symbolList selectedItem ] ])
 ]
 
 { #category : 'initialization' }
