@@ -12,7 +12,9 @@ Class {
 		'symbolDictionary',
 		'symbolList',
 		'parentsList',
-		'childrenTree'
+		'childrenTree',
+		'code',
+		'label'
 	],
 	#category : 'TreeSitter-Spec',
 	#package : 'TreeSitter-Spec'
@@ -24,37 +26,60 @@ TSSymbolExplorerPresenter >> connectPresenters [
 	super connectPresenters.
 
 	symbolList whenSelectionChangedDo: [ :selection |
-			| parents |
-			childrenTree
-				roots: (symbolDictionary at: selection selectedItem);
-				expandAll.
+			selection selectedItem
+				ifNil: [
+						childrenTree roots: #(  ).
+						parentsList items: #(  ).
+						label label: ''.
+						code text: 'Nothing to show' ]
+				ifNotNil: [
+						| parents |
+						childrenTree
+							roots: (symbolDictionary at: selection selectedItem);
+							expandAll.
 
-			parents := Set new.
-			symbolDictionary keysAndValuesDo: [ :symbol :fields |
-				(fields anySatisfy: [ :field | field symbols includes: selection selectedItem ]) ifTrue: [ parents add: symbol ] ].
-			parentsList items: parents asOrderedCollection ].
+						parents := Set new.
+						symbolDictionary keysAndValuesDo: [ :symbol :fields |
+							(fields anySatisfy: [ :field | field symbols includes: selection selectedItem ]) ifTrue: [ parents add: symbol ] ].
+						parentsList items: parents asOrderedCollection ] ].
 
-	symbolList selectFirst
+	childrenTree whenSelectionChangedDo: [ :selection |
+			| items |
+			items := selection selectedItemsInPath.
+			code text: (items size = 2
+					 ifFalse: [ 'Nothing to show' ]
+					 ifTrue: [
+							 label label: 'Example of code with a ' , items second , ' inside a ' , symbolList selectedItem.
+							 items first codeOf: items second ]) ].
+
+	symbolList listPresenter selectFirst
 ]
 
 { #category : 'layout' }
 TSSymbolExplorerPresenter >> defaultLayout [
 
-	^ SpBoxLayout newLeftToRight
-		  spacing: 3;
+	^ SpPanedLayout newTopToBottom
+		  positionOfSlider: 80 percent;
+		  add: (SpBoxLayout newLeftToRight
+				   spacing: 3;
+				   add: (SpBoxLayout newTopToBottom
+						    add: 'Symbols' expand: false;
+						    add: symbolList);
+				   add: (SpBoxLayout newTopToBottom
+						    add: 'Possible children by fields' expand: false;
+						    add: childrenTree);
+				   add: (SpBoxLayout newTopToBottom
+						    add: 'Possible parents' expand: false;
+						    add: parentsList);
+				   yourself);
 		  add: (SpBoxLayout newTopToBottom
-				   add: 'Symbols' expand: false;
-				   add: symbolList);
-		  add: (SpBoxLayout newTopToBottom
-				   add: 'Possible children by fields' expand: false;
-				   add: childrenTree);
-		  add: (SpBoxLayout newTopToBottom
-				   add: 'Possible parents' expand: false;
-				   add: parentsList);
+				   add: label expand: false;
+				   add: code;
+				   yourself);
 		  yourself
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'initialization' }
 TSSymbolExplorerPresenter >> initializeMenus [
 
 	childrenTree actions: (SpActionGroup new
@@ -76,31 +101,48 @@ TSSymbolExplorerPresenter >> initializeMenus [
 														  separatedBy: [ s cr ] ]) ] ];
 			 addActionWith: [ :anItem |
 					 anItem
+						 name: 'Copy name';
+						 action: [ Clipboard clipboardText: childrenTree selectedItem asString ] ];
+			 addActionWith: [ :anItem |
+					 anItem
 						 name: 'Inspect field items';
 						 actionEnabled: [ childrenTree selectedItem class = TSFieldExplorerWrapper ];
 						 action: [ childrenTree selectedItem symbols inspect ] ]).
-	^ parentsList actions: (SpActionGroup new
-			   addActionWith: [ :anItem |
-					   anItem
-						   name: 'Copy parents';
-						   action: [ Clipboard clipboardText: (String streamContents: [ :s | parentsList items do: [ :e | s nextPutAll: e ] separatedBy: [ s << ' / ' ] ]) ] ];
-			   addActionWith: [ :anItem |
-					   anItem
-						   name: 'Inspect list of parents';
-						   action: [ parentsList items inspect ] ])
+
+	parentsList actions: (SpActionGroup new
+			 addActionWith: [ :anItem |
+					 anItem
+						 name: 'Copy name';
+						 action: [ Clipboard clipboardText: parentsList selectedItem ] ];
+			 addActionWith: [ :anItem |
+					 anItem
+						 name: 'Copy parents';
+						 action: [ Clipboard clipboardText: (String streamContents: [ :s | parentsList items do: [ :e | s nextPutAll: e ] separatedBy: [ s << ' / ' ] ]) ] ];
+			 addActionWith: [ :anItem |
+					 anItem
+						 name: 'Inspect list of parents';
+						 action: [ parentsList items inspect ] ]).
+
+	symbolList actions: (SpActionGroup new addActionWith: [ :anItem |
+				 anItem
+					 name: 'Copy name';
+					 action: [ Clipboard clipboardText: symbolList selectedItem ] ])
 ]
 
 { #category : 'initialization' }
 TSSymbolExplorerPresenter >> initializePresenters [
 
 	super initializePresenters.
-	symbolList := self newList.
+	symbolList := self newFilteringList.
 	childrenTree := self newTree.
-	parentsList := self newList.
+	parentsList := self newFilteringList.
+	code := self newText.
+	label := self newLabel.
 
 	symbolList
 		items: symbolDictionary keys;
 		sortingBlock: #yourself ascending.
+	parentsList sortingBlock: #yourself ascending.
 
 	childrenTree
 		display: [ :item |
@@ -112,7 +154,7 @@ TSSymbolExplorerPresenter >> initializePresenters [
 					ifFalse: [ item ] ];
 		children: [ :item |
 				item class = TSFieldExplorerWrapper
-					ifTrue: [ item symbols asOrderedCollection ]
+					ifTrue: [ item symbols asOrderedCollection sort: #yourself ascending ]
 					ifFalse: [ #(  ) ] ].
 
 	self initializeMenus
