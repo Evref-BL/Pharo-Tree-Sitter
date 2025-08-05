@@ -7,7 +7,7 @@ Class {
 
 { #category : 'accessing - platform' }
 TSGroovyLibrary >> macLibraryName [ 
-		^ FFIMacLibraryFinder findAnyLibrary: #( 'groovy.dylib' )
+		^ FFIMacLibraryFinder findAnyLibrary: #( 'groovy.dylib' "'groovy-beta.dylib'"  )
 ]
 
 { #category : 'as yet unclassified' }
