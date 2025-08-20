@@ -26,14 +26,14 @@ TSFASTBuilder >> addDefineClassIn: metamodelGeneratorClass [
 		          self typesToReify
 			          do: [ :type |
 				          | variable |
-				          variable := self variableNameOfTSSymbol: type.
+				          variable := (self variableNameOfTSSymbol: type) pascalized.
 				          variable ifNotEmpty: [
 					          stream
 						          << '	';
 						          << variable;
 						          << ' := '.
 					          stream << 'builder ensureClassNamed: #'
-					          << (tsLanguage nameOfSymbol: type) capitalized << '.' ] ]
+					          << (tsLanguage nameOfSymbol: type ) pascalized capitalized << '.' ] ]
 			          separatedBy: [
 				          stream << '
 ' ] ].
@@ -50,9 +50,7 @@ TSFASTBuilder >> addDefineHierarchyIn: metamodelGeneratorClass [
 
 	super defineHierarchy.
 
-	entity --|> tEntity.
-	entity --|> #THasImmediateSource.
-	entity withPrecedenceOf: #THasImmediateSource' ].
+	entity --|> tEntity.' ].
 	metamodelGeneratorClass compile: method classified: #definition
 ]
 
@@ -70,20 +68,7 @@ TSFASTBuilder >> addDefineRelationsIn: metamodelGeneratorClass [
 			          << String tab;
 			          <<
 				          '(entity property: #''genericChildren'') <>-* (entity property: #''genericParent'').'.
-		          self fieldToReify
-			          do: [ :field |
-				          stream
-					          << String tab;
-					          << '(entity property: #''';
-					          << (self nameOfField: field);
-					          << ''')';
-					          << ' <>-* ';
-					          << '(entity property: #''';
-					          << (self parentNameOfField: field);
-					          << ''').' ]
-			          separatedBy: [
-				          stream << '
-' ] ].
+		           ].
 	metamodelGeneratorClass compile: method classified: #definition
 ]
 
@@ -108,7 +93,7 @@ TSFASTBuilder >> addPackageNameMethodIn: metamodelGeneratorClass [
 	metamodelGeneratorClass class
 		compile: 'packageName
 
-	^ #''FAST' , self languageName , '-Model'''
+	^ #''FAST-' , self languageName , '-Model'''
 		classified: #accessing
 ]
 
@@ -154,12 +139,12 @@ TSFASTBuilder >> createMetamodelGeneratorClass [
 	className := #FAST , self languageName.
 	classBuilder := FamixMetamodelGenerator
 	                << (className , #MetamodelGenerator).
-	types := ((self typesToReify
-			 collect: [ :type | (self variableNameOfTSSymbol: type) asSymbol ]
+	types := ((self typesToReify 
+			 collect: [ :type | (self variableNameOfTSSymbol: type) pascalized asSymbol ]
 			 as: Set) asOrderedCollection ) reject: [ :each | each isEmpty ] .
 	
 	classBuilder slots: types, { #entity. #tEntity }.
-	classBuilder package: className , #'-Model-Generator'.
+	classBuilder package: #FAST , '-', self languageName , #'-Model-Generator'.
 	^ classBuilder install
 ]
 
@@ -216,6 +201,6 @@ TSFASTBuilder >> variableNameOfTSSymbol: aTSSymbol [
     
  	| variable |
     variable := tsLanguage nameOfSymbol: aTSSymbol.
-    ^ variable isEmpty ifTrue: [''] ifFalse: ['_', variable] 
+    ^ variable isEmpty ifTrue: [''] ifFalse: [ '_', variable] 
  
 ]
