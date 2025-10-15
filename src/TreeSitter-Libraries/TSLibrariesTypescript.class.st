@@ -61,7 +61,7 @@ TSLibrariesTypescript >> deleteTreeSitterFolderInCommon [
 { #category : 'as yet unclassified' }
 TSLibrariesTypescript >> ensureTypescriptLibraryExists [
 
-	
+	self halt.
 	self typescriptLibraryExists ifFalse: [
 		self typescriptLibraryExistsInDocuments ifFalse: [
 			self
