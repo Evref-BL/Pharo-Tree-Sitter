@@ -24,3 +24,17 @@ TSXMLLibrary >> uniqueInstance [
 	TSLibrariesXML new ensureXMLLibraryExists .
 	^ self
 ]
+
+{ #category : 'accessing - platform' }
+TSXMLLibrary >> unix64LibraryName [
+	"Users should use unix32* or unix64*"
+
+	^ FFIUnix64LibraryFinder findAnyLibrary:
+		  #( 'libtree-sitter-xml.so' )
+]
+
+{ #category : 'accessing - platform' }
+TSXMLLibrary >> win32LibraryName [
+
+	^ FFIWindowsLibraryFinder findAnyLibrary: #( 'libtree-sitter-xml.dll' )
+]
