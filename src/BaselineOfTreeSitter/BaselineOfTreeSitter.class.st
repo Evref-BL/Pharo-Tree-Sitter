@@ -35,6 +35,7 @@ BaselineOfTreeSitter >> defineGroups: spec [
 	spec group: 'mermaid' with: #( 'default' 'TreeSitter-Mermaid' ).
 	spec group: 'groovy' with: #( 'default' 'TreeSitter-Groovy' ).
 	spec group: 'python' with: #( 'default' 'TreeSitter-Python' ).
+	spec group: 'xml' with: #( 'default' 'TreeSitter-XML' ).
 	spec group: 'typescript' with: #( 'default' 'TreeSitter-Typescript' ).
 	spec group: 'cLang' with: #( 'default' 'TreeSitter-C' )
 ]
@@ -44,9 +45,10 @@ BaselineOfTreeSitter >> definePackages: spec [
 
 	spec
 		package: 'TreeSitter';
-		package: 'TreeSitter-Tests' with: [ spec requires: #( 'TreeSitter' 'TreeSitter-Python' 'TreeSitter-Groovy' 'TreeSitter-Typescript' 'TreeSitter-C' ) ];
+		package: 'TreeSitter-Tests' with: [ spec requires: #( 'TreeSitter' 'TreeSitter-Python' 'TreeSitter-XML' 'TreeSitter-Groovy' 'TreeSitter-Typescript' 'TreeSitter-C' ) ];
 		package: 'TreeSitter-Groovy' with: [ spec requires: #( 'TreeSitter' ) ];
 		package: 'TreeSitter-Python' with: [ spec requires: #( 'TreeSitter' ) ];
+		package: 'TreeSitter-XML' with: [ spec requires: #( 'TreeSitter' ) ];
 		package: 'TreeSitter-Typescript' with: [ spec requires: #( 'TreeSitter' ) ];
 		package: 'TreeSitter-C' with: [ spec requires: #( 'TreeSitter' ) ];
 		package: 'TreeSitter-Spec' with: [ spec requires: #( 'TreeSitter-Visitor' ) ];
