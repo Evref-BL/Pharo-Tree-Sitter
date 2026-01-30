@@ -81,6 +81,19 @@ TSParser >> parseString: aString usingTree: aTree [
 		  usingOldTree: aTree
 ]
 
+{ #category : 'parsing' }
+TSParser >> parseString: aString usingTree: aTree encoding: anEncoding [
+
+	"to be used after editing the old tree which must be past here as a parameter to make an incremental parsing and to specifyEncoding"
+	  
+	^ TSLibrary uniqueInstance
+		  ts_parser: self
+		  _parse_string: aString 
+		  ofLength: aString size
+		  usingOldTree: aTree
+		  encoding: anEncoding
+]
+
 { #category : 'initialization' }
 TSParser >> reset [ 
 
