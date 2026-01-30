@@ -1,3 +1,18 @@
+"
+I am responsible for encoding the strings as it is supported by treeSitter.
+Below is how you can use me:
+
+```
+parser := TSParser new.
+typescriptLanguage := TSLanguage typescript.
+parser language: typescriptLanguage.
+
+string := 't = stréàè.toString();'.
+
+res := parser parseString: string usingTree: ExternalAddress null encoding: TSInputEncoding tsinputencodingutf8 .
+root := res rootNode .
+```
+"
 Class {
 	#name : 'TSInputEncoding',
 	#superclass : 'FFIEnumeration',
