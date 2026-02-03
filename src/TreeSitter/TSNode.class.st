@@ -293,7 +293,14 @@ TSNode >> symbol [
 { #category : 'as yet unclassified' }
 TSNode >> textFromSourceText: string [
 
-	^ string copyFrom: (string positionFromTSPoint: self startPoint)+1 to: (string positionFromTSPoint: self endPoint ).
+	"^ string copyFrom: (string positionFromTSPoint: self startPoint)+1 to: (string positionFromTSPoint: self endPoint )."
+	
+	|encodedStr copiedArray |
+	
+	encodedStr := string withUnixLineEndings utf8Encoded.  
+	copiedArray := encodedStr copyFrom: self startByte +1 to: self endByte.			
+			
+	^ copiedArray utf8Decoded.
 ]
 
 { #category : 'accessing - structure variables' }
