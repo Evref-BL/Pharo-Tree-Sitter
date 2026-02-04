@@ -142,6 +142,29 @@ TSNode >> endPoint [
 ]
 
 { #category : 'accessing' }
+TSNode >> endPositionFrom: aBinaryStream [
+	"Return the end position of the node in number of characters."
+
+	^ self endPositionFrom: aBinaryStream encoding: #utf8
+]
+
+{ #category : 'accessing' }
+TSNode >> endPositionFrom: aBinaryStream encoding: anEncoding [
+	"Return the end position of the node in number of characters.
+	
+	Since we know the position as the number of bytes, we read this number of bytes, decode it with the encoding we used and check the number of characters. "
+
+	^ ((aBinaryStream next: self endByte) decodeWith: anEncoding) size
+]
+
+{ #category : 'accessing' }
+TSNode >> endPositionFromSourceText: aString [
+	"Return the end position of the node in number of characters."
+
+	^ self endPositionFrom: aString withUnixLineEndings utf8Encoded readStream
+]
+
+{ #category : 'accessing' }
 TSNode >> fieldName [
 
 	^ TSLibrary uniqueInstance ts_tree_cursor_current_field_name:
@@ -278,6 +301,29 @@ TSNode >> startPoint [
 	^ TSLibrary uniqueInstance ts_node_start_point: self
 ]
 
+{ #category : 'accessing' }
+TSNode >> startPositionFrom: aBinaryStream [
+	"Return the start position of the node in number of characters."
+
+	^ self startPositionFrom: aBinaryStream encoding: #utf8
+]
+
+{ #category : 'accessing' }
+TSNode >> startPositionFrom: aBinaryStream encoding: anEncoding [
+	"Return the start position of the node in number of characters.
+	
+	Since we know the position as the number of bytes, we read this number of bytes, decode it with the encoding we used and check the number of characters. "
+
+	^ ((aBinaryStream next: self startByte) decodeWith: anEncoding) size + 1
+]
+
+{ #category : 'accessing' }
+TSNode >> startPositionFromSourceText: aString [
+	"Return the start position of the node in number of characters."
+
+	^ self startPositionFrom: aString withUnixLineEndings utf8Encoded readStream
+]
+
 { #category : 'api' }
 TSNode >> string [   
 
@@ -290,17 +336,25 @@ TSNode >> symbol [
 	^ TSLibrary uniqueInstance ts_node_symbol: self
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
+TSNode >> textFrom: aBinaryStream [
+	"We use UTF8 by default."
+
+	^ self textFrom: aBinaryStream encoding: #utf8
+]
+
+{ #category : 'accessing' }
+TSNode >> textFrom: aBinaryStream encoding: anEncoding [
+
+	aBinaryStream skip: self startByte.
+
+	^ (aBinaryStream next: self endByte - self startByte) decodeWith: anEncoding
+]
+
+{ #category : 'accessing' }
 TSNode >> textFromSourceText: string [
 
-	"^ string copyFrom: (string positionFromTSPoint: self startPoint)+1 to: (string positionFromTSPoint: self endPoint )."
-	
-	|encodedStr copiedArray |
-	
-	encodedStr := string withUnixLineEndings utf8Encoded.  
-	copiedArray := encodedStr copyFrom: self startByte +1 to: self endByte.			
-			
-	^ copiedArray utf8Decoded.
+	^ self textFrom: string withUnixLineEndings utf8Encoded readStream
 ]
 
 { #category : 'accessing - structure variables' }
