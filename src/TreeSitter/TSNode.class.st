@@ -137,6 +137,8 @@ TSNode >> endByte [
 
 { #category : 'api' }
 TSNode >> endPoint [
+	"Return a TSpoint with the positions in the source code. It has a #row and #column attribute to locate the position.
+	Be careful! The column is the position on the line in bytes and not in characters."
 
 	^ TSLibrary uniqueInstance ts_node_end_point: self
 ]
@@ -297,6 +299,8 @@ TSNode >> startByte [
 
 { #category : 'api' }
 TSNode >> startPoint [
+	"Return a TSpoint with the positions in the source code. It has a #row and #column attribute to locate the position.
+	Be careful! The column is the position on the line in bytes and not in characters."
 
 	^ TSLibrary uniqueInstance ts_node_start_point: self
 ]
