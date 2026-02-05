@@ -4,13 +4,15 @@ Extension { #name : 'String' }
 String >> positionFromTSPoint: aTSPoint [
 	"Use me to convert a TSPoint to the position in the original string"
 
+	"Ideally this method (and #ts* methods on String) should be removed because it does not manage the encoding. On top of that, they are too slow because they do too much things while we could directly manipulate a ByteArray or BinaryStream and use #startByte and #endByte to read or get the positions."
+
 	| sum currentLine lines |
 	sum := aTSPoint column.
 	currentLine := 0.
 	lines := self tsLines.
 	[ currentLine < aTSPoint row ] whileTrue: [
-		sum := sum + (lines at: currentLine + 1) size.
-		currentLine := currentLine + 1 ].
+			sum := sum + (lines at: currentLine + 1) size.
+			currentLine := currentLine + 1 ].
 	^ sum
 ]
 
@@ -20,6 +22,9 @@ String >> tsLineIndicesDo: aBlock [
 	- start index of line
 	- end index of line without line delimiter
 	- end index of line including line delimiter(s) CR, LF or CRLF"
+	
+	
+	"Ideally this method (and #ts* methods on String) should be removed because it does not manage the encoding. On top of that, they are too slow because they do too much things while we could directly manipulate a ByteArray or BinaryStream and use #startByte and #endByte to read or get the positions."
 
 	| cr lf start sz nextLF nextCR |
 	start := 1.
@@ -57,6 +62,9 @@ String >> tsLineIndicesDo: aBlock [
 { #category : '*TreeSitter' }
 String >> tsLines [
 	"Same as lines but empty line exist"
+	
+	
+	"Ideally this method (and #ts* methods on String) should be removed because it does not manage the encoding. On top of that, they are too slow because they do too much things while we could directly manipulate a ByteArray or BinaryStream and use #startByte and #endByte to read or get the positions."
 
 	^ Array
 		  new: (self size // 60 max: 16)
@@ -67,6 +75,9 @@ String >> tsLines [
 { #category : '*TreeSitter' }
 String >> tsLinesDo: aBlock [
 	"Same as linesDo but empty line exist"
+	
+	
+	"Ideally this method (and #ts* methods on String) should be removed because it does not manage the encoding. On top of that, they are too slow because they do too much things while we could directly manipulate a ByteArray or BinaryStream and use #startByte and #endByte to read or get the positions."
 
 	self
 		tsLineIndicesDo: [ :start :endWithoutDelimiters :end |

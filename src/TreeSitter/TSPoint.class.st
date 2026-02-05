@@ -1,3 +1,8 @@
+"
+I return a position is a source via a line number and column number. 
+
+Be careful! The position is in number of Bytes and not in number of characters!
+"
 Class {
 	#name : 'TSPoint',
 	#superclass : 'FFIStructure',
