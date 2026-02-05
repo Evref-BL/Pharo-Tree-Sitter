@@ -156,7 +156,7 @@ TSNode >> endPositionFrom: aBinaryStream encoding: anEncoding [
 	
 	Since we know the position as the number of bytes, we read this number of bytes, decode it with the encoding we used and check the number of characters. "
 
-	^ anEncoding numberOfCharactersFrom: (aBinaryStream next: self endByte)
+	^ anEncoding asZnCharacterEncoder numberOfCharactersFrom: (aBinaryStream next: self endByte)
 ]
 
 { #category : 'accessing' }
@@ -318,7 +318,7 @@ TSNode >> startPositionFrom: aBinaryStream encoding: anEncoding [
 	
 	Since we know the position as the number of bytes, we read this number of bytes, decode it with the encoding we used and check the number of characters. "
 
-	^ (anEncoding numberOfCharactersFrom: (aBinaryStream next: self startByte)) + 1
+	^ (anEncoding asZnCharacterEncoder numberOfCharactersFrom: (aBinaryStream next: self startByte)) + 1
 ]
 
 { #category : 'accessing' }
