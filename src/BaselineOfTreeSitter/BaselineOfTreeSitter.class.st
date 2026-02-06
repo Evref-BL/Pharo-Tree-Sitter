@@ -18,7 +18,8 @@ BaselineOfTreeSitter >> baseline: spec [
 { #category : 'baselines' }
 BaselineOfTreeSitter >> defineDependencies: spec [
 
-	
+	spec
+    baseline: 'NeoJSON'.
 ]
 
 { #category : 'baselines' }
@@ -56,6 +57,9 @@ BaselineOfTreeSitter >> definePackages: spec [
 		package: 'TreeSitter-Libraries' with: [ spec requires: #( 'TreeSitter' ) ];
 		package: 'TreeSitter-Highlighter' with: [ spec requires: #( 'TreeSitter' ) ].
 
+	"include NeoJSON"
+	spec package: 'TreeSitter' with: [ spec requires: #('NeoJSON') ].
+	
 	"Moose integration for reyfication"
-	spec package: 'TreeSitter-FAST-Utils' with: [ spec requires: #( 'TreeSitter-Visitor' ) ]
+	spec package: 'TreeSitter-FAST-Utils' with: [ spec requires: #( 'TreeSitter-Visitor' ) ].
 ]
