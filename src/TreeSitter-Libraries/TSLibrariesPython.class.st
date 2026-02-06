@@ -8,12 +8,18 @@ Class {
 { #category : 'as yet unclassified' }
 TSLibrariesPython >> cloneTreeSitterPython [
 
-	| clonePath cloneCommand status |
+	| clonePath cloneCommand status lastReleasedVersion|
 	"Construct clone path"
 	clonePath := self originalLibrariesDirectory , '/tree-sitter-python'.
 
+	"before cloning get the latest release"	
+	lastReleasedVersion := self latestReleaseTagForOwner: 'tree-sitter' repo: 'tree-sitter-python'.
+
+	
 	"Execute clone command"
-	cloneCommand := 'git clone https://github.com/tree-sitter/tree-sitter-python.git '
+	"cloneCommand := 'git clone https://github.com/tree-sitter/tree-sitter-python.git '
+	                , clonePath."
+	cloneCommand := 'git clone --branch ', lastReleasedVersion ,' --depth 1 https://github.com/tree-sitter/tree-sitter-python.git '
 	                , clonePath.
 
 	self logInTranscript:
