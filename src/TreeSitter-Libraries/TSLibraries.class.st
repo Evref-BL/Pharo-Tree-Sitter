@@ -8,12 +8,18 @@ Class {
 { #category : 'as yet unclassified' }
 TSLibraries >> cloneTreeSitter [
 
-	| clonePath cloneCommand status |
+	| clonePath cloneCommand status lastReleasedVersion|
 	"Construct clone path"
 	clonePath := self originalLibrariesDirectory , '/tree-sitter'.
+	
+	"before cloning get the latest release"	
+	lastReleasedVersion := self latestReleaseTagForOwner: 'tree-sitter' repo: 'tree-sitter'.
 
 	"Execute clone command"
-	cloneCommand := 'git clone https://github.com/tree-sitter/tree-sitter.git '
+	"cloneCommand := 'git clone https://github.com/tree-sitter/tree-sitter.git '
+	                , clonePath."
+	
+	cloneCommand := 'git clone --branch ', lastReleasedVersion ,' --depth 1 https://github.com/tree-sitter/tree-sitter.git '
 	                , clonePath.
 
 	self logInTranscript: 'Start cloning TreeSitter in ' , clonePath.
@@ -92,6 +98,38 @@ TSLibraries >> isMacOS [
 TSLibraries >> isWindows [
 
 	^ OSPlatform current isWindows
+]
+
+{ #category : 'as yet unclassified' }
+TSLibraries >> latestReleaseTagForOwner: owner repo: repoName [
+
+	"I am a method that uses github apis to get the latest release version of a repo based on its name and its owner."
+
+	| url  json client body status|
+	
+	"I am using github apis to get the latest release version"
+	url := 'https://api.github.com/repos/'
+		, owner , '/'
+		, repoName
+		, '/releases/latest'.
+ 
+	 client := ZnClient new.
+    client
+        url: url.
+	
+	body := client get.
+	
+	"getting status because I need to check if it is successful or not to avoid issues when retrieving the data"
+	status := client response status. 
+	status = 200 ifFalse: [
+		self error: 'Cannot fetch latest release for ', repoName ].
+	
+	"parsing contents"
+	json := NeoJSONReader fromString: body.
+
+	"getting the version"
+	^ json at: 'tag_name'
+
 ]
 
 { #category : 'as yet unclassified' }

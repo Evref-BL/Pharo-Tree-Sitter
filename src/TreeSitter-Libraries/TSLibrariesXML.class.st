@@ -8,12 +8,18 @@ Class {
 { #category : 'as yet unclassified' }
 TSLibrariesXML >> cloneTreeSitterXML [
 
-	| clonePath cloneCommand status |
+	| clonePath cloneCommand status lastReleasedVersion|
 	"Construct clone path"
 	clonePath := self originalLibrariesDirectory , '/tree-sitter-xml'.
 
+	"before cloning get the latest release"	
+	lastReleasedVersion := self latestReleaseTagForOwner: 'tree-sitter-grammars' repo: 'tree-sitter-xml'.
+
 	"Execute clone command"
-	cloneCommand := 'git clone https://github.com/tree-sitter-grammars/tree-sitter-xml.git '
+	"cloneCommand := 'git clone https://github.com/tree-sitter-grammars/tree-sitter-xml.git '
+	                , clonePath."
+	
+	cloneCommand := 'git clone --branch ', lastReleasedVersion ,' --depth 1 https://github.com/tree-sitter-grammars/tree-sitter-xml.git '
 	                , clonePath.
 
 	self logInTranscript:

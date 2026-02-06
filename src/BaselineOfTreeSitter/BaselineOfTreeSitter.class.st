@@ -18,7 +18,12 @@ BaselineOfTreeSitter >> baseline: spec [
 { #category : 'baselines' }
 BaselineOfTreeSitter >> defineDependencies: spec [
 
-	
+	spec
+        baseline: 'NeoJSON'
+        with: [
+            spec
+                loads: #('default');
+                repository: 'github://svenvc/NeoJSON/repository' ].
 ]
 
 { #category : 'baselines' }
@@ -53,9 +58,10 @@ BaselineOfTreeSitter >> definePackages: spec [
 		package: 'TreeSitter-C' with: [ spec requires: #( 'TreeSitter' ) ];
 		package: 'TreeSitter-Spec' with: [ spec requires: #( 'TreeSitter-Visitor' ) ];
 		package: 'TreeSitter-Visitor' with: [ spec requires: #( 'TreeSitter' ) ];
-		package: 'TreeSitter-Libraries' with: [ spec requires: #( 'TreeSitter' ) ];
+		package: 'TreeSitter-Libraries' with: [ spec requires: #( 'TreeSitter'  'NeoJSON') ];
 		package: 'TreeSitter-Highlighter' with: [ spec requires: #( 'TreeSitter' ) ].
 
+	
 	"Moose integration for reyfication"
-	spec package: 'TreeSitter-FAST-Utils' with: [ spec requires: #( 'TreeSitter-Visitor' ) ]
+	spec package: 'TreeSitter-FAST-Utils' with: [ spec requires: #( 'TreeSitter-Visitor' ) ].
 ]
