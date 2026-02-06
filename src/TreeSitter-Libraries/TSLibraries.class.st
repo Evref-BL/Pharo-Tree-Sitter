@@ -127,7 +127,7 @@ TSLibraries >> latestReleaseTagForOwner: owner repo: repoName [
 	"parsing contents"
 	json := NeoJSONReader fromString: body.
 
-	"getting the version; btw it's a number and in the command of cloning we shall add v before like v2.1"
+	"getting the version"
 	^ json at: 'tag_name'
 
 ]
