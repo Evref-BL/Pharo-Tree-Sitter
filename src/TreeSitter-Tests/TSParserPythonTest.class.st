@@ -31,7 +31,7 @@ TSParserPythonTest >> testPositionEndPointInString [
 
 	| string tree |
 	string := 'print("Hello, I''m Python!")
-# comment'.
+# comment' withPlatformLineEndings.
 
 	tree := parser parseString: string.
 	self
@@ -45,7 +45,7 @@ TSParserPythonTest >> testPositionInString [
 
 	| string tree |
 	string := 'print("Hello, I''m Python!")
-# comment'.
+# comment' withPlatformLineEndings.
 
 	tree := parser parseString: string.
 	self

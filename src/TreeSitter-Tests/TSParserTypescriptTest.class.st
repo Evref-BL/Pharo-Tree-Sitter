@@ -34,7 +34,7 @@ TSParserTypescriptTest >> testChildrenCollection [
   					type: "Toyota",
  					model: "Corolla",
   					year: 2009
-				};'.
+				};' withPlatformLineEndings.
 
 	tree := parser parseString: string. 
 	
@@ -49,7 +49,7 @@ TSParserTypescriptTest >> testFieldsNamesCollection [
 	| string tree fieldsDict|
 	string := 'function deleteUser(user: User) {
   					// This is a comment
-				 }'.
+				 }' withPlatformLineEndings.
 
 	tree := parser parseString: string.
 	
@@ -66,7 +66,7 @@ TSParserTypescriptTest >> testParseTypescriptClass [
 	| string tree |
 	string := 'class Person {
   					name: string;
-				 }'.
+				 }' withPlatformLineEndings.
 
 	tree := parser parseString: string.
 	self assert: tree rootNode namedChildCount equals: 1.
@@ -84,7 +84,7 @@ TSParserTypescriptTest >> testParseTypescriptClassAndExpression [
   					name: string;
 				 }
 				const person = new Person();
-				person.name = "Jane"; '.
+				person.name = "Jane"; ' withPlatformLineEndings.
 
 	tree := parser parseString: string.
 	self assert: tree rootNode namedChildCount equals: 3.
@@ -101,7 +101,7 @@ TSParserTypescriptTest >> testParseTypescriptFunction [
 	| string tree |
 	string := 'function deleteUser(user: User) {
   					// This is a comment
-				 }'.
+				 }' withPlatformLineEndings.
 
 	tree := parser parseString: string.
 	self assert: tree rootNode childCount equals: 1.

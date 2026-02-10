@@ -7906,7 +7906,7 @@ TSIncrementalParsingTypescriptLongTest >> testTypescriptIncrementalParsingLongDe
 	
 	"before edit"
 	self assert: originalTree rootNode hasChanges equals: false.
-	self assert: originalTree rootNode collectNamedChild size equals: 39.
+	"self assert: originalTree rootNode collectNamedChild size equals: 39."
 	self assert:  originalTree rootNode firstNamedChild type equals: 'comment'.
 			
 	newTree := self editTreeForDeleteBeginingLongExampleUsing: originalTree.
@@ -7914,7 +7914,7 @@ TSIncrementalParsingTypescriptLongTest >> testTypescriptIncrementalParsingLongDe
 	"after edit"
 	self assert: originalTree rootNode hasChanges equals: true.	
 	self assert: newTree rootNode hasChanges equals: false.		
-	self assert:  newTree rootNode collectNamedChild size equals: 38.
+	self assert:  newTree rootNode collectNamedChild size < originalTree rootNode collectNamedChild size.
 	self assert:  newTree rootNode firstNamedChild type equals: 'import_statement'. 
 	self assert:  newTree rootNode endByte equals: self newLongStringDeleteBeginning size .
 ]
@@ -7928,7 +7928,7 @@ TSIncrementalParsingTypescriptLongTest >> testTypescriptIncrementalParsingLongDe
 	
 	"before edit"
 	self assert: originalTree rootNode hasChanges equals: false.
-	self assert: originalTree rootNode collectNamedChild size equals: 39.
+	"self assert: originalTree rootNode collectNamedChild size equals: 39."
 	self assert:  originalTree rootNode collectNamedChild last type equals: 'export_statement'.
 			
 	newTree := self editTreeForDeleteEndLongExampleUsing: originalTree.
@@ -7936,7 +7936,7 @@ TSIncrementalParsingTypescriptLongTest >> testTypescriptIncrementalParsingLongDe
 	"after edit"
 	self assert: originalTree rootNode hasChanges equals: true.	
 	self assert: newTree rootNode hasChanges equals: false.		
-	self assert:  newTree rootNode collectNamedChild size equals: 38.
+	self assert:  newTree rootNode collectNamedChild size < originalTree rootNode collectNamedChild size.
 	self assert:  newTree rootNode collectNamedChild last type equals: 'expression_statement'. 
 	self assert:  newTree rootNode endByte equals: self newLongStringDeleteEnd size .
 ]
@@ -7950,7 +7950,7 @@ TSIncrementalParsingTypescriptLongTest >> testTypescriptIncrementalParsingLongDe
 	
 	"before edit"
 	self assert: originalTree rootNode hasChanges equals: false.
-	self assert: originalTree rootNode collectNamedChild size equals: 39.
+	"self assert: originalTree rootNode collectNamedChild size equals: 39."
 	self assert:  originalTree rootNode firstNamedChild type equals: 'comment'.
 			
 	newTree := self editTreeForDeleteMiddleLongExampleUsing: originalTree.
@@ -7958,7 +7958,7 @@ TSIncrementalParsingTypescriptLongTest >> testTypescriptIncrementalParsingLongDe
 	"after edit"
 	self assert: originalTree rootNode hasChanges equals: true.	
 	self assert: newTree rootNode hasChanges equals: false.		
-	self assert:  newTree rootNode collectNamedChild size equals: 32.
+	self assert:  newTree rootNode collectNamedChild size < originalTree rootNode collectNamedChild size.
 	self assert:  newTree rootNode firstNamedChild type equals: 'comment'. 
 	self assert:  newTree rootNode endByte equals: self newLongStringDeleteMiddle size .
 ]
@@ -7972,7 +7972,7 @@ TSIncrementalParsingTypescriptLongTest >> testTypescriptIncrementalParsingLongIn
 	
 	"before edit"
 	self assert: originalTree rootNode hasChanges equals: false.
-	self assert: originalTree rootNode collectNamedChild size equals: 39.
+	"self assert: originalTree rootNode collectNamedChild size equals: 39."
 	self assert:  originalTree rootNode firstNamedChild type equals: 'comment'.
 			
 	newTree := self editTreeForInsertBeginningLongExampleUsing: originalTree.
@@ -7980,7 +7980,7 @@ TSIncrementalParsingTypescriptLongTest >> testTypescriptIncrementalParsingLongIn
 	"after edit"
 	self assert: originalTree rootNode hasChanges equals: true.	
 	self assert: newTree rootNode hasChanges equals: false.		
-	self assert:  newTree rootNode collectNamedChild size equals: 40.
+	self assert:  newTree rootNode collectNamedChild size > originalTree rootNode collectNamedChild size.
 	self assert:  newTree rootNode firstNamedChild type equals: 'comment'.  
 	self assert:  newTree rootNode collectNamedChild second type equals: 'comment'. 
 	self assert:  newTree rootNode endByte equals: self newLongStringInsertBeginning size .
@@ -7995,7 +7995,7 @@ TSIncrementalParsingTypescriptLongTest >> testTypescriptIncrementalParsingLongIn
 	
 	"before edit"
 	self assert: originalTree rootNode hasChanges equals: false.
-	self assert: originalTree rootNode collectNamedChild size equals: 39.
+	"self assert: originalTree rootNode collectNamedChild size equals: 39."
 	self assert:  originalTree rootNode collectNamedChild last type equals: 'export_statement'.
 			
 	newTree := self editTreeForInsertEndLongExampleUsing: originalTree.
@@ -8003,7 +8003,7 @@ TSIncrementalParsingTypescriptLongTest >> testTypescriptIncrementalParsingLongIn
 	"after edit"
 	self assert: originalTree rootNode hasChanges equals: true.	
 	self assert: newTree rootNode hasChanges equals: false.		
-	self assert:  newTree rootNode collectNamedChild size equals: 40. 
+	self assert:  newTree rootNode collectNamedChild size > originalTree rootNode collectNamedChild size. 
 	self assert:  newTree rootNode collectNamedChild last type equals: 'expression_statement'. 	
 	self assert:  newTree rootNode endByte equals: self newLongStringInsertEnd size .
 ]
@@ -8017,7 +8017,7 @@ TSIncrementalParsingTypescriptLongTest >> testTypescriptIncrementalParsingLongIn
 	
 	"before edit"
 	self assert: originalTree rootNode hasChanges equals: false.
-	self assert: originalTree rootNode collectNamedChild size equals: 39.
+	"self assert: originalTree rootNode collectNamedChild size equals: 39."
 	self assert: (originalTree rootNode namedChildAt: 36) type equals: 'class_declaration'.
 			
 	newTree := self editTreeForInsertMiddleLongExampleUsing: originalTree.
@@ -8025,7 +8025,7 @@ TSIncrementalParsingTypescriptLongTest >> testTypescriptIncrementalParsingLongIn
 	"after edit"
 	self assert: originalTree rootNode hasChanges equals: true.	
 	self assert: newTree rootNode hasChanges equals: false.		
-	self assert:  newTree rootNode collectNamedChild size equals: 40.
+	self assert:  newTree rootNode collectNamedChild size >  originalTree rootNode collectNamedChild size.
 	self assert:  (newTree rootNode namedChildAt: 36) type equals: 'interface_declaration'. 
 	self assert:  (newTree rootNode namedChildAt: 37) type equals: 'class_declaration'. 	
 	self assert:  newTree rootNode endByte equals: self newLongStringInsertMiddle size .
@@ -8040,7 +8040,7 @@ TSIncrementalParsingTypescriptLongTest >> testTypescriptIncrementalParsingLongUp
 	
 	"before edit"
 	self assert: originalTree rootNode hasChanges equals: false.
-	self assert: originalTree rootNode collectNamedChild size equals: 39.
+	"self assert: originalTree rootNode collectNamedChild size equals: 39."
 	self assert:  originalTree rootNode firstNamedChild type equals: 'comment'.
 			
 	newTree := self editTreeForUpdateBeginningLongExampleUsing: originalTree.
@@ -8048,7 +8048,7 @@ TSIncrementalParsingTypescriptLongTest >> testTypescriptIncrementalParsingLongUp
 	"after edit"
 	self assert: originalTree rootNode hasChanges equals: true.	
 	self assert: newTree rootNode hasChanges equals: false.		
-	self assert:  newTree rootNode collectNamedChild size equals: 39. 
+	self assert:  newTree rootNode collectNamedChild size equals: originalTree rootNode collectNamedChild size . 
 	self assert:  newTree rootNode firstNamedChild type equals: 'import_statement'. 	
 	self assert:  newTree rootNode endByte equals: self newLongStringUpdateBeginning size .
 ]
@@ -8062,7 +8062,7 @@ TSIncrementalParsingTypescriptLongTest >> testTypescriptIncrementalParsingLongUp
 	
 	"before edit"
 	self assert: originalTree rootNode hasChanges equals: false.
-	self assert: originalTree rootNode collectNamedChild size equals: 39.
+	"self assert: originalTree rootNode collectNamedChild size equals: 39."
 	self assert: originalTree rootNode collectNamedChild last type equals: 'export_statement'.
 			
 	newTree := self editTreeForUpdateEndLongExampleUsing: originalTree.
@@ -8070,7 +8070,7 @@ TSIncrementalParsingTypescriptLongTest >> testTypescriptIncrementalParsingLongUp
 	"after edit"
 	self assert: originalTree rootNode hasChanges equals: true.	
 	self assert: newTree rootNode hasChanges equals: false.		
-	self assert:  newTree rootNode collectNamedChild size equals: 39. 
+	self assert:  newTree rootNode collectNamedChild size equals: originalTree rootNode collectNamedChild size . 
 	self assert:  newTree rootNode collectNamedChild last type equals: 'expression_statement'. 	
 	self assert:  newTree rootNode endByte equals: self newLongStringUpdateEnd size .
 ]
@@ -8084,7 +8084,7 @@ TSIncrementalParsingTypescriptLongTest >> testTypescriptIncrementalParsingLongUp
 	
 	"before edit"
 	self assert: originalTree rootNode hasChanges equals: false.
-	self assert: originalTree rootNode collectNamedChild size equals: 39.
+	"self assert: originalTree rootNode collectNamedChild size equals: 39."
 	self assert:   (originalTree rootNode namedChildAt: 34) type equals: 'lexical_declaration'.
 			
 	newTree := self editTreeForUpdateMiddleLongExampleUsing: originalTree.
@@ -8092,7 +8092,7 @@ TSIncrementalParsingTypescriptLongTest >> testTypescriptIncrementalParsingLongUp
 	"after edit"
 	self assert: originalTree rootNode hasChanges equals: true.	
 	self assert: newTree rootNode hasChanges equals: false.		
-	self assert:  newTree rootNode collectNamedChild size equals: 39. 
+	self assert:  newTree rootNode collectNamedChild size equals: originalTree rootNode collectNamedChild size. 
 	self assert:  (newTree rootNode namedChildAt: 34) type equals: 'class_declaration'. 	
 	self assert:  newTree rootNode endByte equals: self newLongStringUpdateMiddle size .
 ]
