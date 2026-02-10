@@ -129,6 +129,13 @@ TSNode >> detectNamedChild: name ifNone: aConstantBlockClosure [
 	^ self collectNamedChild detect: [ :tsNode | tsNode type = name ] ifNone: aConstantBlockClosure
 ]
 
+{ #category : 'as yet unclassified' }
+TSNode >> detectNamedChild: nodeName ifOne: aBlock [ 
+	|child|
+	child := self detectNamedChild: nodeName ifNone: [nil].
+	child ifNotNil: [^ aBlock value: child ].
+]
+
 { #category : 'api' }
 TSNode >> endByte [
 
