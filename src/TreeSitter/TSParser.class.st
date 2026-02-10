@@ -106,7 +106,7 @@ TSParser >> parseString: aString usingTree: aTree pharoEncoding: anEncoding [
 	"if you want to pass an empty tree use ExternalAddress null"
 	
 	| stringToConsider |
-	stringToConsider := aString encodeWith: anEncoding.
+	stringToConsider := aString encodeWith: anEncoding. 	 
 	^ TSLibrary uniqueInstance
 		  ts_parser: self
 		  _parse_string: stringToConsider 

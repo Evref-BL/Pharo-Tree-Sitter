@@ -42,7 +42,7 @@ TSNodeTestResource >> sourceCode [
 
 	^ 'function deleteUser(user: User) {
   					// This is a comment é
-				 }'
+				 }' withPlatformLineEndings
 ]
 
 { #category : 'running' }

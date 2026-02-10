@@ -889,7 +889,7 @@ class Tooltip extends BaseComponent {
 
 defineJQueryPlugin(Tooltip)
 
-export default Tooltip'
+export default Tooltip' withPlatformLineEndings
 ]
 
 { #category : 'storing' }
@@ -1351,7 +1351,7 @@ EventHandler.on(document, EVENT_CLICK_DATA_API, SELECTOR_DATA_TOGGLE, function (
 
 defineJQueryPlugin(Dropdown)
 
-export default Dropdown'
+export default Dropdown' withPlatformLineEndings 
 ]
 
 { #category : 'storing' }
@@ -1673,7 +1673,7 @@ EventHandler.on(window, EVENT_LOAD_DATA_API, () => {
 
 defineJQueryPlugin(Tab)
 
-export default Tab'
+export default Tab' withPlatformLineEndings
 ]
 
 { #category : 'storing' }
@@ -2135,7 +2135,7 @@ EventHandler.on(document, EVENT_CLICK_DATA_API, SELECTOR_DATA_TOGGLE, function (
 
 defineJQueryPlugin(Dropdown)
 
-export default Dropdown'
+export default Dropdown' withPlatformLineEndings
 ]
 
 { #category : 'storing' }
@@ -2767,7 +2767,7 @@ class Tooltip extends BaseComponent {
 
 defineJQueryPlugin(Tooltip)
 
-export default Tooltip'
+export default Tooltip' withPlatformLineEndings
 ]
 
 { #category : 'instance creation' }
@@ -3406,7 +3406,7 @@ class Tooltip extends BaseComponent {
 
 defineJQueryPlugin(Tooltip)
 
-'
+' withPlatformLineEndings
 ]
 
 { #category : 'instance creation' }
@@ -4036,7 +4036,7 @@ class Tooltip extends BaseComponent {
 
 defineJQueryPlugin(Tooltip)
 
-export default Tooltip'
+export default Tooltip' withPlatformLineEndings
 ]
 
 { #category : 'instance creation' }
@@ -4681,7 +4681,7 @@ class Tooltip extends BaseComponent {
 
 defineJQueryPlugin(Tooltip)
 
-export default Tooltip'
+export default Tooltip' withPlatformLineEndings
 ]
 
 { #category : 'instance creation' }
@@ -5321,7 +5321,7 @@ class Tooltip extends BaseComponent {
 defineJQueryPlugin(Tooltip)
 
 export default Tooltip
-console.log(greeter(user));'
+console.log(greeter(user));' withPlatformLineEndings 
 ]
 
 { #category : 'instance creation' }
@@ -5963,7 +5963,7 @@ class Tooltip extends BaseComponent {
 
 defineJQueryPlugin(Tooltip)
 
-export default Tooltip'
+export default Tooltip' withPlatformLineEndings 
 ]
 
 { #category : 'instance creation' }
@@ -6597,7 +6597,7 @@ class Tooltip extends BaseComponent {
 
 defineJQueryPlugin(Tooltip)
 
-export default Tooltip'
+export default Tooltip' withPlatformLineEndings 
 ]
 
 { #category : 'instance creation' }
@@ -7237,7 +7237,7 @@ class Tooltip extends BaseComponent {
 defineJQueryPlugin(Tooltip)
 
 
-console.log(greeter(user));'
+console.log(greeter(user));' withPlatformLineEndings
 ]
 
 { #category : 'instance creation' }
@@ -7876,7 +7876,7 @@ class Tooltip extends BaseComponent {
 
 defineJQueryPlugin(Tooltip)
 
-export default Tooltip'
+export default Tooltip' withPlatformLineEndings
 ]
 
 { #category : 'running' }

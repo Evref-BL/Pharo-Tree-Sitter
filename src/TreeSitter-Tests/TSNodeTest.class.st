@@ -296,7 +296,7 @@ TSNodeTest >> testTextFrom [
 	self assert: (self rootNode textFrom: self binaryReadStream) equals: self sourceCode.
 	self assert: (self rootNode firstNamedChild textFrom: self binaryReadStream) equals: 'function deleteUser(user: User) {
   					// This is a comment é
-				 }'
+				 }' withPlatformLineEndings
 ]
 
 { #category : 'tests' }
@@ -305,16 +305,16 @@ TSNodeTest >> testTextFromEncoding [
 	self assert: (self rootNode textFrom: self binaryReadStream encoding: #utf8) equals: self sourceCode.
 	self assert: (self rootNode firstNamedChild textFrom: self binaryReadStream encoding: #utf8) equals: 'function deleteUser(user: User) {
   					// This is a comment é
-				 }'
+				 }' withPlatformLineEndings
 ]
 
 { #category : 'tests' }
 TSNodeTest >> testTextFromEncodingSourceText [
 
-	self assert: (self rootNode textFromSourceText: self sourceCode) equals: self sourceCode withUnixLineEndings.
-	self assert: (self rootNode firstNamedChild textFromSourceText: self sourceCode) equals: 'function deleteUser(user: User) {
+	self assert: (self rootNode textFromSourceText: self sourceCode) equals: self sourceCode.
+	self assert: (self rootNode firstNamedChild textFromSourceText: self sourceCode ) equals: 'function deleteUser(user: User) {
   					// This is a comment é
-				 }' withUnixLineEndings
+				 }' withPlatformLineEndings
 ]
 
 { #category : 'tests' }
