@@ -133,6 +133,9 @@ TSParser >> printDotGraphTo: aFileDescriptor [
 	^ TSLibrary uniqueInstance
 		  ts_parser: self
 		  _print_dot_graphs: aFileDescriptor
+]
+
+{ #category : 'parsing' }
 TSParser >> parseString: aString usingTree: aTree tsEncoding: anEncoding [
 
 	"to be used after editing the old tree which must be past here as a parameter to make an incremental parsing and to specifyEncoding"
