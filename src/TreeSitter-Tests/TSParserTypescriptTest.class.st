@@ -149,7 +149,7 @@ TSParserTypescriptTest >> testParseTypescriptLong [
 				main().catch((err) => {
   					consola.error(err)
   					process.exit(1)
-				})'.
+				})' withPlatformLineEndings.
 
 	tree := parser parseString: string.
 	self assert: tree rootNode  isNotNil . 

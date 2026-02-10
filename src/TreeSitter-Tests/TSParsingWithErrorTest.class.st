@@ -44,7 +44,8 @@ TSParsingWithErrorTest >> setUp [
 	self timeLimit: 120 seconds.
 	parser := TSParser new.
 	typescriptLanguage := TSLanguage typescript.
-	parser language: typescriptLanguage
+	parser language: typescriptLanguage.
+	
 ]
 
 { #category : 'running' }

@@ -8,7 +8,7 @@ Class {
 	#superclass : 'Object',
 	#instVars : [
 		'field',
-		'symbols',
+		'symbolsAndCode',
 		'isOptional'
 	],
 	#category : 'TreeSitter-Spec',
@@ -24,9 +24,15 @@ TSFieldExplorerWrapper class >> field: aSymbol [
 ]
 
 { #category : 'adding' }
-TSFieldExplorerWrapper >> addAll: aColl [
+TSFieldExplorerWrapper >> addAll: aColl code: aString [
 
-	symbols addAll: aColl
+	aColl do: [ :node | (symbolsAndCode keys includes: node type) ifFalse: [ symbolsAndCode at: node type put: (node parent textFromSourceText: aString) ] ]
+]
+
+{ #category : 'accessing' }
+TSFieldExplorerWrapper >> codeOf: symbol [
+
+	^ symbolsAndCode at: symbol ifAbsent: [ 'Nothing' ]
 ]
 
 { #category : 'accessing' }
@@ -43,7 +49,7 @@ TSFieldExplorerWrapper >> field: anObject [
 TSFieldExplorerWrapper >> initialize [
 
 	super initialize.
-	symbols := Set new.
+	symbolsAndCode := OrderedDictionary new.
 	isOptional := false
 ]
 
@@ -59,5 +65,6 @@ TSFieldExplorerWrapper >> isOptional: anObject [
 
 { #category : 'accessing' }
 TSFieldExplorerWrapper >> symbols [
-	^ symbols
+
+	^ symbolsAndCode keys
 ]

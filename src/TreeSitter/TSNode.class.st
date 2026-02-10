@@ -144,8 +144,40 @@ TSNode >> endByte [
 
 { #category : 'api' }
 TSNode >> endPoint [
+	"Return a TSpoint with the positions in the source code. It has a #row and #column attribute to locate the position.
+	Be careful! The column is the position on the line in bytes and not in characters."
 
 	^ TSLibrary uniqueInstance ts_node_end_point: self
+]
+
+{ #category : 'accessing' }
+TSNode >> endPositionFrom: aBinaryStream [
+	"Return the end position of the node in number of characters."
+
+	^ self endPositionFrom: aBinaryStream encoding: #utf8
+]
+
+{ #category : 'accessing' }
+TSNode >> endPositionFrom: aBinaryStream encoding: anEncoding [
+	"Return the end position of the node in number of characters.
+	
+	Since we know the position as the number of bytes, we read this number of bytes, decode it with the encoding we used and check the number of characters. "
+
+	^ anEncoding asZnCharacterEncoder numberOfCharactersFrom: (aBinaryStream next: self endByte)
+]
+
+{ #category : 'accessing' }
+TSNode >> endPositionFromSourceText: aString [
+	"Return the end position of the node in number of characters."
+	
+	^ self endPositionFromSourceText: aString encoding: #utf8 
+]
+
+{ #category : 'accessing' }
+TSNode >> endPositionFromSourceText: aString encoding: anEncoding [
+	"Return the end position of the node in number of characters."
+	
+	^ self endPositionFrom: (aString encodeWith: anEncoding )readStream
 ]
 
 { #category : 'accessing' }
@@ -281,8 +313,40 @@ TSNode >> startByte [
 
 { #category : 'api' }
 TSNode >> startPoint [
+	"Return a TSpoint with the positions in the source code. It has a #row and #column attribute to locate the position.
+	Be careful! The column is the position on the line in bytes and not in characters."
 
 	^ TSLibrary uniqueInstance ts_node_start_point: self
+]
+
+{ #category : 'accessing' }
+TSNode >> startPositionFrom: aBinaryStream [
+	"Return the start position of the node in number of characters."
+
+	^ self startPositionFrom: aBinaryStream encoding: #utf8
+]
+
+{ #category : 'accessing' }
+TSNode >> startPositionFrom: aBinaryStream encoding: anEncoding [
+	"Return the start position of the node in number of characters.
+	
+	Since we know the position as the number of bytes, we read this number of bytes, decode it with the encoding we used and check the number of characters. "
+
+	^ (anEncoding asZnCharacterEncoder numberOfCharactersFrom: (aBinaryStream next: self startByte)) + 1
+]
+
+{ #category : 'accessing' }
+TSNode >> startPositionFromSourceText: aString [
+	"Return the start position of the node in number of characters."
+
+	^ self startPositionFromSourceText: aString encoding: #utf8.
+]
+
+{ #category : 'accessing' }
+TSNode >> startPositionFromSourceText: aString encoding: anEncoding [
+	"Return the start position of the node in number of characters."
+
+	^ self startPositionFrom: (aString encodeWith: anEncoding) readStream
 ]
 
 { #category : 'api' }
@@ -297,10 +361,31 @@ TSNode >> symbol [
 	^ TSLibrary uniqueInstance ts_node_symbol: self
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
+TSNode >> textFrom: aBinaryStream [
+	"We use UTF8 by default."
+
+	^ self textFrom: aBinaryStream encoding: #utf8
+]
+
+{ #category : 'accessing' }
+TSNode >> textFrom: aBinaryStream encoding: anEncoding [
+
+	aBinaryStream skip: self startByte.
+
+	^ (aBinaryStream next: self endByte - self startByte) decodeWith: anEncoding
+]
+
+{ #category : 'accessing' }
 TSNode >> textFromSourceText: string [
 
-	^ string copyFrom: (string positionFromTSPoint: self startPoint)+1 to: (string positionFromTSPoint: self endPoint ).
+	^ self textFromSourceText: string encoding: #utf8
+]
+
+{ #category : 'accessing' }
+TSNode >> textFromSourceText: string encoding: anEncoding [
+
+	^ self textFrom: (string encodeWith: anEncoding) readStream
 ]
 
 { #category : 'accessing - structure variables' }

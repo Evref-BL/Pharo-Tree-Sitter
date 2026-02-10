@@ -18,7 +18,8 @@ Class {
 		'language',
 		'extensions',
 		'filesToParse',
-		'symbolDictionary'
+		'symbolDictionary',
+		'code'
 	],
 	#category : 'TreeSitter-Spec',
 	#package : 'TreeSitter-Spec'
@@ -39,9 +40,12 @@ TSSymbolsBuilderVisitor >> buildOn: aFileReference [
 	self collectFilesIn: aFileReference.
 
 	filesToParse
-		do: [ :file | ((TSParser language: self language) parseString: file contents) rootNode accept: self ]
+		do: [ :file |
+				code := file contents.
+
+				((TSParser language: self language) parseString: code) rootNode accept: self ]
 		displayingProgress: [ :file | file pathString ].
-		
+
 	self inspect
 ]
 
@@ -109,8 +113,10 @@ TSSymbolsBuilderVisitor >> visitNode: aTSNode [
 				        detect: [ :wrapper | wrapper field = field ]
 				        ifNone: [ fields add: (TSFieldExplorerWrapper field: field) ].
 
-			wrap addAll: (nodes isCollection
-					 ifTrue: [ nodes collect: #type ]
-					 ifFalse: [ { nodes type } ]) ].
+			wrap
+				addAll: (nodes isCollection
+						 ifTrue: [ nodes ]
+						 ifFalse: [ { nodes } ])
+				code: code ].
 	super visitNode: aTSNode
 ]

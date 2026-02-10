@@ -6,7 +6,8 @@ Class {
 	#superclass : 'Object',
 	#instVars : [
 		'tsLanguage',
-		'languageName'
+		'languageName',
+		'typesRefied'
 	],
 	#category : 'TreeSitter-FAST-Utils',
 	#package : 'TreeSitter-FAST-Utils'
@@ -15,25 +16,25 @@ Class {
 { #category : 'building' }
 TSFASTBuilder >> addDefineClassIn: metamodelGeneratorClass [
 
-	| method |
+	| method classes|
 	method := String streamContents: [ :stream |
-		          stream << 'defineClasses
-
+		         stream << 'defineClasses
 '.
-		          stream << '	entity := self newClassNamed: #Entity.
-
-'.
-		          self typesToReify
+		   			"stream << '	entity := self newClassNamed: #Entity.'.
+					stream << '	_ERROR := builder ensureClassNamed: #ERROR.'." "no need cz they are added in typesRefied"
+					classes := self typesRefied copy.
+					classes remove: #tEntity."we have to remove it because it's to be added in Traits." 
+		         classes
 			          do: [ :type |
-				          | variable |
-				          variable := self variableNameOfTSSymbol: type.
-				          variable ifNotEmpty: [
+				          "| variable |
+				          variable := (self variableNameOfTSSymbol: type) pascalized."
+				          type ifNotEmpty: [
 					          stream
 						          << '	';
-						          << variable;
+						          << type lowercaseFirst;
 						          << ' := '.
 					          stream << 'builder ensureClassNamed: #'
-					          << (tsLanguage nameOfSymbol: type) capitalized << '.' ] ]
+					          << type pascalized << '.' ] ]
 			          separatedBy: [
 				          stream << '
 ' ] ].
@@ -50,9 +51,7 @@ TSFASTBuilder >> addDefineHierarchyIn: metamodelGeneratorClass [
 
 	super defineHierarchy.
 
-	entity --|> tEntity.
-	entity --|> #THasImmediateSource.
-	entity withPrecedenceOf: #THasImmediateSource' ].
+	entity --|> tEntity.' ].
 	metamodelGeneratorClass compile: method classified: #definition
 ]
 
@@ -70,20 +69,7 @@ TSFASTBuilder >> addDefineRelationsIn: metamodelGeneratorClass [
 			          << String tab;
 			          <<
 				          '(entity property: #''genericChildren'') <>-* (entity property: #''genericParent'').'.
-		          self fieldToReify
-			          do: [ :field |
-				          stream
-					          << String tab;
-					          << '(entity property: #''';
-					          << (self nameOfField: field);
-					          << ''')';
-					          << ' <>-* ';
-					          << '(entity property: #''';
-					          << (self parentNameOfField: field);
-					          << ''').' ]
-			          separatedBy: [
-				          stream << '
-' ] ].
+		           ].
 	metamodelGeneratorClass compile: method classified: #definition
 ]
 
@@ -108,7 +94,7 @@ TSFASTBuilder >> addPackageNameMethodIn: metamodelGeneratorClass [
 	metamodelGeneratorClass class
 		compile: 'packageName
 
-	^ #''FAST' , self languageName , '-Model'''
+	^ #''FAST-' , self languageName , '-Model'''
 		classified: #accessing
 ]
 
@@ -150,16 +136,21 @@ TSFASTBuilder >> build [
 { #category : 'building' }
 TSFASTBuilder >> createMetamodelGeneratorClass [
 
-	| classBuilder className types|
+	| classBuilder className |
 	className := #FAST , self languageName.
 	classBuilder := FamixMetamodelGenerator
 	                << (className , #MetamodelGenerator).
-	types := ((self typesToReify
-			 collect: [ :type | (self variableNameOfTSSymbol: type) asSymbol ]
-			 as: Set) asOrderedCollection ) reject: [ :each | each isEmpty ] .
-	
-	classBuilder slots: types, { #entity. #tEntity }.
-	classBuilder package: className , #'-Model-Generator'.
+
+	self typesRefied: { #entity. #_ERROR. #tEntity }. "we have to add it at the beginning, because maybe entity is retrieved as a symbol from treeSitter, so we make sure that duplication is remved after "
+
+	self typesRefied: ((((self typesToReify collect: [ :type |
+			   (self variableNameOfTSSymbol: type) pascalized lowercaseFirst
+				   asSymbol ]) , self typesRefied asOrderedCollection ) as: Set) asOrderedCollection
+			 reject: [ :each | each isEmpty ]).
+
+	classBuilder slots: self typesRefied.
+	classBuilder package:
+		#FAST , '-' , self languageName , #'-Model-Generator'.
 	^ classBuilder install
 ]
 
@@ -205,6 +196,18 @@ TSFASTBuilder >> tsLanguage: anObject [
 	tsLanguage := anObject
 ]
 
+{ #category : 'accessing' }
+TSFASTBuilder >> typesRefied [
+
+	^ typesRefied
+]
+
+{ #category : 'accessing' }
+TSFASTBuilder >> typesRefied: anObject [
+
+	typesRefied := anObject
+]
+
 { #category : 'building' }
 TSFASTBuilder >> typesToReify [
 
@@ -216,6 +219,6 @@ TSFASTBuilder >> variableNameOfTSSymbol: aTSSymbol [
     
  	| variable |
     variable := tsLanguage nameOfSymbol: aTSSymbol.
-    ^ variable isEmpty ifTrue: [''] ifFalse: ['_', variable] 
+    ^ variable isEmpty ifTrue: [''] ifFalse: [ '_', variable] 
  
 ]

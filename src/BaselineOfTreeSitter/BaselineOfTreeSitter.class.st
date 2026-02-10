@@ -18,7 +18,15 @@ BaselineOfTreeSitter >> baseline: spec [
 { #category : 'baselines' }
 BaselineOfTreeSitter >> defineDependencies: spec [
 
-	
+
+	spec baseline: 'PharoBackwardCompatibility' with: [ spec repository: 'github://jecisc/PharoBackwardCompatibility:v1.x.x/src' ].
+  
+	spec
+        baseline: 'NeoJSON'
+        with: [
+            spec
+                loads: #('default');
+                repository: 'github://svenvc/NeoJSON/repository' ]
 ]
 
 { #category : 'baselines' }
@@ -35,6 +43,7 @@ BaselineOfTreeSitter >> defineGroups: spec [
 	spec group: 'mermaid' with: #( 'default' 'TreeSitter-Mermaid' ).
 	spec group: 'groovy' with: #( 'default' 'TreeSitter-Groovy' ).
 	spec group: 'python' with: #( 'default' 'TreeSitter-Python' ).
+	spec group: 'xml' with: #( 'default' 'TreeSitter-XML' ).
 	spec group: 'typescript' with: #( 'default' 'TreeSitter-Typescript' ).
 	spec group: 'cLang' with: #( 'default' 'TreeSitter-C' )
 ]
@@ -43,30 +52,19 @@ BaselineOfTreeSitter >> defineGroups: spec [
 BaselineOfTreeSitter >> definePackages: spec [
 
 	spec
-		package: 'TreeSitter';
-		package: 'TreeSitter-Tests' with: [
-			spec requires:
-					#( 'TreeSitter' 'TreeSitter-Python' 'TreeSitter-Groovy'
-					   'TreeSitter-Typescript' 'TreeSitter-C' ) ];
-		package: 'TreeSitter-Groovy'
-		with: [ spec requires: #( 'TreeSitter' ) ];
-		package: 'TreeSitter-Python'
-		with: [ spec requires: #( 'TreeSitter' ) ];
-		package: 'TreeSitter-Typescript'
-		with: [ spec requires: #( 'TreeSitter' ) ];
-		package: 'TreeSitter-C'
-		with: [ spec requires: #( 'TreeSitter' ) ];
-		package: 'TreeSitter-Spec'
-		with: [ spec requires: #( 'TreeSitter' ) ];
-		package: 'TreeSitter-Visitor'
-		with: [ spec requires: #( 'TreeSitter' ) ];
-		package: 'TreeSitter-Libraries'
-		with: [ spec requires: #( 'TreeSitter' ) ];
-		package: 'TreeSitter-Highlighter'
-		with: [ spec requires: #( 'TreeSitter' ) ].
+		package: 'TreeSitter' with: [ spec requires: #( 'PharoBackwardCompatibility' ) ];
+		package: 'TreeSitter-Tests' with: [ spec requires: #( 'TreeSitter' 'TreeSitter-Python' 'TreeSitter-XML' 'TreeSitter-Groovy' 'TreeSitter-Typescript' 'TreeSitter-C' ) ];
+		package: 'TreeSitter-Groovy' with: [ spec requires: #( 'TreeSitter' ) ];
+		package: 'TreeSitter-Python' with: [ spec requires: #( 'TreeSitter' ) ];
+		package: 'TreeSitter-XML' with: [ spec requires: #( 'TreeSitter' ) ];
+		package: 'TreeSitter-Typescript' with: [ spec requires: #( 'TreeSitter' ) ];
+		package: 'TreeSitter-C' with: [ spec requires: #( 'TreeSitter' ) ];
+		package: 'TreeSitter-Spec' with: [ spec requires: #( 'TreeSitter-Visitor' ) ];
+		package: 'TreeSitter-Visitor' with: [ spec requires: #( 'TreeSitter' ) ];
+		package: 'TreeSitter-Libraries' with: [ spec requires: #( 'TreeSitter'  'NeoJSON') ];
+		package: 'TreeSitter-Highlighter' with: [ spec requires: #( 'TreeSitter' ) ].
 
+	
 	"Moose integration for reyfication"
-	spec
-		package: 'TreeSitter-FAST-Utils'
-		with: [ spec requires: #( 'TreeSitter-Visitor' ) ]
+	spec package: 'TreeSitter-FAST-Utils' with: [ spec requires: #( 'TreeSitter-Visitor' ) ].
 ]

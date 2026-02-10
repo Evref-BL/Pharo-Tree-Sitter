@@ -160,3 +160,9 @@ string := 'print("Hello, I''m Python!") # comment'.
 tree := parser parseString: string.
 tree rootNode
 ```
+
+# Create a new FASTLanguageMetamodel using PharoTreeSitter
+
+This library allows you to create a first version of any FASTLanguageMetamodel, in condition that this language is supported by treesitter and by PharoTreeSitter. To do that you can follow a detailed documentation [here](https://modularmoose.org/blog/2025-09-16-generation-of-fast-metamodel-using-treesitter/).
+
+

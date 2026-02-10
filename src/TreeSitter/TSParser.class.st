@@ -75,7 +75,10 @@ TSParser >> logger: aTSLogger [
 
 { #category : 'parsing' }
 TSParser >> parseString: aString [
-	"To be used for the first time"
+
+	"default method: empty tree and ecoding is ut8. 
+	To be used for the first time"
+	
 	^ self parseString: aString usingTree: ExternalAddress null
 ]
 
@@ -83,9 +86,39 @@ TSParser >> parseString: aString [
 TSParser >> parseString: aString usingTree: aTree [
 
 	"to be used after editing the old tree which must be past here as a parameter to make an incremental parsing"
+	"the encoding is set using pharo as default utf8"
+	
+	^ self parseString: aString usingTree: aTree pharoEncoding: #utf8. 
+]
+
+{ #category : 'parsing' }
+TSParser >> parseString: aString usingTree: aTree encoding: anEncoding [
+	"to be used after editing the old tree which must be past here as a parameter to make an incremental parsing and to specifyEncoding"
+
+	self
+		deprecated:
+		'Use parseString:usingTree:tsEncoding: instead of current one'
+		on: '6 February 2026'
+		in:
+		'Pharo-12.0.0+SNAPSHOT.build.1571.sha.cf5fcd22e66957962c97dffc58b0393b7f368147 (64 Bit)'.
+
+	^ TSLibrary uniqueInstance
+		  ts_parser: self
+		  _parse_string: aString
+		  ofLength: aString size
+		  usingOldTree: aTree
+		  encoding: anEncoding
+]
+
+{ #category : 'parsing' }
+TSParser >> parseString: aString usingTree: aTree pharoEncoding: anEncoding [
+
+	"to be used after editing the old tree which must be past here as a parameter to make an incremental parsing"
+	"the encoding is set by the user using pharo encoding"
+	"if you want to pass an empty tree use ExternalAddress null"
 	
 	| stringToConsider |
-	stringToConsider := aString withUnixLineEndings utf8Encoded.
+	stringToConsider := aString encodeWith: anEncoding. 	 
 	^ TSLibrary uniqueInstance
 		  ts_parser: self
 		  _parse_string: stringToConsider 
@@ -100,6 +133,18 @@ TSParser >> printDotGraphTo: aFileDescriptor [
 	^ TSLibrary uniqueInstance
 		  ts_parser: self
 		  _print_dot_graphs: aFileDescriptor
+TSParser >> parseString: aString usingTree: aTree tsEncoding: anEncoding [
+
+	"to be used after editing the old tree which must be past here as a parameter to make an incremental parsing and to specifyEncoding"
+	"if you want to pass an empty tree use ExternalAddress null"
+	"This method is using treeSitter encoding; check TSInputEncoding class side to know what you can use"
+	  
+	^ TSLibrary uniqueInstance
+		  ts_parser: self
+		  _parse_string: aString 
+		  ofLength: aString size
+		  usingOldTree: aTree
+		  encoding: anEncoding
 ]
 
 { #category : 'initialization' }
