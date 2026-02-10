@@ -212,6 +212,9 @@ TSLibrary >> ts_parser: aTSParser _print_dot_graphs: fd [
 
 	^ self ffiCall:
 		  'void ts_parser_print_dot_graphs (TSParser * aTSParser, int fd )'
+]
+
+{ #category : 'parser' }
 TSLibrary >> ts_parser: aParser _parse_string: aString ofLength: length usingOldTree: anOldTree encoding: anEncoding [
 	 
 	^ self ffiCall:
