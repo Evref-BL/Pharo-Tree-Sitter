@@ -18,12 +18,15 @@ BaselineOfTreeSitter >> baseline: spec [
 { #category : 'baselines' }
 BaselineOfTreeSitter >> defineDependencies: spec [
 
+
+	spec baseline: 'PharoBackwardCompatibility' with: [ spec repository: 'github://jecisc/PharoBackwardCompatibility:v1.x.x/src' ].
+  
 	spec
         baseline: 'NeoJSON'
         with: [
             spec
                 loads: #('default');
-                repository: 'github://svenvc/NeoJSON/repository' ].
+                repository: 'github://svenvc/NeoJSON/repository' ]
 ]
 
 { #category : 'baselines' }
@@ -49,7 +52,7 @@ BaselineOfTreeSitter >> defineGroups: spec [
 BaselineOfTreeSitter >> definePackages: spec [
 
 	spec
-		package: 'TreeSitter';
+		package: 'TreeSitter' with: [ spec requires: #( 'PharoBackwardCompatibility' ) ];
 		package: 'TreeSitter-Tests' with: [ spec requires: #( 'TreeSitter' 'TreeSitter-Python' 'TreeSitter-XML' 'TreeSitter-Groovy' 'TreeSitter-Typescript' 'TreeSitter-C' ) ];
 		package: 'TreeSitter-Groovy' with: [ spec requires: #( 'TreeSitter' ) ];
 		package: 'TreeSitter-Python' with: [ spec requires: #( 'TreeSitter' ) ];
