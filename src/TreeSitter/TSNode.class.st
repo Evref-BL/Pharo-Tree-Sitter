@@ -162,8 +162,8 @@ TSNode >> endPositionFrom: aBinaryStream encoding: anEncoding [
 { #category : 'accessing' }
 TSNode >> endPositionFromSourceText: aString [
 	"Return the end position of the node in number of characters."
-
-	^ self endPositionFrom: aString withUnixLineEndings utf8Encoded readStream
+	
+	^ self endPositionFrom: (aString encodeWith: #utf8 )readStream
 ]
 
 { #category : 'accessing' }
@@ -325,7 +325,7 @@ TSNode >> startPositionFrom: aBinaryStream encoding: anEncoding [
 TSNode >> startPositionFromSourceText: aString [
 	"Return the start position of the node in number of characters."
 
-	^ self startPositionFrom: aString withUnixLineEndings utf8Encoded readStream
+	^ self startPositionFrom: (aString encodeWith: #utf8) readStream
 ]
 
 { #category : 'api' }
@@ -358,7 +358,7 @@ TSNode >> textFrom: aBinaryStream encoding: anEncoding [
 { #category : 'accessing' }
 TSNode >> textFromSourceText: string [
 
-	^ self textFrom: string withUnixLineEndings utf8Encoded readStream
+	^ self textFrom: (string encodeWith: #utf8) readStream
 ]
 
 { #category : 'accessing - structure variables' }
