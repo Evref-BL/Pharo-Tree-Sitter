@@ -163,7 +163,14 @@ TSNode >> endPositionFrom: aBinaryStream encoding: anEncoding [
 TSNode >> endPositionFromSourceText: aString [
 	"Return the end position of the node in number of characters."
 	
-	^ self endPositionFrom: (aString encodeWith: #utf8 )readStream
+	^ self endPositionFromSourceText: aString encoding: #utf8 
+]
+
+{ #category : 'accessing' }
+TSNode >> endPositionFromSourceText: aString encoding: anEncoding [
+	"Return the end position of the node in number of characters."
+	
+	^ self endPositionFrom: (aString encodeWith: anEncoding )readStream
 ]
 
 { #category : 'accessing' }
@@ -325,7 +332,14 @@ TSNode >> startPositionFrom: aBinaryStream encoding: anEncoding [
 TSNode >> startPositionFromSourceText: aString [
 	"Return the start position of the node in number of characters."
 
-	^ self startPositionFrom: (aString encodeWith: #utf8) readStream
+	^ self startPositionFromSourceText: aString encoding: #utf8.
+]
+
+{ #category : 'accessing' }
+TSNode >> startPositionFromSourceText: aString encoding: anEncoding [
+	"Return the start position of the node in number of characters."
+
+	^ self startPositionFrom: (aString encodeWith: anEncoding) readStream
 ]
 
 { #category : 'api' }
@@ -358,7 +372,13 @@ TSNode >> textFrom: aBinaryStream encoding: anEncoding [
 { #category : 'accessing' }
 TSNode >> textFromSourceText: string [
 
-	^ self textFrom: (string encodeWith: #utf8) readStream
+	^ self textFromSourceText: string encoding: #utf8
+]
+
+{ #category : 'accessing' }
+TSNode >> textFromSourceText: string encoding: anEncoding [
+
+	^ self textFrom: (string encodeWith: anEncoding) readStream
 ]
 
 { #category : 'accessing - structure variables' }
