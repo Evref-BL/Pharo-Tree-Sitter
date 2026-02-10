@@ -18,7 +18,7 @@ BaselineOfTreeSitter >> baseline: spec [
 { #category : 'baselines' }
 BaselineOfTreeSitter >> defineDependencies: spec [
 
-	
+	spec baseline: 'PharoBackwardCompatibility' with: [ spec repository: 'github://jecisc/PharoBackwardCompatibility:v1.x.x/src' ]
 ]
 
 { #category : 'baselines' }
@@ -44,7 +44,7 @@ BaselineOfTreeSitter >> defineGroups: spec [
 BaselineOfTreeSitter >> definePackages: spec [
 
 	spec
-		package: 'TreeSitter';
+		package: 'TreeSitter' with: [ spec requires: #( 'PharoBackwardCompatibility' ) ];
 		package: 'TreeSitter-Tests' with: [ spec requires: #( 'TreeSitter' 'TreeSitter-Python' 'TreeSitter-XML' 'TreeSitter-Groovy' 'TreeSitter-Typescript' 'TreeSitter-C' ) ];
 		package: 'TreeSitter-Groovy' with: [ spec requires: #( 'TreeSitter' ) ];
 		package: 'TreeSitter-Python' with: [ spec requires: #( 'TreeSitter' ) ];
