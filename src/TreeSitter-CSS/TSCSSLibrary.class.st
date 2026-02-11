@@ -21,7 +21,7 @@ TSCSSLibrary >> tree_sitter_css [
 { #category : 'accessing' }
 TSCSSLibrary >> uniqueInstance [
 
-	"TSLibrariesCSS new ensureCSSLibraryExists ."
+	TSLibrariesCSS new ensureCSSLibraryExists .
 	^ self
 ]
 
