@@ -39,7 +39,6 @@ TSLibraries >> cloneTreeSitter [
 
 { #category : 'as yet unclassified' }
 TSLibraries >> ensureTreeSitterLibraryExists [
-
 	self libraryExists ifFalse: [
 		self libraryExistsInDocuments ifFalse: [
 			self
@@ -136,7 +135,7 @@ TSLibraries >> latestReleaseTagForOwner: owner repo: repoName [
 TSLibraries >> librariesLocationInDocuments [
 
 	self isWindows
-		ifTrue: [ ^ '\tree-sitter\lib\build\' ]
+		ifTrue: [ ^ '\tree-sitter\build\' ]
 		ifFalse: [ ^ '/tree-sitter/' ]
 ]
 
@@ -191,7 +190,7 @@ TSLibraries >> moveLibrary: aLibraryName from: initialLocation [
 
 { #category : 'as yet unclassified' }
 TSLibraries >> moveLibraryToPharoVM [
-
+	self halt.
 	self moveLibrary: self libraryName from: self librariesLocationInDocuments
 ]
 

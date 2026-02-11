@@ -21,12 +21,12 @@ TSLibrariesCommandLines >> cmdMacTreeSitter [
 TSLibrariesCommandLines >> cmdWindowsTreeSitter [
 
 	| path command |
-	path := TSLibraries new originalLibrariesDirectory , '/tree-sitter/lib'.
+	path := TSLibraries new originalLibrariesDirectory , '/tree-sitter'.
 	command := 'cd ' , path.
-	command := command , '&& mkdir -p build'.
-	command := command , '&& cd build'.
-	command := command , '&& cmake -G Ninja ..'.
-	command := command , '&& ninja'.
+	command := command , ' && mkdir build'.
+	command := command , ' && cd build'.
+	command := command , ' && cmake -G Ninja ..'.
+	command := command , ' && ninja'.
 
 	^ command
 ]
