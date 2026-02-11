@@ -71,7 +71,7 @@ TSLibrariesCSS >> ensureCSSLibraryExists [
 TSLibrariesCSS >> generateTreeSitterCSSLibraries [
 
 	| command status cmdLines |
-	"cmdLines := TSLibrariesCommandLinesCSS new.
+	cmdLines := TSLibrariesCommandLinesCSS new.
 	self isMacOS
 		ifTrue: [ command := cmdLines cmdMacTreeSitterCSS ]
 		ifFalse: [
@@ -81,13 +81,13 @@ TSLibrariesCSS >> generateTreeSitterCSSLibraries [
 
 	self logInTranscript: 'Start generating Tree Sitter CSS library'.
 
-	""Run the command""
+	"Run the command"
 	status := LibC uniqueInstance system: command.
 
 	self logInTranscript:
 		'Tree Sitter CSS library generation command is finished'.
 
-	""Verify success""
+	"Verify success"
 	status = 0
 		ifTrue: [
 			self logInTranscript:
@@ -96,7 +96,7 @@ TSLibrariesCSS >> generateTreeSitterCSSLibraries [
 			Error signal:
 				'Tree Sitter CSS was not generated successfully' ].
 
-	^ status"
+	^ status
 ]
 
 { #category : 'as yet unclassified' }
