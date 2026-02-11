@@ -190,7 +190,6 @@ TSLibraries >> moveLibrary: aLibraryName from: initialLocation [
 
 { #category : 'as yet unclassified' }
 TSLibraries >> moveLibraryToPharoVM [
-	self halt.
 	self moveLibrary: self libraryName from: self librariesLocationInDocuments
 ]
 
