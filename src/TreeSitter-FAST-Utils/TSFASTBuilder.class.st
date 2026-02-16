@@ -32,7 +32,7 @@ TSFASTBuilder >> addDefineClassIn: metamodelGeneratorClass [
 				          type ifNotEmpty: [
 					          stream
 						          << '	';
-						          << type lowercaseFirst;
+						          << type uncapitalized;
 						          << ' := '.
 					          stream << 'builder ensureClassNamed: #'
 					          << type pascalized << '.' ] ]
@@ -145,7 +145,7 @@ TSFASTBuilder >> createMetamodelGeneratorClass [
 	self typesRefied: { #entity. #_ERROR. #tEntity }. "we have to add it at the beginning, because maybe entity is retrieved as a symbol from treeSitter, so we make sure that duplication is remved after "
 
 	self typesRefied: ((((self typesToReify collect: [ :type |
-			   (self variableNameOfTSSymbol: type) pascalized lowercaseFirst
+			   (self variableNameOfTSSymbol: type) pascalized uncapitalized
 				   asSymbol ]) , self typesRefied asOrderedCollection ) as: Set) asOrderedCollection
 			 reject: [ :each | each isEmpty ]).
 
@@ -204,9 +204,15 @@ TSFASTBuilder >> typesRefied [
 ]
 
 { #category : 'accessing' }
-TSFASTBuilder >> typesRefied: anObject [
+TSFASTBuilder >> typesRefied: aCollection [
+	"Those types will be used to generate some variables. We need to alias the types that have the same name as variables in Pharo."
 
-	typesRefied := anObject
+	| reserved |
+	reserved := Symbol reservedLiterals.
+	typesRefied := aCollection collect: [ :type |
+			               (reserved includes: type)
+				               ifTrue: [ type , 'Class' ]
+				               ifFalse: [ type ] ]
 ]
 
 { #category : 'building' }
