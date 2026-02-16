@@ -13,3 +13,11 @@ String >> pascalized [
         ]
     ]
 ]
+
+{ #category : '*TreeSitter-FAST-Utils' }
+String >> pharoLiteralCompatible [
+
+	^ (Symbol reservedLiterals includes: self)
+		  ifTrue: [ self , 'Class' ]
+		  ifFalse: [ self ]
+]

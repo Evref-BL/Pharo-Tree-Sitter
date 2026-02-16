@@ -30,7 +30,7 @@ TSFASTBuilder >> addDefineClassIn: metamodelGeneratorClass [
 						          type ifNotEmpty: [
 								          stream
 									          << '	';
-									          << type uncapitalized;
+									          << type uncapitalized pharoLiteralCompatible;
 									          << ' := '.
 								          stream << 'builder ensureClassNamed: #' << type pascalized << '.' ] ]
 				          separatedBy: [
@@ -144,7 +144,7 @@ TSFASTBuilder >> createMetamodelGeneratorClass [
 
 	self typesRefied: ((self typesRefied , types) removeDuplicates reject: [ :each | each isEmpty ]).
 
-	classBuilder slots: self typesRefied.
+	classBuilder slots: (self typesRefied collect: #pharoLiteralCompatible).
 	classBuilder package: #FAST , '-' , self languageName , #'-Model-Generator'.
 	^ classBuilder install
 ]
@@ -199,14 +199,8 @@ TSFASTBuilder >> typesRefied [
 
 { #category : 'accessing' }
 TSFASTBuilder >> typesRefied: aCollection [
-	"Those types will be used to generate some variables. We need to alias the types that have the same name as variables in Pharo."
 
-	| reserved |
-	reserved := Symbol reservedLiterals.
-	typesRefied := aCollection collect: [ :type |
-			               (reserved includes: type)
-				               ifTrue: [ type , 'Class' ]
-				               ifFalse: [ type ] ]
+	typesRefied := aCollection
 ]
 
 { #category : 'building' }
