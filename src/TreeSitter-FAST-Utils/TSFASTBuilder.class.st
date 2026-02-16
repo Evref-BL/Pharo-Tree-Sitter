@@ -19,6 +19,7 @@ TSFASTBuilder >> addDefineClassIn: metamodelGeneratorClass [
 	| method classes|
 	method := String streamContents: [ :stream |
 		         stream << 'defineClasses
+	super defineClasses.
 '.
 		   			"stream << '	entity := self newClassNamed: #Entity.'.
 					stream << '	_ERROR := builder ensureClassNamed: #ERROR.'." "no need cz they are added in typesRefied"
