@@ -16,28 +16,25 @@ Class {
 { #category : 'building' }
 TSFASTBuilder >> addDefineClassIn: metamodelGeneratorClass [
 
-	| method classes|
+	| method classes |
 	method := String streamContents: [ :stream |
-		         stream << 'defineClasses
+			          stream << 'defineClasses
 	super defineClasses.
 '.
-		   			"stream << '	entity := self newClassNamed: #Entity.'.
-					stream << '	_ERROR := builder ensureClassNamed: #ERROR.'." "no need cz they are added in typesRefied"
-					classes := self typesRefied copy.
-					classes remove: #tEntity."we have to remove it because it's to be added in Traits." 
-		         classes
-			          do: [ :type |
-				          "| variable |
+
+			          classes := self typesRefied copy.
+			          classes remove: #tEntity. "we have to remove it because it's to be added in Traits."
+			          classes
+				          do: [ :type | "| variable |
 				          variable := (self variableNameOfTSSymbol: type) pascalized."
-				          type ifNotEmpty: [
-					          stream
-						          << '	';
-						          << type uncapitalized;
-						          << ' := '.
-					          stream << 'builder ensureClassNamed: #'
-					          << type pascalized << '.' ] ]
-			          separatedBy: [
-				          stream << '
+						          type ifNotEmpty: [
+								          stream
+									          << '	';
+									          << type uncapitalized;
+									          << ' := '.
+								          stream << 'builder ensureClassNamed: #' << type pascalized << '.' ] ]
+				          separatedBy: [
+						          stream << '
 ' ] ].
 	metamodelGeneratorClass compile: method classified: #definition
 ]
@@ -137,21 +134,18 @@ TSFASTBuilder >> build [
 { #category : 'building' }
 TSFASTBuilder >> createMetamodelGeneratorClass [
 
-	| classBuilder className |
+	| classBuilder className types |
 	className := #FAST , self languageName.
-	classBuilder := FamixMetamodelGenerator
-	                << (className , #MetamodelGenerator).
+	classBuilder := FamixMetamodelGenerator << (className , #MetamodelGenerator).
 
-	self typesRefied: { #entity. #_ERROR. #tEntity }. "we have to add it at the beginning, because maybe entity is retrieved as a symbol from treeSitter, so we make sure that duplication is remved after "
+	self typesRefied: { #entity. #_ERROR. #tEntity } asOrderedCollection. "we have to add it at the beginning, because maybe entity is retrieved as a symbol from treeSitter, so we make sure that duplication is remved after "
 
-	self typesRefied: ((((self typesToReify collect: [ :type |
-			   (self variableNameOfTSSymbol: type) pascalized uncapitalized
-				   asSymbol ]) , self typesRefied asOrderedCollection ) as: Set) asOrderedCollection
-			 reject: [ :each | each isEmpty ]).
+	types := (self typesToReify collect: [ :type | (self variableNameOfTSSymbol: type) pascalized uncapitalized asSymbol ]) sorted: #yourself ascending. "We sort alphabetically to have a cleaner generated code"
+
+	self typesRefied: ((self typesRefied , types) removeDuplicates reject: [ :each | each isEmpty ]).
 
 	classBuilder slots: self typesRefied.
-	classBuilder package:
-		#FAST , '-' , self languageName , #'-Model-Generator'.
+	classBuilder package: #FAST , '-' , self languageName , #'-Model-Generator'.
 	^ classBuilder install
 ]
 
