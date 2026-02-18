@@ -38,6 +38,44 @@ TSFASTImporter >> containedEntitiesPropertiesFor: aClass [
 	^ containedEntitiesPropertiesMap at: aClass ifAbsentPut: [ aClass mooseDescription allProperties select: #isChildrenProperty ]
 ]
 
+{ #category : 'visiting' }
+TSFASTImporter >> createEntityForNode: aTSNode [
+
+	^ self createEntityForNode: aTSNode parentManagementBlock: [ :entity :parent :currentParentProperty |
+			"By default, I have two way to set myself in my parent:
+				- Either my parent have a children property of the same name as the field the node belongs to and we set it there. This is the case if the current property is not nil
+				- Else I add the entity to the generic children."
+			currentParentProperty
+				ifNil: [ parent addGenericChildren: entity ]
+				ifNotNil: [ :property |
+						property isMultivalued
+							ifTrue: [ parent perform: ('add' , property implementingSelector asSingular capitalized , ':') asSymbol with: entity ]
+							ifFalse: [ parent perform: property implementingSelector asMutator with: entity ] ] ]
+]
+
+{ #category : 'visiting' }
+TSFASTImporter >> createEntityForNode: aTSNode kind: aFASTClass parentManagementBlock: aBlock [
+
+	| fastEntity |
+	fastEntity := self instantiateFastEntity: aFASTClass from: aTSNode.
+	
+	"If the context is not empty, I'll set the newly built fast entity to the top of the context.
+	If it is empty this is the root node and we set its source."
+	context
+		ifEmpty: [ fastEntity source: self originString. ]
+		ifNotEmpty: [ aBlock cull: fastEntity cull: context top cull: currentFMProperty  ].
+
+	aTSNode hasChildren ifTrue: [ self visitChildren: aTSNode in: fastEntity ].
+
+	^ fastEntity
+]
+
+{ #category : 'visiting' }
+TSFASTImporter >> createEntityForNode: aTSNode parentManagementBlock: aBlock [
+
+	^ self createEntityForNode: aTSNode kind: (self class environment at: (self classesPrefix , aTSNode type pascalized) asSymbol) parentManagementBlock: aBlock
+]
+
 { #category : 'actions' }
 TSFASTImporter >> import: aTSNode [
 
@@ -55,11 +93,11 @@ TSFASTImporter >> initialize [
 ]
 
 { #category : 'actions' }
-TSFASTImporter >> instantiateFastEntityFrom: aTSNode [
+TSFASTImporter >> instantiateFastEntity: aFASTClass from: aTSNode [
 	"We instantiate the right class, add it to the model and set the sources positions."
 
 	| fastEntity |
-	fastEntity := self newInstanceOfClassNamed: self classesPrefix , aTSNode type pascalized.
+	fastEntity := aFASTClass new.
 
 	model add: fastEntity.
 	fastEntity startPos: (aTSNode startPositionFromSourceText: self originString).
@@ -126,25 +164,5 @@ TSFASTImporter >> visitChildren: aTSNode in: fastEntity [
 { #category : 'visiting' }
 TSFASTImporter >> visitNode: aTSNode [
 
-	| fastEntity |
-	fastEntity := self instantiateFastEntityFrom: aTSNode.
-	
-	"If the context is not empty, I'll set the newly built fast entity to the top of the context.
-	If it is empty this is the root node and we set its source."
-	context
-		ifEmpty: [ fastEntity source: self originString. ]
-		ifNotEmpty: [
-			"I have two way to set myself in my parent:
-				- EIther my parent have a children property of the same name as the field the node belongs to and we set it there. This is the case if the current property is not nil
-				- Else I add the entity to the generic children."
-			currentFMProperty
-				ifNil: [ context top addGenericChildren: fastEntity ]
-				ifNotNil: [ :property |
-						property isMultivalued
-							ifTrue: [ context top perform: ('add' , property implementingSelector asSingular capitalized , ':') asSymbol with: fastEntity ]
-							ifFalse: [ context top perform: property implementingSelector asMutator with: fastEntity ] ] ].
-
-	aTSNode hasChildren ifTrue: [ self visitChildren: aTSNode in: fastEntity ].
-
-	^ fastEntity
+	^ self createEntityForNode: aTSNode
 ]
