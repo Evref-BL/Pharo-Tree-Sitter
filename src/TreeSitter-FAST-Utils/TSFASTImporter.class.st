@@ -3,7 +3,7 @@ Class {
 	#superclass : 'TSVisitor',
 	#instVars : [
 		'tsLanguage',
-		'languageName',
+		'classesPrefix',
 		'model',
 		'originString'
 	],
@@ -11,31 +11,19 @@ Class {
 	#package : 'TreeSitter-FAST-Utils'
 }
 
-{ #category : 'filling' }
-TSFASTImporter >> fillSource: aTextSource [
-	"not sure if this should be used"
-	[
-	((model allWithSubTypesOfAny: { FASTTypescriptProgram }) detect: [
-		 :aDeclaration | aDeclaration parentNode isNil ]) source:
-		aTextSource
-	"FASTTypescriptClass_declaration.
-			  FASTTypescriptInterface_declaration.
-			  FASTTypescriptEnum_declaration" ]
-		on: Error
-		do: [ :err |
-			('FAST Err parsing: ' , String crlf , aTextSource) record.
-			err signal ]
+{ #category : 'accessing' }
+TSFASTImporter >> classesPrefix [
+
+	^ classesPrefix
 ]
 
 { #category : 'accessing' }
 TSFASTImporter >> import: aTSNode [
 
 	| rootFastEntity |
-	model := ('FAST' , self languageName , 'Model' asClassInEnvironment:
-		          self class environment) new.
+	model := (self classesPrefix , 'Model' asClassInEnvironment: self class environment) new.
 	rootFastEntity := aTSNode accept: self.
 	rootFastEntity source: self originString.
-	"self fillSource: self originString ."
 	^ model
 ]
 
@@ -43,39 +31,28 @@ TSFASTImporter >> import: aTSNode [
 TSFASTImporter >> instantiateFastEntityFrom: aTSNode [
 
 	| fast children |
-	
-	fast := [
-    	('FAST' , self languageName , aTSNode type capitalized
-		         asClassInEnvironment: self class environment) new.
-	] on: Error do: [
-    ('FAST' , self languageName , aTSNode type pascalized 
-		         asClassInEnvironment: self class environment) new. ].
-		
-	"fast := ('FAST' , self languageName , aTSNode type capitalized
-		         asClassInEnvironment: self class environment) new."
-	
-	
+	fast := [ self newInstanceOfClassNamed: self classesPrefix , aTSNode type capitalized ]
+		        on: Error
+		        do: [ self newInstanceOfClassNamed: self classesPrefix , aTSNode type pascalized ].
+
 	children := aTSNode collectFieldNameOfNamedChild.
 	children keysDo: [ :key |
-		key = '<unnamedChild>' ifFalse: [
-			(fast class methodDict  keys  select: [ :e | e  = key asSymbol ])
-				ifNotEmpty: [
-					fast
-						perform: key asSymbol asMutator
-						with: (self instantiateFastEntityFrom: (children at: key)) ] ] ].
+			key = '<unnamedChild>' ifFalse: [
+					(fast class methodDict keys select: [ :e | e = key asSymbol ]) ifNotEmpty: [
+						fast perform: key asSymbol asMutator with: (self instantiateFastEntityFrom: (children at: key)) ] ] ].
 	^ fast
 ]
 
 { #category : 'accessing' }
-TSFASTImporter >> languageName [
+TSFASTImporter >> languageName: aString [
 
-	^ languageName
+	classesPrefix := 'FAST' , aString
 ]
 
 { #category : 'accessing' }
-TSFASTImporter >> languageName: anObject [
+TSFASTImporter >> newInstanceOfClassNamed: aString [
 
-	languageName := anObject
+	^ (aString asClassInEnvironment: self class environment) new
 ]
 
 { #category : 'accessing' }
