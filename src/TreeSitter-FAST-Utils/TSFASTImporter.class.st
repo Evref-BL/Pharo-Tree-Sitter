@@ -1,14 +1,24 @@
+"
+I am a generic importer for a FAST model.
+
+I will create all the nodes and relations of the FAST model taking a root node as parameter. 
+
+I will do an exact match to the Tree Sitter AST but I have a subclass that can allow to tweak the model to generate.
+
+Implementation details:
+- The context contains the stack of all elements ""parent"" to the node that is currently been visited. 
+- The #currentFMProperty can either be nil or a FMProperty. If it is a property, it means that the nodes been visited are part of a field of their parent that has the same name as a contained entities property of the fast entity. Thus we save it to save the children in this property instead of the generic one.
+- #containedEntitiesPropertiesMap will save for each kind of FAST class the possible children properties for perf reasons.
+"
 Class {
 	#name : 'TSFASTImporter',
 	#superclass : 'TSVisitor',
 	#instVars : [
-		'tsLanguage',
 		'classesPrefix',
 		'model',
 		'originString',
 		'containedEntitiesPropertiesMap',
 		'context',
-		'currentField',
 		'currentFMProperty'
 	],
 	#category : 'TreeSitter-FAST-Utils',
@@ -22,7 +32,7 @@ TSFASTImporter >> classesPrefix [
 ]
 
 { #category : 'private' }
-TSFASTImporter >> containedEntitiePropertiesFor: aClass [
+TSFASTImporter >> containedEntitiesPropertiesFor: aClass [
 	"I am a cache to know for a FAST class the list of Fame properties they have to define a contained entity."
 
 	^ containedEntitiesPropertiesMap at: aClass ifAbsentPut: [ aClass mooseDescription allProperties select: #isChildrenProperty ]
@@ -31,10 +41,8 @@ TSFASTImporter >> containedEntitiePropertiesFor: aClass [
 { #category : 'actions' }
 TSFASTImporter >> import: aTSNode [
 
-	| rootFastEntity |
 	model := self newInstanceOfClassNamed: self classesPrefix , 'Model'.
-	rootFastEntity := aTSNode accept: self.
-	rootFastEntity source: self originString.
+	aTSNode accept: self.
 	^ model
 ]
 
@@ -85,26 +93,24 @@ TSFASTImporter >> originString: anObject [
 ]
 
 { #category : 'accessing' }
-TSFASTImporter >> tsLanguage [
-
-	^ tsLanguage
-]
-
-{ #category : 'accessing' }
 TSFASTImporter >> tsLanguage: anObject [
 
-	tsLanguage := anObject
+	self deprecated: 'This is not used and can be removed.' t
 ]
 
 { #category : 'visiting' }
 TSFASTImporter >> visitChildren: aTSNode in: fastEntity [
 	"Now we will visit the children after adding myself as the top context so that they can find their parent."
 
+	| previousProperty |
 	context push: fastEntity.
+	
+	"When visiting the children of the children we might lose the current property so we save it."
+	previousProperty := currentFMProperty.
 	
 	aTSNode collectFieldNameOfNamedChild keysAndValuesDo: [ :field :nodes |
 			"If the field has the name of a property, we save this property so that my children can use it to set themselves in the right variable"
-			(self containedEntitiePropertiesFor: fastEntity class)
+			(self containedEntitiesPropertiesFor: fastEntity class)
 				detect: [ :property | property name = field ]
 				ifFound: [ :property | currentFMProperty := property ].
 
@@ -112,7 +118,8 @@ TSFASTImporter >> visitChildren: aTSNode in: fastEntity [
 			nodes isCollection ifTrue: [ nodes do: [ :node | node accept: self ] ] ifFalse: [ nodes accept: self ].
 				
 			currentFMProperty := nil ].
-		
+
+	currentFMProperty := previousProperty.
 	context pop
 ]
 
@@ -122,8 +129,11 @@ TSFASTImporter >> visitNode: aTSNode [
 	| fastEntity |
 	fastEntity := self instantiateFastEntityFrom: aTSNode.
 	
-	"If the context is not empty, I'll set the newly built fast entity to the top of the context."
-	context ifNotEmpty: [
+	"If the context is not empty, I'll set the newly built fast entity to the top of the context.
+	If it is empty this is the root node and we set its source."
+	context
+		ifEmpty: [ fastEntity source: self originString. ]
+		ifNotEmpty: [
 			"I have two way to set myself in my parent:
 				- EIther my parent have a children property of the same name as the field the node belongs to and we set it there. This is the case if the current property is not nil
 				- Else I add the entity to the generic children."
