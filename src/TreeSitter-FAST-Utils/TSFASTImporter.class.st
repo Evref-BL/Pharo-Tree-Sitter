@@ -41,7 +41,13 @@ TSFASTImporter >> containedEntitiesPropertiesFor: aClass [
 { #category : 'visiting' }
 TSFASTImporter >> createEntityForNode: aTSNode [
 
-	^ self createEntityForNode: aTSNode parentManagementBlock: [ :entity :parent :currentParentProperty |
+	^ self createEntityForNode: aTSNode kind: (self class environment at: (self classesPrefix , aTSNode type pascalized) asSymbol)
+]
+
+{ #category : 'visiting' }
+TSFASTImporter >> createEntityForNode: aTSNode kind: aFASTClass [
+
+	^ self createEntityForNode: aTSNode kind: aFASTClass parentManagementBlock: [ :entity :parent :currentParentProperty |
 			"By default, I have two way to set myself in my parent:
 				- Either my parent have a children property of the same name as the field the node belongs to and we set it there. This is the case if the current property is not nil
 				- Else I add the entity to the generic children."

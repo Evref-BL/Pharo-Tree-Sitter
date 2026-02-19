@@ -215,6 +215,19 @@ TSNode >> hasChildren [
 
 ]
 
+{ #category : 'testing' }
+TSNode >> hasParentOfType: aSymbol [
+
+	| parent |
+	parent := self parent.
+
+	[ parent isNotNil ] whileTrue: [
+			parent type = aSymbol ifTrue: [ ^ true ].
+			parent := parent parent ].
+
+	^ false
+]
+
 { #category : 'accessing - structure variables' }
 TSNode >> id [
 	"This method was automatically generated"
