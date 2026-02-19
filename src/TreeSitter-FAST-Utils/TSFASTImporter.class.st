@@ -1,14 +1,29 @@
 "
+## Description 
+
 I am a generic importer for a FAST model.
 
 I will create all the nodes and relations of the FAST model taking a root node as parameter. 
 
 I will do an exact match to the Tree Sitter AST but I have a subclass that can allow to tweak the model to generate.
 
-Implementation details:
+# Implementation details
+
+## Context
+
 - The context contains the stack of all elements ""parent"" to the node that is currently been visited. 
 - The #currentFMProperty can either be nil or a FMProperty. If it is a property, it means that the nodes been visited are part of a field of their parent that has the same name as a contained entities property of the fast entity. Thus we save it to save the children in this property instead of the generic one.
 - #containedEntitiesPropertiesMap will save for each kind of FAST class the possible children properties for perf reasons.
+
+### Source positions management
+
+TreeSitter is providing the positions of the nodes in the parsed string in number of bytes but the current implementation of FAST requires the positions in number of characters. 
+In the origin implementation we were computing for each nodes the number of characters from the start and end positions in number of bytes.
+
+Now we are taking a different direction. We know that we provide the source code to tree sitter encoded un UTF8.
+With this information we build a map cached in #bytesToCharactersMap that will associate to the index of each leading bytes, the index of the corresponding character. 
+
+This allows to build once the index map and to just use it to convert bytes positions into characters positions which is speeding up a lot the import.
 "
 Class {
 	#name : 'TSFASTImporter',
@@ -19,11 +34,27 @@ Class {
 		'originString',
 		'containedEntitiesPropertiesMap',
 		'context',
-		'currentFMProperty'
+		'currentFMProperty',
+		'bytesToCharactersMap'
 	],
 	#category : 'TreeSitter-FAST-Utils',
 	#package : 'TreeSitter-FAST-Utils'
 }
+
+{ #category : 'private' }
+TSFASTImporter >> bytesToCharacterMap [
+	"We consider that the string is UTF8 encoded in the FAST importer. If we parse a file in UTF16 or another encoding, we should decode it and encode it in UTF8.
+	
+	In Famix we cannot do that since the source code is in files. But in FAST we keep the source code in a Pharo string allowing to do this."
+
+	^ bytesToCharactersMap ifNil: [ bytesToCharactersMap := ZnUTF8Encoder default mapBytesToCharactersFor: self originString ]
+]
+
+{ #category : 'private' }
+TSFASTImporter >> characterPositionAtByte: aNumber [
+
+	^ self bytesToCharacterMap at: aNumber ifAbsent: [ SubscriptOutOfBounds signalFor: aNumber ]
+]
 
 { #category : 'accessing' }
 TSFASTImporter >> classesPrefix [
@@ -62,8 +93,9 @@ TSFASTImporter >> instantiateFastEntityFrom: aTSNode [
 	fastEntity := self newInstanceOfClassNamed: self classesPrefix , aTSNode type pascalized.
 
 	model add: fastEntity.
-	fastEntity startPos: (aTSNode startPositionFromSourceText: self originString).
-	fastEntity endPos: (aTSNode endPositionFromSourceText: self originString).
+
+	fastEntity startPos: (self characterPositionAtByte: aTSNode startByte) + 1.
+	fastEntity endPos: (self characterPositionAtByte: aTSNode endByte).
 
 	^ fastEntity
 ]
@@ -87,9 +119,9 @@ TSFASTImporter >> originString [
 ]
 
 { #category : 'accessing' }
-TSFASTImporter >> originString: anObject [
+TSFASTImporter >> originString: aString [
 
-	originString := anObject
+	originString := aString
 ]
 
 { #category : 'accessing' }
