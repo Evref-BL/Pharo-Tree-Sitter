@@ -6,9 +6,14 @@ I will create all the nodes and relations of the FAST model taking a root node a
 I will do an exact match to the Tree Sitter AST but I have a subclass that can allow to tweak the model to generate.
 
 Implementation details:
-- The context contains the stack of all elements ""parent"" to the node that is currently been visited. 
-- The #currentFMProperty can either be nil or a FMProperty. If it is a property, it means that the nodes been visited are part of a field of their parent that has the same name as a contained entities property of the fast entity. Thus we save it to save the children in this property instead of the generic one.
-- #containedEntitiesPropertiesMap will save for each kind of FAST class the possible children properties for perf reasons.
+
+In order to make it easier to implement the importer and also to make it easier to customize the import in my subclasses, I am saving a ""context"" of the import. 
+
+The context is a stack of `TSFASTContextEntry`. We will create one for each parent/children level in the tree we are currently visiting. An entry knows the TSNode been visited, the fast entity created from it, the field in which the TSNode was in its parent and the fm property that is optionaly associated to this entity based on its name. 
+
+The fmProperty can either be nil or a FMProperty. If it is a property, it means that the nodes been visited are part of a field of their parent that has the same name as a contained entities property of the fast entity. Thus we save it to save the children in this property instead of the generic one.
+
+ #containedEntitiesPropertiesMap will save for each kind of FAST class the possible children properties for perf reasons
 "
 Class {
 	#name : 'TSFASTImporter',
@@ -18,8 +23,7 @@ Class {
 		'model',
 		'originString',
 		'containedEntitiesPropertiesMap',
-		'context',
-		'currentFMProperty'
+		'context'
 	],
 	#category : 'TreeSitter-FAST-Utils',
 	#package : 'TreeSitter-FAST-Utils'
@@ -47,11 +51,11 @@ TSFASTImporter >> createEntityForNode: aTSNode [
 { #category : 'visiting' }
 TSFASTImporter >> createEntityForNode: aTSNode kind: aFASTClass [
 
-	^ self createEntityForNode: aTSNode kind: aFASTClass parentManagementBlock: [ :entity :parent :currentParentProperty |
+	^ self createEntityForNode: aTSNode kind: aFASTClass parentManagementBlock: [ :entity :parent :contextEntry |
 			"By default, I have two way to set myself in my parent:
 				- Either my parent have a children property of the same name as the field the node belongs to and we set it there. This is the case if the current property is not nil
 				- Else I add the entity to the generic children."
-			currentParentProperty
+			contextEntry fmProperty 
 				ifNil: [ parent addGenericChildren: entity ]
 				ifNotNil: [ :property |
 						property isMultivalued
@@ -65,11 +69,11 @@ TSFASTImporter >> createEntityForNode: aTSNode kind: aFASTClass parentManagement
 	| fastEntity |
 	fastEntity := self instantiateFastEntity: aFASTClass from: aTSNode.
 	
-	"If the context is not empty, I'll set the newly built fast entity to the top of the context.
+	"If the context is not empty, I'll use it to set the entity in its parent via the parent management block.
 	If it is empty this is the root node and we set its source."
 	context
-		ifEmpty: [ fastEntity source: self originString. ]
-		ifNotEmpty: [ aBlock cull: fastEntity cull: context top cull: currentFMProperty  ].
+		ifNotEmpty: [ aBlock cull: fastEntity cull: context top fastEntity cull: context top ]
+		ifEmpty: [ fastEntity source: self originString ].
 
 	aTSNode hasChildren ifTrue: [ self visitChildren: aTSNode in: fastEntity ].
 
@@ -146,24 +150,18 @@ TSFASTImporter >> tsLanguage: anObject [
 TSFASTImporter >> visitChildren: aTSNode in: fastEntity [
 	"Now we will visit the children after adding myself as the top context so that they can find their parent."
 
-	| previousProperty |
-	context push: fastEntity.
-	
-	"When visiting the children of the children we might lose the current property so we save it."
-	previousProperty := currentFMProperty.
+	context push: (TSFASTContextEntry fastEntity: fastEntity tsNode: aTSNode).
 	
 	aTSNode collectFieldNameOfNamedChild keysAndValuesDo: [ :field :nodes |
+			context top field: field.
 			"If the field has the name of a property, we save this property so that my children can use it to set themselves in the right variable"
 			(self containedEntitiesPropertiesFor: fastEntity class)
 				detect: [ :property | property name = field ]
-				ifFound: [ :property | currentFMProperty := property ].
+				ifFound: [ :property | context top fmProperty: property ].
 
 			"Nodes can be a simple node or a collection of nodes."
-			nodes isCollection ifTrue: [ nodes do: [ :node | node accept: self ] ] ifFalse: [ nodes accept: self ].
-				
-			currentFMProperty := nil ].
+			nodes isCollection ifTrue: [ nodes do: [ :node | node accept: self ] ] ifFalse: [ nodes accept: self ] ].
 
-	currentFMProperty := previousProperty.
 	context pop
 ]
 
