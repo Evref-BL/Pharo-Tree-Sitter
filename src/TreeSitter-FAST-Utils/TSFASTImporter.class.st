@@ -174,7 +174,7 @@ TSFASTImporter >> originString: aString [
 { #category : 'accessing' }
 TSFASTImporter >> tsLanguage: anObject [
 
-	self deprecated: 'This is not used and can be removed.' t
+	self deprecated: 'This is not used and can be removed.'
 ]
 
 { #category : 'visiting' }
