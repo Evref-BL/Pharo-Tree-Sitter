@@ -95,7 +95,7 @@ TSFASTImporter >> originString: anObject [
 { #category : 'accessing' }
 TSFASTImporter >> tsLanguage: anObject [
 
-	self deprecated: 'This is not used and can be removed.' t
+	self deprecated: 'This is not used and can be removed.'
 ]
 
 { #category : 'visiting' }
@@ -107,6 +107,7 @@ TSFASTImporter >> visitChildren: aTSNode in: fastEntity [
 	
 	"When visiting the children of the children we might lose the current property so we save it."
 	previousProperty := currentFMProperty.
+	currentFMProperty := nil.
 	
 	aTSNode collectFieldNameOfNamedChild keysAndValuesDo: [ :field :nodes |
 			"If the field has the name of a property, we save this property so that my children can use it to set themselves in the right variable"
