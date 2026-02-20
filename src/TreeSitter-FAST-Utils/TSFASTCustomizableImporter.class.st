@@ -37,5 +37,5 @@ TSFASTCustomizableImporter >> sourceCodeOf: aTSNode [
 TSFASTCustomizableImporter >> visitNode: aTSNode [
 	"Here we are performing a special visit method. If it is not implemented the #doesNotUnderstood: will call my super visitNode:. The reason we are doing this is to simplify the debugging of a visitor to not have to step over a lot of method calls..."
 
-	^ self perform: (self buildVisitMethodNameFor: aTSNode) with: aTSNode
+	^ self handleErrorsDuring: [ self perform: (self buildVisitMethodNameFor: aTSNode) with: aTSNode ]
 ]

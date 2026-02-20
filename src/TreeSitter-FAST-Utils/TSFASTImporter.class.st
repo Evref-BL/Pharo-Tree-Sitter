@@ -28,6 +28,12 @@ Now we are taking a different direction. We know that we provide the source code
 With this information we build a map cached in #bytesToCharactersMap that will associate to the index of each leading bytes, the index of the corresponding character. 
 
 This allows to build once the index map and to just use it to convert bytes positions into characters positions which is speeding up a lot the import.
+
+### Error reporting
+
+Since it is common to have errors during the import of a project (importers are hard to build since so many things can happen), we catch the errors happening during the visit of the nodes and we proceed with the visit. 
+
+At the end of the import, the errors are inspected by default. During development you can toggle a debug mode in the Pharo ""Debug"" menu.
 "
 Class {
 	#name : 'TSFASTImporter',
@@ -38,11 +44,40 @@ Class {
 		'originString',
 		'containedEntitiesPropertiesMap',
 		'context',
-		'bytesToCharactersMap'
+		'bytesToCharactersMap',
+		'errors'
+	],
+	#classVars : [
+		'IsInDebugMode'
 	],
 	#category : 'TreeSitter-FAST-Utils',
 	#package : 'TreeSitter-FAST-Utils'
 }
+
+{ #category : 'testing' }
+TSFASTImporter class >> isInDebugMode [
+
+	^ IsInDebugMode ifNil: [ IsInDebugMode := false ]
+]
+
+{ #category : 'testing' }
+TSFASTImporter class >> isInDebugMode: aBoolean [
+
+	IsInDebugMode := aBoolean
+]
+
+{ #category : 'world menu' }
+TSFASTImporter class >> menuCommandOn: aBuilder [
+
+	<worldMenu>
+	(aBuilder item: #'Toggle FAST Importer Debug mode')
+		parent: #Debug;
+		action: [ self isInDebugMode: self isInDebugMode not ];
+		order: 99999;
+		withSeparatorAfter;
+		help: 'If this is enabled, errors will not be caught in the FAST importing but passed.';
+		icon: (self iconNamed: #configuration)
+]
 
 { #category : 'private' }
 TSFASTImporter >> bytesToCharacterMap [
@@ -116,11 +151,25 @@ TSFASTImporter >> createEntityForNode: aTSNode parentManagementBlock: aBlock [
 	^ self createEntityForNode: aTSNode kind: (self class environment at: (self classesPrefix , aTSNode type pascalized) asSymbol) parentManagementBlock: aBlock
 ]
 
+{ #category : 'private' }
+TSFASTImporter >> handleErrorsDuring: aBlock [
+	"During the visit of the nodes, if an error happens and the debug mode is not enabled, we save the errors in an error report and we keep going with the parsing of the following nodes."
+
+	^ aBlock onErrorDo: [ :error |
+			  self class isInDebugMode
+				  ifTrue: [ error pass ]
+				  ifFalse: [
+						  errors add: error.
+						  nil ] ]
+]
+
 { #category : 'actions' }
 TSFASTImporter >> import: aTSNode [
 
 	model := self newInstanceOfClassNamed: self classesPrefix , 'Model'.
 	aTSNode accept: self.
+	self manageErrorReport.
+
 	^ model
 ]
 
@@ -129,7 +178,8 @@ TSFASTImporter >> initialize [
 
 	super initialize.
 	containedEntitiesPropertiesMap := IdentityDictionary new.
-	context := Stack new
+	context := Stack new.
+	errors := OrderedCollection new
 ]
 
 { #category : 'actions' }
@@ -151,6 +201,13 @@ TSFASTImporter >> instantiateFastEntity: aFASTClass from: aTSNode [
 TSFASTImporter >> languageName: aString [
 
 	classesPrefix := 'FAST' , aString
+]
+
+{ #category : 'actions' }
+TSFASTImporter >> manageErrorReport [
+	"By default if errors happens I inspect the list. If you want other behaviors you can override me in order to do what you want for the error reporting."
+
+	^ errors ifNotEmpty: [ errors inspect ]
 ]
 
 { #category : 'accessing' }
@@ -199,5 +256,5 @@ TSFASTImporter >> visitChildren: aTSNode in: fastEntity [
 { #category : 'visiting' }
 TSFASTImporter >> visitNode: aTSNode [
 
-	^ self createEntityForNode: aTSNode
+	^ self handleErrorsDuring: [ self createEntityForNode: aTSNode ]
 ]
