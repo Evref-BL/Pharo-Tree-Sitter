@@ -9,6 +9,9 @@ I will do an exact match to the Tree Sitter AST but I have a subclass that can a
 
 ## Implementation details
 
+When checking my code you might think that I have a lot of methods for what I do. The reason is that I am letting a lot of hooks in order for the `TSFASTCustomizableImporter` to be effective. 
+Please, do not simplify the API, we need all those parameters.
+
 ### Context
 
 In order to make it easier to implement the importer and also to make it easier to customize the import in my subclasses, I am saving a ""context"" of the import. 
@@ -118,16 +121,7 @@ TSFASTImporter >> createEntityForNode: aTSNode [
 { #category : 'visiting' }
 TSFASTImporter >> createEntityForNode: aTSNode kind: aFASTClass [
 
-	^ self createEntityForNode: aTSNode kind: aFASTClass parentManagementBlock: [ :entity :parent :contextEntry |
-			"By default, I have two way to set myself in my parent:
-				- Either my parent have a children property of the same name as the field the node belongs to and we set it there. This is the case if the current property is not nil
-				- Else I add the entity to the generic children."
-			contextEntry fmProperty 
-				ifNil: [ parent addGenericChildren: entity ]
-				ifNotNil: [ :property |
-						property isMultivalued
-							ifTrue: [ parent perform: ('add' , property implementingSelector asSingular capitalized , ':') asSymbol with: entity ]
-							ifFalse: [ parent perform: property implementingSelector asMutator with: entity ] ] ]
+	^ self createEntityForNode: aTSNode kind: aFASTClass parentManagementBlock: [ :entity | self setParentOf: entity ]
 ]
 
 { #category : 'visiting' }
@@ -139,7 +133,7 @@ TSFASTImporter >> createEntityForNode: aTSNode kind: aFASTClass parentManagement
 	"If the context is not empty, I'll use it to set the entity in its parent via the parent management block.
 	If it is empty this is the root node and we set its source."
 	context
-		ifNotEmpty: [ aBlock cull: fastEntity cull: context top fastEntity cull: context top ]
+		ifNotEmpty: [ aBlock cull: fastEntity cull: context top "providing the top context optionaly in case there is some intricated nested cases." ]
 		ifEmpty: [ fastEntity source: self originString ].
 
 	aTSNode hasChildren ifTrue: [ self pushContext: fastEntity node: aTSNode during: [ self visitChildren: aTSNode in: fastEntity ] ].
@@ -237,6 +231,27 @@ TSFASTImporter >> pushContext: fastEntity node: aTSNode during: aBlock [
 		context push: (TSFASTContextEntry fastEntity: fastEntity tsNode: aTSNode).
 
 		aBlock value ] ensure: [ context pop ]
+]
+
+{ #category : 'visiting' }
+TSFASTImporter >> setParentOf: entity [
+	"By default, I have two way to set myself in my parent:
+		- Either my parent have a children property of the same name as the field the node belongs to and we set it there. This is the case if the current property is not nil
+		- Else I add the entity to the generic children."
+
+	context top fmProperty
+		ifNil: [ self topFastEntity addGenericChildren: entity ]
+		ifNotNil: [ :property |
+				property isMultivalued
+					ifTrue: [ self topFastEntity perform: ('add' , property implementingSelector asSingular capitalized , ':') asSymbol with: entity ]
+					ifFalse: [ self topFastEntity perform: property implementingSelector asMutator with: entity ] ]
+]
+
+{ #category : 'accessing' }
+TSFASTImporter >> topFastEntity [
+	"helper"
+
+	^ context top fastEntity
 ]
 
 { #category : 'accessing' }

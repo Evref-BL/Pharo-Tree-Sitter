@@ -21,7 +21,7 @@ TSFASTPythonImporter>>visitBinaryOperator: aTSNode
 	| fastEntity |
 	fastEntity := self instantiateFastEntity: FASTPythonBinaryOperator from: aTSNode.
 
-	context top fastEntity addGenericChildren: fastEntity. ""Should this be a generic child?""
+	self setParentOf: fastEntity. ""Should this be a generic child?""
 
 	self pushContext: fastEntity node: aTSNode during: [
 			context top add: 'leftOperand' asAliasOfField: 'left'.
