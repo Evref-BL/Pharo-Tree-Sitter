@@ -10,6 +10,32 @@ The entry will save multiple interesting informations such has:
 - The fm property corresponding to the field been visited
 
 Those info will be useful to import and also to customize the importers with `TSFASTCustomizableImporter`.
+
+## Customize fields names
+
+Also, I allow the customizable importer to define some aliases for some fields. 
+This is useful if we have a field matching a FM property but not with the same name. 
+For example in Python the `FASTTBinaryExpression` defines `leftOperand` and `rightOperand` but the fields in the node of type `binary_operator` are called `left` and `right`. 
+
+Here is how to manage this:
+
+```st
+TSFASTPythonImporter>>visitBinaryOperator: aTSNode
+
+	| fastEntity |
+	fastEntity := self instantiateFastEntity: FASTPythonBinaryOperator from: aTSNode.
+
+	context top fastEntity addGenericChildren: fastEntity. ""Should this be a generic child?""
+
+	self pushContext: fastEntity node: aTSNode during: [
+			context top add: 'leftOperand' asAliasOfField: 'left'.
+			context top add: 'rightOperand' asAliasOfField: 'right'.
+			self visitChildren: aTSNode in: fastEntity ].
+
+	^ fastEntity
+```
+
+
 "
 Class {
 	#name : 'TSFASTContextEntry',
@@ -18,7 +44,8 @@ Class {
 		'fastEntity',
 		'tsNode',
 		'field',
-		'fmProperty'
+		'fmProperty',
+		'fieldsAliasMap'
 	],
 	#category : 'TreeSitter-FAST-Utils',
 	#package : 'TreeSitter-FAST-Utils'
@@ -31,6 +58,15 @@ TSFASTContextEntry class >> fastEntity: anEntity tsNode: aNode [
 		  fastEntity: anEntity;
 		  tsNode: aNode;
 		  yourself
+]
+
+{ #category : 'adding' }
+TSFASTContextEntry >> add: aString asAliasOfField: anotherString [
+	"See my class comment for more info."
+
+	fieldsAliasMap ifNil: [ fieldsAliasMap := Dictionary new ].
+
+	(fieldsAliasMap at: anotherString ifAbsentPut: [ OrderedCollection new ]) add: aString
 ]
 
 { #category : 'accessing' }
@@ -56,6 +92,17 @@ TSFASTContextEntry >> field: anObject [
 
 	field := anObject.
 	fmProperty := nil "If we change the field, the property should be discarded since it is linked to the property"
+]
+
+{ #category : 'testing' }
+TSFASTContextEntry >> fieldMatchesProperty: aFMProperty [
+	"My field matches the property if the property has the same name as the field or as an alias of the field."
+
+	aFMProperty name = field ifTrue: [ ^ true ].
+
+	fieldsAliasMap ifNotNil: [ fieldsAliasMap at: field ifPresent: [ :aliases | (aliases includes: aFMProperty name) ifTrue: [ ^ true ] ] ].
+
+	^ false
 ]
 
 { #category : 'accessing' }

@@ -19,6 +19,8 @@ The fmProperty can either be nil or a FMProperty. If it is a property, it means 
 
  #containedEntitiesPropertiesMap will save for each kind of FAST class the possible children properties for perf reasons
 
+The context can do more but this will be detailed in `TSFASTContextEntry` and `TSFASTCustomizableImporter` class comments.
+
 ### Source positions management
 
 TreeSitter is providing the positions of the nodes in the parsed string in number of bytes but the current implementation of FAST requires the positions in number of characters. 
@@ -140,7 +142,7 @@ TSFASTImporter >> createEntityForNode: aTSNode kind: aFASTClass parentManagement
 		ifNotEmpty: [ aBlock cull: fastEntity cull: context top fastEntity cull: context top ]
 		ifEmpty: [ fastEntity source: self originString ].
 
-	aTSNode hasChildren ifTrue: [ self visitChildren: aTSNode in: fastEntity ].
+	aTSNode hasChildren ifTrue: [ self pushContext: fastEntity node: aTSNode during: [ self visitChildren: aTSNode in: fastEntity ] ].
 
 	^ fastEntity
 ]
@@ -228,6 +230,15 @@ TSFASTImporter >> originString: aString [
 	originString := aString
 ]
 
+{ #category : 'visiting' }
+TSFASTImporter >> pushContext: fastEntity node: aTSNode during: aBlock [
+
+	[
+		context push: (TSFASTContextEntry fastEntity: fastEntity tsNode: aTSNode).
+
+		aBlock value ] ensure: [ context pop ]
+]
+
 { #category : 'accessing' }
 TSFASTImporter >> tsLanguage: anObject [
 
@@ -238,19 +249,16 @@ TSFASTImporter >> tsLanguage: anObject [
 TSFASTImporter >> visitChildren: aTSNode in: fastEntity [
 	"Now we will visit the children after adding myself as the top context so that they can find their parent."
 
-	context push: (TSFASTContextEntry fastEntity: fastEntity tsNode: aTSNode).
-	
 	aTSNode collectFieldNameOfNamedChild keysAndValuesDo: [ :field :nodes |
 			context top field: field.
 			"If the field has the name of a property, we save this property so that my children can use it to set themselves in the right variable"
 			(self containedEntitiesPropertiesFor: fastEntity class)
-				detect: [ :property | property name = field ]
+				detect: [ :property | context top fieldMatchesProperty: property ]
 				ifFound: [ :property | context top fmProperty: property ].
 
 			"Nodes can be a simple node or a collection of nodes."
 			nodes isCollection ifTrue: [ nodes do: [ :node | node accept: self ] ] ifFalse: [ nodes accept: self ] ].
 
-	context pop
 ]
 
 { #category : 'visiting' }
