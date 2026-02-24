@@ -117,6 +117,12 @@ TSFASTContextEntry >> fmProperty: anObject [
 	fmProperty := anObject
 ]
 
+{ #category : 'testing' }
+TSFASTContextEntry >> isOfFASTType: aFASTClassOrTrait [
+
+	^ fastEntity isOfType: aFASTClassOrTrait
+]
+
 { #category : 'printing' }
 TSFASTContextEntry >> printOn: aStream [
 
