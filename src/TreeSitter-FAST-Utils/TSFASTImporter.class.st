@@ -147,6 +147,13 @@ TSFASTImporter >> createEntityForNode: aTSNode parentManagementBlock: aBlock [
 	^ self createEntityForNode: aTSNode kind: (self class environment at: (self classesPrefix , aTSNode type pascalized) asSymbol) parentManagementBlock: aBlock
 ]
 
+{ #category : 'actions' }
+TSFASTImporter >> customizeNewContext: aContextEntry [
+	"Hook"
+
+	
+]
+
 { #category : 'private' }
 TSFASTImporter >> handleErrorsDuring: aBlock [
 	"During the visit of the nodes, if an error happens and the debug mode is not enabled, we save the errors in an error report and we keep going with the parsing of the following nodes."
@@ -229,7 +236,7 @@ TSFASTImporter >> pushContext: fastEntity node: aTSNode during: aBlock [
 
 	[
 		context push: (TSFASTContextEntry fastEntity: fastEntity tsNode: aTSNode).
-
+		self customizeNewContext: context top.
 		aBlock value ] ensure: [ context pop ]
 ]
 

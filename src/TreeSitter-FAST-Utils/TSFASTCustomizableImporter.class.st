@@ -31,6 +31,24 @@ TSFASTPythonImporter>>visitBinaryOperator: aTSNode
 	^ fastEntity
 ```
 
+But this is not all. This often make us duplicate the code to create the entity, set the parent and visit the children.
+
+Instead of doing this, it is possible to just ask the visitor to customize the next context entry we will create. So we can just do something like this:
+
+```st
+TSFASTPythonImporter>>visitBinaryOperator: aTSNode
+
+	self onNextContextDo: [ :contextEntry |
+			contextEntry
+				add: 'leftOperand' asAliasOfField: 'left';
+				add: 'rightOperand' asAliasOfField: 'right' ].
+
+	^ self createEntityForNode: aTSNode
+
+```
+
+Like this, we duplicate less code.
+
 
 
 TODO: Add more documentation
@@ -38,6 +56,9 @@ TODO: Add more documentation
 Class {
 	#name : 'TSFASTCustomizableImporter',
 	#superclass : 'TSFASTImporter',
+	#instVars : [
+		'nextContextCustomization'
+	],
 	#category : 'TreeSitter-FAST-Utils',
 	#package : 'TreeSitter-FAST-Utils'
 }
@@ -51,12 +72,29 @@ TSFASTCustomizableImporter >> buildVisitMethodNameFor: aTSNode [
 			   aStream nextPut: $: ]) asSymbol
 ]
 
+{ #category : 'actions' }
+TSFASTCustomizableImporter >> customizeNewContext: aContextEntry [
+	"This is a hook used to let the user customize the next context even before it is created. 
+	This might be useful for example to add aliases to the fileds to import."
+
+	nextContextCustomization ifNotNil: [
+			nextContextCustomization value: aContextEntry.
+			nextContextCustomization := nil ]
+]
+
 { #category : 'reflective operations' }
 TSFASTCustomizableImporter >> doesNotUnderstand: aMessage [
 
 	(aMessage selector beginsWith: 'visit') ifTrue: [ ^ super visitNode: aMessage argument ].
 
 	^ super doesNotUnderstand: aMessage
+]
+
+{ #category : 'actions' }
+TSFASTCustomizableImporter >> onNextContextDo: aBlock [
+	"Save a block to execute to customize the next context entry created"
+
+	nextContextCustomization := aBlock
 ]
 
 { #category : 'accessing' }
