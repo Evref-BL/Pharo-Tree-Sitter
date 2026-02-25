@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        smalltalk: [ Pharo64-12 ]
+        smalltalk: [ Pharo64-13 ]
     name: ${{ matrix.smalltalk }}
     steps:
       - uses: actions/checkout@v4
@@ -35,3 +35,4 @@ jobs:
         uses: coverallsapp/github-action@master
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+
