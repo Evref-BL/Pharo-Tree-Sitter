@@ -1,5 +1,5 @@
 Class {
-	#name : 'TSLanguageHMLTest',
+	#name : 'TSLanguageHTMLTest',
 	#superclass : 'TestCase',
 	#instVars : [
 		'parser',
@@ -10,7 +10,7 @@ Class {
 }
 
 { #category : 'running' }
-TSLanguageHMLTest >> setUp [
+TSLanguageHTMLTest >> setUp [
 
 	super setUp.
 	self timeLimit: 120 seconds.
@@ -20,14 +20,14 @@ TSLanguageHMLTest >> setUp [
 ]
 
 { #category : 'running' }
-TSLanguageHMLTest >> tearDown [
+TSLanguageHTMLTest >> tearDown [
 
 	parser delete.
 	super tearDown
 ]
 
 { #category : 'tests' }
-TSLanguageHMLTest >> testCollectAllSymbolOfOneSymbolType [
+TSLanguageHTMLTest >> testCollectAllSymbolOfOneSymbolType [
 
 	self
 		assert:
@@ -37,19 +37,19 @@ TSLanguageHMLTest >> testCollectAllSymbolOfOneSymbolType [
 ]
 
 { #category : 'tests' }
-TSLanguageHMLTest >> testRetrieveSymbolName [
+TSLanguageHTMLTest >> testRetrieveSymbolName [
 
 	self assert: (parser language nameOfSymbol: 1) equals: '<!'
 ]
 
 { #category : 'tests' }
-TSLanguageHMLTest >> testRetrieveSymbolType [
+TSLanguageHTMLTest >> testRetrieveSymbolType [
 
 	self assert: (parser language typeOfSymbol: 1) equals: TSSymbolType tssymboltypeanonymous 
 ]
 
 { #category : 'tests' }
-TSLanguageHMLTest >> testTypescriptNumberOfSymbol [
+TSLanguageHTMLTest >> testTypescriptNumberOfSymbol [
 
 	self assert: parser language symbolCount equals: 41
 ]

@@ -93,7 +93,7 @@ TSParserHTMLTest >> testRootNodeSymbolSimpleHTMLDocument [
 ]
 
 { #category : 'tests' }
-TSParserHTMLTest >> testRootOfSimpleHMLDocumentHasOneChild [
+TSParserHTMLTest >> testRootOfSimpleHTMLDocumentHasOneChild [
 
 	| string tree |
 	string := '<html>
@@ -113,7 +113,7 @@ TSParserHTMLTest >> testRootOfSimpleHMLDocumentHasOneChild [
 ]
 
 { #category : 'tests' }
-TSParserHTMLTest >> testRootOfSimpleHMLDocumentHasOneNamedChild [
+TSParserHTMLTest >> testRootOfSimpleHTMLDocumentHasOneNamedChild [
 
 	| string tree |
 	string := '<html>
