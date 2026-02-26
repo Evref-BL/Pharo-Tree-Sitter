@@ -53,7 +53,7 @@ TSHighlighter >> highlight: aString [
 	text := aString asText.
 	string := aString.
 	tree := self parser parseString: aString.
-	self highlight: text usingNode: tree rootNode.
+	self highlight: text withPlatformLineEndings usingNode: tree rootNode.
 	^ text
 ]
 
