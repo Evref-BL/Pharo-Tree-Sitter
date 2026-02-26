@@ -50,7 +50,8 @@ Class {
 		'containedEntitiesPropertiesMap',
 		'context',
 		'bytesToCharactersMap',
-		'errors'
+		'errors',
+		'addSelectors'
 	],
 	#classVars : [
 		'IsInDebugMode'
@@ -82,6 +83,12 @@ TSFASTImporter class >> menuCommandOn: aBuilder [
 		withSeparatorAfter;
 		help: 'If this is enabled, errors will not be caught in the FAST importing but passed.';
 		icon: (self iconNamed: #configuration)
+]
+
+{ #category : 'visiting' }
+TSFASTImporter >> addSelectorFor: aSelector [
+
+	^ addSelectors at: aSelector ifAbsentPut: [ ('add' , aSelector asSingular capitalized , ':') asSymbol ]
 ]
 
 { #category : 'private' }
@@ -182,7 +189,8 @@ TSFASTImporter >> initialize [
 	super initialize.
 	containedEntitiesPropertiesMap := IdentityDictionary new.
 	context := Stack new.
-	errors := OrderedCollection new
+	errors := OrderedCollection new.
+	addSelectors := IdentityDictionary new
 ]
 
 { #category : 'actions' }
@@ -256,7 +264,7 @@ TSFASTImporter >> setParentOf: entity [
 		ifNil: [ self topFastEntity addGenericChildren: entity ]
 		ifNotNil: [ :property |
 				property isMultivalued
-					ifTrue: [ self topFastEntity perform: ('add' , property implementingSelector asSingular capitalized , ':') asSymbol with: entity ]
+					ifTrue: [ self topFastEntity perform: (self addSelectorFor: property implementingSelector) with: entity ]
 					ifFalse: [ self topFastEntity perform: property implementingSelector asMutator with: entity ] ]
 ]
 
