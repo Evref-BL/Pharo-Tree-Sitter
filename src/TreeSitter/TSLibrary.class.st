@@ -208,17 +208,17 @@ TSLibrary >> ts_parser: aParser _parse_string: aString ofLength: length usingOld
 ]
 
 { #category : 'parser' }
-TSLibrary >> ts_parser: aTSParser _print_dot_graphs: fd [
-
-	^ self ffiCall:
-		  'void ts_parser_print_dot_graphs (TSParser * aTSParser, int fd )'
-]
-
-{ #category : 'parser' }
 TSLibrary >> ts_parser: aParser _parse_string: aString ofLength: length usingOldTree: anOldTree encoding: anEncoding [
 	 
 	^ self ffiCall:
 		  'TSTree *ts_parser_parse_string_encoding(TSParser * aParser, const TSTree * anOldTree, const char * aString, uint32 length, TSInputEncoding anEncoding)'
+]
+
+{ #category : 'parser' }
+TSLibrary >> ts_parser: aTSParser _print_dot_graphs: fd [
+
+	^ self ffiCall:
+		  'void ts_parser_print_dot_graphs (TSParser * aTSParser, int fd )'
 ]
 
 { #category : 'parser' }
