@@ -115,7 +115,7 @@ TSFASTImporter >> containedEntitiesPropertiesFor: aClass [
 { #category : 'visiting' }
 TSFASTImporter >> createEntityForNode: aTSNode [
 
-	^ self createEntityForNode: aTSNode kind: (self class environment at: (self classesPrefix , aTSNode type pascalized) asSymbol)
+	^ self createEntityForNode: aTSNode kind: (self kindForType: aTSNode type)
 ]
 
 { #category : 'visiting' }
@@ -136,7 +136,7 @@ TSFASTImporter >> createEntityForNode: aTSNode kind: aFASTClass parentManagement
 		ifNotEmpty: [ aBlock cull: fastEntity cull: context top "providing the top context optionaly in case there is some intricated nested cases." ]
 		ifEmpty: [ fastEntity source: self originString ].
 
-	aTSNode hasChildren ifTrue: [ self pushContext: fastEntity node: aTSNode during: [ self visitChildren: aTSNode in: fastEntity ] ].
+	aTSNode hasChildren ifTrue: [ self pushContext: fastEntity node: aTSNode during: [ self visitChildren: aTSNode ] ].
 
 	^ fastEntity
 ]
@@ -147,7 +147,7 @@ TSFASTImporter >> createEntityForNode: aTSNode parentManagementBlock: aBlock [
 	^ self createEntityForNode: aTSNode kind: (self class environment at: (self classesPrefix , aTSNode type pascalized) asSymbol) parentManagementBlock: aBlock
 ]
 
-{ #category : 'actions' }
+{ #category : 'utilities' }
 TSFASTImporter >> customizeNewContext: aContextEntry [
 	"Hook"
 
@@ -201,6 +201,12 @@ TSFASTImporter >> instantiateFastEntity: aFASTClass from: aTSNode [
 ]
 
 { #category : 'accessing' }
+TSFASTImporter >> kindForType: aSymbol [
+
+	^ self class environment at: (self classesPrefix , aSymbol pascalized) asSymbol
+]
+
+{ #category : 'accessing' }
 TSFASTImporter >> languageName: aString [
 
 	classesPrefix := 'FAST' , aString
@@ -213,7 +219,7 @@ TSFASTImporter >> manageErrorReport [
 	^ errors ifNotEmpty: [ errors inspect ]
 ]
 
-{ #category : 'accessing' }
+{ #category : 'utilities' }
 TSFASTImporter >> newInstanceOfClassNamed: aString [
 
 	^ (aString asClassInEnvironment: self class environment) new
@@ -268,18 +274,17 @@ TSFASTImporter >> tsLanguage: anObject [
 ]
 
 { #category : 'visiting' }
-TSFASTImporter >> visitChildren: aTSNode in: fastEntity [
+TSFASTImporter >> visitChildren: aTSNode [
 	"Now we will visit the children after adding myself as the top context so that they can find their parent."
 
 	aTSNode collectFieldNameOfNamedChild keysAndValuesDo: [ :field :nodes |
 			context top field: field.
 			"If the field has the name of a property, we save this property so that my children can use it to set themselves in the right variable"
-			(self containedEntitiesPropertiesFor: fastEntity class)
+			(self containedEntitiesPropertiesFor: self topFastEntity class)
 				detect: [ :property | context top fieldMatchesProperty: property ]
 				ifFound: [ :property | context top fmProperty: property ].
 
-			"Nodes can be a simple node or a collection of nodes."
-			nodes isCollection ifTrue: [ nodes do: [ :node | node accept: self ] ] ifFalse: [ nodes accept: self ] ].
+			nodes asTSNodes do: [ :node | node accept: self ] ].
 
 ]
 

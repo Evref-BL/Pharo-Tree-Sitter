@@ -25,6 +25,12 @@ TSNode class >> fieldsDesc [
 	)
 ]
 
+{ #category : 'converting' }
+TSNode >> asTSNodes [
+
+	^ { self }
+]
+
 { #category : 'api' }
 TSNode >> childCount [
 

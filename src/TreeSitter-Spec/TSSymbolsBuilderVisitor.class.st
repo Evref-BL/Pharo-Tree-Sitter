@@ -115,9 +115,7 @@ TSSymbolsBuilderVisitor >> visitNode: aTSNode [
 				        ifNone: [ fields add: (TSFieldExplorerWrapper field: field) ].
 
 			wrap
-				addAll: (nodes isCollection
-						 ifTrue: [ nodes ]
-						 ifFalse: [ { nodes } ])
+				addAll: nodes asTSNodes
 				code: code ].
 	super visitNode: aTSNode
 ]

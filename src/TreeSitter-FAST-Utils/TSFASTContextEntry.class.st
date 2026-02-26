@@ -45,7 +45,8 @@ Class {
 		'tsNode',
 		'field',
 		'fmProperty',
-		'fieldsAliasMap'
+		'fieldsAliasMap',
+		'tsType'
 	],
 	#category : 'TreeSitter-FAST-Utils',
 	#package : 'TreeSitter-FAST-Utils'
@@ -151,5 +152,13 @@ TSFASTContextEntry >> tsNode [
 { #category : 'accessing' }
 TSFASTContextEntry >> tsNode: anObject [
 
-	tsNode := anObject
+	tsNode := anObject.
+	tsType := nil
+]
+
+{ #category : 'accessing' }
+TSFASTContextEntry >> tsType [
+	"Caching this info because it takes time to do FFI calls."
+
+	^ tsType ifNil: [ tsType := self tsNode type ]
 ]

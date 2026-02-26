@@ -72,7 +72,7 @@ TSFASTCustomizableImporter >> buildVisitMethodNameFor: aTSNode [
 			   aStream nextPut: $: ]) asSymbol
 ]
 
-{ #category : 'actions' }
+{ #category : 'utilities' }
 TSFASTCustomizableImporter >> customizeNewContext: aContextEntry [
 	"This is a hook used to let the user customize the next context even before it is created. 
 	This might be useful for example to add aliases to the fileds to import."
@@ -97,7 +97,17 @@ TSFASTCustomizableImporter >> onNextContextDo: aBlock [
 	nextContextCustomization := aBlock
 ]
 
-{ #category : 'accessing' }
+{ #category : 'utilities' }
+TSFASTCustomizableImporter >> rawVisitChildren: aTSNode [
+	"Like #visitChildren: I will visit the children of the TSNode, but I will not take care of updating the context in case we need to skip a level of TSNode.
+	
+	For example, this is useful in Python to manage aliased_import. An import has a import_statement node. This node has a field `name` that can either be a dotted_name or an aliased_import contaning the dotted_name and an identifier defining the alias. 
+	In the #aliased_node, I skip the generic visit and I visit only the children. But since this skip a context entry, the fields should not be updated."
+
+	aTSNode collectFieldNameOfNamedChild keysAndValuesDo: [ :field :nodes | nodes asTSNodes do: [ :node | node accept: self ] ]
+]
+
+{ #category : 'utilities' }
 TSFASTCustomizableImporter >> sourceCodeOf: aTSNode [
 
 	^ aTSNode textFromSourceText: self originString
