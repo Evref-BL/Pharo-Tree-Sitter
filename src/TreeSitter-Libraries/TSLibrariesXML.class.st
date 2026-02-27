@@ -13,7 +13,7 @@ TSLibrariesXML >> cloneTreeSitterXML [
 	clonePath := self originalLibrariesDirectory , '/tree-sitter-xml'.
 
 	"before cloning get the latest release"	
-	lastReleasedVersion := self latestReleaseTagForOwner: 'tree-sitter-grammars' repo: 'tree-sitter-xml'.
+	lastReleasedVersion := self class gitBranchToUse ifNil: [ self latestReleaseTagForOwner: 'tree-sitter-grammars' repo: 'tree-sitter-xml' ].
 
 	"Execute clone command"
 	"cloneCommand := 'git clone https://github.com/tree-sitter-grammars/tree-sitter-xml.git '

@@ -13,7 +13,7 @@ TSLibrariesCSS >> cloneTreeSitterCSS [
 	clonePath := self originalLibrariesDirectory , '/tree-sitter-css'.
 
 	"before cloning get the latest release"	
-	lastReleasedVersion := self latestReleaseTagForOwner: 'tree-sitter' repo: 'tree-sitter-css'.
+	lastReleasedVersion := self class gitBranchToUse ifNil: [ self latestReleaseTagForOwner: 'tree-sitter' repo: 'tree-sitter-css' ].
 
 	"Execute clone command" 
 	cloneCommand := 'git clone --branch ', lastReleasedVersion ,' --depth 1 https://github.com/tree-sitter/tree-sitter-css.git '
