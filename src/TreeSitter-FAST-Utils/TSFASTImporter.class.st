@@ -38,7 +38,10 @@ This allows to build once the index map and to just use it to convert bytes posi
 
 Since it is common to have errors during the import of a project (importers are hard to build since so many things can happen), we catch the errors happening during the visit of the nodes and we proceed with the visit. 
 
-At the end of the import, the errors are inspected by default. During development you can toggle a debug mode in the Pharo ""Debug"" menu.
+At the end of the import, the errors are inspected by default.
+This behavior can be changed by overriding the method or setting #errorReportBlock: to do something else.
+
+During development you can toggle a debug mode in the Pharo ""Debug"" menu.
 "
 Class {
 	#name : 'TSFASTImporter',
@@ -51,7 +54,8 @@ Class {
 		'context',
 		'bytesToCharactersMap',
 		'errors',
-		'addSelectors'
+		'addSelectors',
+		'errorReportBlock'
 	],
 	#classVars : [
 		'IsInDebugMode'
@@ -161,6 +165,12 @@ TSFASTImporter >> customizeNewContext: aContextEntry [
 	
 ]
 
+{ #category : 'accessing' }
+TSFASTImporter >> errors [
+
+	^ errors
+]
+
 { #category : 'private' }
 TSFASTImporter >> handleErrorsDuring: aBlock [
 	"During the visit of the nodes, if an error happens and the debug mode is not enabled, we save the errors in an error report and we keep going with the parsing of the following nodes."
@@ -190,7 +200,8 @@ TSFASTImporter >> initialize [
 	containedEntitiesPropertiesMap := IdentityDictionary new.
 	context := Stack new.
 	errors := OrderedCollection new.
-	addSelectors := IdentityDictionary new
+	addSelectors := IdentityDictionary new.
+	errorReportBlock := [ :importer | importer errors ifNotEmpty: [ importer errors inspect ] ]
 ]
 
 { #category : 'actions' }
@@ -222,9 +233,9 @@ TSFASTImporter >> languageName: aString [
 
 { #category : 'actions' }
 TSFASTImporter >> manageErrorReport [
-	"By default if errors happens I inspect the list. If you want other behaviors you can override me in order to do what you want for the error reporting."
+	"By default if errors happens I inspect the list. If you want other behaviors you can override me in order to do what you want for the error reporting or set the #errorReportBlock."
 
-	^ errors ifNotEmpty: [ errors inspect ]
+	^ errorReportBlock cull: self
 ]
 
 { #category : 'utilities' }
