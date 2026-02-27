@@ -165,6 +165,12 @@ TSFASTImporter >> customizeNewContext: aContextEntry [
 	
 ]
 
+{ #category : 'initialization' }
+TSFASTImporter >> errorReportBlock: aBlock [
+
+	errorReportBlock := aBlock
+]
+
 { #category : 'accessing' }
 TSFASTImporter >> errors [
 
