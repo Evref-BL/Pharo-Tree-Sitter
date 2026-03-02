@@ -285,6 +285,17 @@ TSFASTImporter >> setParentOf: entity [
 					ifFalse: [ self topFastEntity perform: property implementingSelector asMutator with: entity ] ]
 ]
 
+{ #category : 'utilities' }
+TSFASTImporter >> setTopFieldTo: field [
+
+	context top field: field.
+	
+	"If the field has the name of a property, we save this property so that my children can use it to set themselves in the right variable"
+	^ (self containedEntitiesPropertiesFor: self topFastEntity class)
+		  detect: [ :property | context top fieldMatchesProperty: property ]
+		  ifFound: [ :property | context top fmProperty: property ]
+]
+
 { #category : 'accessing' }
 TSFASTImporter >> topFastEntity [
 	"helper"
@@ -303,14 +314,8 @@ TSFASTImporter >> visitChildren: aTSNode [
 	"Now we will visit the children after adding myself as the top context so that they can find their parent."
 
 	aTSNode collectFieldNameOfNamedChild keysAndValuesDo: [ :field :nodes |
-			context top field: field.
-			"If the field has the name of a property, we save this property so that my children can use it to set themselves in the right variable"
-			(self containedEntitiesPropertiesFor: self topFastEntity class)
-				detect: [ :property | context top fieldMatchesProperty: property ]
-				ifFound: [ :property | context top fmProperty: property ].
-
-			nodes asTSNodes do: [ :node | node accept: self ] ].
-
+			self setTopFieldTo: field.
+			nodes asTSNodes do: [ :node | node accept: self ] ]
 ]
 
 { #category : 'visiting' }
