@@ -278,7 +278,7 @@ TSFASTImporter >> setParentOf: entity [
 		- Else I add the entity to the generic children."
 
 	context top fmProperty
-		ifNil: [ self topFastEntity addGenericChildren: entity ]
+		ifNil: [ self topFastEntity addGenericChild: entity ]
 		ifNotNil: [ :property |
 				property isMultivalued
 					ifTrue: [ self topFastEntity perform: (self addSelectorFor: property implementingSelector) with: entity ]
