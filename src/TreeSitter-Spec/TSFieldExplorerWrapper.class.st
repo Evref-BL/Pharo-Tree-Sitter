@@ -9,7 +9,8 @@ Class {
 	#instVars : [
 		'field',
 		'symbolsAndCode',
-		'isOptional'
+		'minSize',
+		'maxSize'
 	],
 	#category : 'TreeSitter-Spec',
 	#package : 'TreeSitter-Spec'
@@ -26,6 +27,13 @@ TSFieldExplorerWrapper class >> field: aSymbol [
 { #category : 'adding' }
 TSFieldExplorerWrapper >> addAll: aColl code: aString [
 
+	"I save the min and max number of children I can have to display this info to the user."
+	minSize := minSize
+		           ifNil: [ aColl size ]
+		           ifNotNil: [ minSize min: aColl size ].
+	maxSize := maxSize
+		           ifNil: [ aColl size ]
+		           ifNotNil: [ maxSize max: aColl size ].
 	aColl do: [ :node | (symbolsAndCode keys includes: node type) ifFalse: [ symbolsAndCode at: node type put: (node parent textFromSourceText: aString) ] ]
 ]
 
@@ -49,18 +57,29 @@ TSFieldExplorerWrapper >> field: anObject [
 TSFieldExplorerWrapper >> initialize [
 
 	super initialize.
-	symbolsAndCode := OrderedDictionary new.
-	isOptional := false
+	symbolsAndCode := OrderedDictionary new
 ]
 
 { #category : 'accessing' }
 TSFieldExplorerWrapper >> isOptional [
-	^ isOptional
+
+	^ minSize isNotNil and: [ minSize = 0 ]
 ]
 
 { #category : 'accessing' }
 TSFieldExplorerWrapper >> isOptional: anObject [
-	isOptional := anObject
+
+	anObject ifTrue: [ minSize := 0 ]
+]
+
+{ #category : 'accessing' }
+TSFieldExplorerWrapper >> maxSize [
+	^ maxSize
+]
+
+{ #category : 'accessing' }
+TSFieldExplorerWrapper >> minSize [
+	^ minSize
 ]
 
 { #category : 'accessing' }

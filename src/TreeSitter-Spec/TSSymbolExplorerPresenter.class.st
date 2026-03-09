@@ -2,7 +2,7 @@
 I am a presenter used by `TSSymbolExplorerPresenter` to display its result in the inspector.
 
 I display the list of symbols present in the project. And when one is selected I show two other panes:
-- A tree with all the fields that the symbol can have and their possible contents
+- A tree with all the fields that the symbol can have and their possible contents. For each fields I display the min and max number of children I found in the code provided.
 - A list of possible symbols that can be the parents of this symbol
 "
 Class {
@@ -148,9 +148,9 @@ TSSymbolExplorerPresenter >> initializePresenters [
 		display: [ :item |
 				item class = TSFieldExplorerWrapper
 					ifTrue: [
-							'Field: ' , item field , (item isOptional
-									 ifTrue: [ ' (optional)' ]
-									 ifFalse: [ '' ]) ]
+							'Field: ' , item field , ' (Size: ' , (item minSize = item maxSize
+									 ifTrue: [ item minSize asString ]
+									 ifFalse: [ item minSize asString , '..' , item maxSize asString ]) , ')' ]
 					ifFalse: [ item ] ];
 		children: [ :item |
 				item class = TSFieldExplorerWrapper

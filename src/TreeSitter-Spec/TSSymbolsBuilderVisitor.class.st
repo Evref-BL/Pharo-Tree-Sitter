@@ -102,7 +102,7 @@ TSSymbolsBuilderVisitor >> visitNode: aTSNode [
 	childrenMap := aTSNode collectFieldNameOfNamedChild. "Saving it to save time in FFI calls"
 	fields := symbolDictionary
 		          at: aTSNode type
-		          ifPresent: [ :flds | "We check if some fields are missing in the current node to mark them as optional"
+		          ifPresent: [ :flds | "We check if some fields are missing in the current node to mark them as optional, meaning the minimal number of nodes for this field can be 0"
 				          flds
 					          reject: [ :field | childrenMap keys includes: field field ]
 					          thenDo: [ :field | field isOptional: true ] ]
