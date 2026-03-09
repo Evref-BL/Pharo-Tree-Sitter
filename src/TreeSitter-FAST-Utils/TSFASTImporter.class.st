@@ -123,41 +123,6 @@ TSFASTImporter >> containedEntitiesPropertiesFor: aClass [
 	^ containedEntitiesPropertiesMap at: aClass ifAbsentPut: [ aClass mooseDescription allProperties select: #isChildrenProperty ]
 ]
 
-{ #category : 'visiting' }
-TSFASTImporter >> createEntityForNode: aTSNode [
-
-	^ self createEntityForNode: aTSNode kind: (self kindForType: aTSNode type)
-]
-
-{ #category : 'visiting' }
-TSFASTImporter >> createEntityForNode: aTSNode kind: aFASTClass [
-
-	^ self createEntityForNode: aTSNode kind: aFASTClass parentManagementBlock: [ :entity | self setParentOf: entity ]
-]
-
-{ #category : 'visiting' }
-TSFASTImporter >> createEntityForNode: aTSNode kind: aFASTClass parentManagementBlock: aBlock [
-
-	| fastEntity |
-	fastEntity := self instantiateFastEntity: aFASTClass from: aTSNode.
-	
-	"If the context is not empty, I'll use it to set the entity in its parent via the parent management block.
-	If it is empty this is the root node and we set its source."
-	context
-		ifNotEmpty: [ aBlock cull: fastEntity cull: context top "providing the top context optionaly in case there is some intricated nested cases." ]
-		ifEmpty: [ fastEntity source: self originString ].
-
-	aTSNode hasChildren ifTrue: [ self pushContext: fastEntity node: aTSNode during: [ self visitChildren: aTSNode ] ].
-
-	^ fastEntity
-]
-
-{ #category : 'visiting' }
-TSFASTImporter >> createEntityForNode: aTSNode parentManagementBlock: aBlock [
-
-	^ self createEntityForNode: aTSNode kind: (self class environment at: (self classesPrefix , aTSNode type pascalized) asSymbol) parentManagementBlock: aBlock
-]
-
 { #category : 'utilities' }
 TSFASTImporter >> customizeNewContext: aContextEntry [
 	"Hook"
@@ -187,6 +152,41 @@ TSFASTImporter >> handleErrorsDuring: aBlock [
 				  ifFalse: [
 						  errors add: error.
 						  nil ] ]
+]
+
+{ #category : 'visiting' }
+TSFASTImporter >> handleNode: aTSNode [
+
+	^ self handleNode: aTSNode kind: (self kindForType: aTSNode type)
+]
+
+{ #category : 'visiting' }
+TSFASTImporter >> handleNode: aTSNode kind: aFASTClass [
+
+	^ self handleNode: aTSNode kind: aFASTClass parentBlock: [ :entity | self setParentOf: entity ]
+]
+
+{ #category : 'visiting' }
+TSFASTImporter >> handleNode: aTSNode kind: aFASTClass parentBlock: aBlock [
+
+	| fastEntity |
+	fastEntity := self instantiateFastEntity: aFASTClass from: aTSNode.
+	
+	"If the context is not empty, I'll use it to set the entity in its parent via the parent management block.
+	If it is empty this is the root node and we set its source."
+	context
+		ifNotEmpty: [ aBlock cull: fastEntity cull: context top "providing the top context optionaly in case there is some intricated nested cases." ]
+		ifEmpty: [ fastEntity source: self originString ].
+
+	aTSNode hasChildren ifTrue: [ self pushContext: fastEntity node: aTSNode during: [ self visitChildren: aTSNode ] ].
+
+	^ fastEntity
+]
+
+{ #category : 'visiting' }
+TSFASTImporter >> handleNode: aTSNode parentBlock: aBlock [
+
+	^ self handleNode: aTSNode kind: (self class environment at: (self classesPrefix , aTSNode type pascalized) asSymbol) parentBlock: aBlock
 ]
 
 { #category : 'actions' }
@@ -321,5 +321,5 @@ TSFASTImporter >> visitChildren: aTSNode [
 { #category : 'visiting' }
 TSFASTImporter >> visitNode: aTSNode [
 
-	^ self handleErrorsDuring: [ self createEntityForNode: aTSNode ]
+	^ self handleErrorsDuring: [ self handleNode: aTSNode ]
 ]

@@ -43,7 +43,7 @@ TSFASTPythonImporter>>visitBinaryOperator: aTSNode
 				add: 'leftOperand' asAliasOfField: 'left';
 				add: 'rightOperand' asAliasOfField: 'right' ].
 
-	^ self createEntityForNode: aTSNode
+	^ self handleNode: aTSNode
 
 ```
 
