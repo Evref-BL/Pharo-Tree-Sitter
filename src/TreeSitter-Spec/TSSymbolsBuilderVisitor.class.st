@@ -101,7 +101,7 @@ TSSymbolsBuilderVisitor >> visitNode: aTSNode [
 	"This needs to be done here and not in the bloc for nodes that cannot have a child"
 	fields := symbolDictionary
 		          at: aTSNode type
-		          ifPresent: [ :flds | "We check if some fields are missing in the current node to mark them as optional"
+		          ifPresent: [ :flds | "We check if some fields are missing in the current node to mark them as optional, meaning the minimal number of nodes for this field can be 0"
 				          flds
 					          reject: [ :field | aTSNode collectFieldNameOfNamedChild keys includes: field field ]
 					          thenDo: [ :field | field isOptional: true ] ]
