@@ -33,7 +33,7 @@ TSLanguageXMLTest >> testCollectAllSymbolOfOneSymbolType [
 		assert:
 		(parser language symbolsOfType: TSSymbolType tssymboltyperegular)
 			size
-		equals: 53
+		equals: 54
 ]
 
 { #category : 'tests' }
