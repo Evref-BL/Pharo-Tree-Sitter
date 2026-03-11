@@ -41,7 +41,9 @@ TSSymbolsBuilderVisitor >> buildOn: aFileReference [
 
 	filesToParse
 		do: [ :file |
-				code := file contents.
+				code := [ file contents ]
+					        on: ZnInvalidUTF8
+					        do: [ "For now we ignore files not in UTF8." '' ].
 
 				((TSParser language: self language) parseString: code) rootNode accept: self ]
 		displayingProgress: [ :file | file pathString ].
