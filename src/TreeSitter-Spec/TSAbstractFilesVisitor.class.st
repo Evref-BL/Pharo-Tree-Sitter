@@ -21,14 +21,7 @@ TSAbstractFilesVisitor >> buildOn: aFileReference [
 
 	self collectFilesIn: aFileReference.
 
-	filesToParse
-		do: [ :file |
-				code := [ file contents ]
-					        on: ZnInvalidUTF8
-					        do: [ "For now we ignore files not in UTF8." '' ].
-
-				((TSParser language: self language) parseString: code) rootNode accept: self ]
-		displayingProgress: [ :file | file pathString ].
+	filesToParse do: [ :file | self parseAndVisitFile: file ] displayingProgress: [ :file | file pathString ].
 
 	self inspect
 ]
@@ -68,4 +61,14 @@ TSAbstractFilesVisitor >> language [
 TSAbstractFilesVisitor >> language: anObject [
 
 	language := anObject
+]
+
+{ #category : 'initialization' }
+TSAbstractFilesVisitor >> parseAndVisitFile: aFile [
+
+	code := [ aFile contents ]
+		        on: ZnInvalidUTF8
+		        do: [ "For now we ignore files not in UTF8." '' ].
+
+	((TSParser language: self language) parseString: code) rootNode accept: self
 ]
