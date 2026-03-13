@@ -71,6 +71,14 @@ TSNodeFinderVisitor >> inspectionSource: aBuilder [
 		  beNotEditable
 ]
 
+{ #category : 'initialization' }
+TSNodeFinderVisitor >> parseAndVisitFile: aFile [
+
+	node ifNotNil: [ ^ self "skipping." ].
+
+	^ super parseAndVisitFile: aFile
+]
+
 { #category : 'accessing' }
 TSNodeFinderVisitor >> selectionBlock: anObject [
 	selectionBlock := anObject
@@ -81,7 +89,9 @@ TSNodeFinderVisitor >> visitNode: aTSNode [
 
 	(selectionBlock value: aTSNode) ifTrue: [
 			node := aTSNode.
-			^ self ].
+			^ true ].
 
-	super visitNode: aTSNode
+	aTSNode collectNamedChild do: [ :child | (self visitNode: child) ifTrue: [ ^ true ] ].
+
+	^ false
 ]
