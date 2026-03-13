@@ -13,13 +13,9 @@ Warning: This visitor will build a map of all the symbols present in a project a
 "
 Class {
 	#name : 'TSSymbolsBuilderVisitor',
-	#superclass : 'TSVisitor',
+	#superclass : 'TSAbstractFilesVisitor',
 	#instVars : [
-		'language',
-		'extensions',
-		'filesToParse',
-		'symbolDictionary',
-		'code'
+		'symbolDictionary'
 	],
 	#category : 'TreeSitter-Spec',
 	#package : 'TreeSitter-Spec'
@@ -35,58 +31,10 @@ TSSymbolsBuilderVisitor class >> language: aTSLanguage extensions: aCollection b
 ]
 
 { #category : 'initialization' }
-TSSymbolsBuilderVisitor >> buildOn: aFileReference [
-
-	self collectFilesIn: aFileReference.
-
-	filesToParse
-		do: [ :file |
-				code := [ file contents ]
-					        on: ZnInvalidUTF8
-					        do: [ "For now we ignore files not in UTF8." '' ].
-
-				((TSParser language: self language) parseString: code) rootNode accept: self ]
-		displayingProgress: [ :file | file pathString ].
-
-	self inspect
-]
-
-{ #category : 'initialization' }
-TSSymbolsBuilderVisitor >> collectFilesIn: aFileReference [
-
-	^ aFileReference isFile
-		  ifTrue: [ (self extensions includes: aFileReference extension) ifTrue: [ filesToParse add: aFileReference ] ]
-		  ifFalse: [ aFileReference children do: [ :child | self collectFilesIn: child ] ]
-]
-
-{ #category : 'accessing' }
-TSSymbolsBuilderVisitor >> extensions [
-	^ extensions
-]
-
-{ #category : 'accessing' }
-TSSymbolsBuilderVisitor >> extensions: anObject [
-	extensions := anObject
-]
-
-{ #category : 'initialization' }
 TSSymbolsBuilderVisitor >> initialize [
 
 	super initialize.
-	filesToParse := OrderedCollection new.
 	symbolDictionary := Dictionary new
-]
-
-{ #category : 'accessing' }
-TSSymbolsBuilderVisitor >> language [
-
-	^ language
-]
-
-{ #category : 'accessing' }
-TSSymbolsBuilderVisitor >> language: anObject [
-
-	language := anObject
 ]
 
 { #category : 'inspector' }
@@ -115,9 +63,7 @@ TSSymbolsBuilderVisitor >> visitNode: aTSNode [
 			wrap := fields
 				        detect: [ :wrapper | wrapper field = field ]
 				        ifNone: [ fields add: (TSFieldExplorerWrapper field: field) ].
-
-			wrap
-				addAll: nodes asTSNodes
-				code: code ].
+			(field = #value and: [ aTSNode type = #except_clause and: [ nodes asTSNodes size > 1 ] ]) ifTrue: [ 1 halt ].
+			wrap addAll: nodes asTSNodes code: code ].
 	super visitNode: aTSNode
 ]
