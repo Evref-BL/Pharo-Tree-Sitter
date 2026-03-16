@@ -70,6 +70,13 @@ TSFASTContextEntry >> add: aString asAliasOfField: anotherString [
 	(fieldsAliasMap at: anotherString ifAbsentPut: [ OrderedCollection new ]) add: aString
 ]
 
+{ #category : 'adding' }
+TSFASTContextEntry >> aliasUnnamedFieldAs: aString [
+	"Suggar since this happens a lot in customizable importers.."
+
+	^ self add: aString asAliasOfField: '<unnamedChild>'
+]
+
 { #category : 'accessing' }
 TSFASTContextEntry >> fastEntity [
 
