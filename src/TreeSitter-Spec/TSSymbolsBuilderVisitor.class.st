@@ -63,7 +63,6 @@ TSSymbolsBuilderVisitor >> visitNode: aTSNode [
 			wrap := fields
 				        detect: [ :wrapper | wrapper field = field ]
 				        ifNone: [ fields add: (TSFieldExplorerWrapper field: field) ].
-			(field = #value and: [ aTSNode type = #except_clause and: [ nodes asTSNodes size > 1 ] ]) ifTrue: [ 1 halt ].
 			wrap addAll: nodes asTSNodes code: code ].
 	super visitNode: aTSNode
 ]
