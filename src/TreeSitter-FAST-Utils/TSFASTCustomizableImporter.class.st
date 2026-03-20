@@ -126,7 +126,7 @@ TSFASTCustomizableImporter >> sourceCodeOf: aTSNode [
 
 	[ self originString copyFrom: (self characterPositionAtByte: aTSNode startByte) to: (self characterPositionAtByte: aTSNode endByte) ] bench. =>2,959,196 iterations in 5 seconds 2 milliseconds. 591602.559 per second"
 
-	^ self sourceCodeFromByte: aTSNode startByte to: aTSNode endByte
+	^ self sourceCodeFromByte: aTSNode startByte + 1 to: aTSNode endByte
 ]
 
 { #category : 'visiting' }
