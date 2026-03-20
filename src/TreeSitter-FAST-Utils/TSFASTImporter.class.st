@@ -191,10 +191,12 @@ TSFASTImporter >> handleNode: aTSNode parentBlock: aBlock [
 
 { #category : 'actions' }
 TSFASTImporter >> import: aTSNode [
+	"Consider we will not add duplicated entities with the algo of the importer."
 
-	model := self newInstanceOfClassNamed: self classesPrefix , 'Model'.
-	aTSNode accept: self.
-	self manageErrorReport.
+	FMShouldCheckForDuplicatedEntitiesInMultivalueLinks value: false during: [
+			model := self newInstanceOfClassNamed: self classesPrefix , 'Model'.
+			aTSNode accept: self.
+			self manageErrorReport ].
 
 	^ model
 ]
