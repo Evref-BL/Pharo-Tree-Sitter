@@ -384,7 +384,7 @@ TSNode >> symbol [
 TSNode >> textFrom: aBinaryStream [
 	"We use UTF8 by default."
 
-	^ self textFrom: aBinaryStream encoding: #utf8
+	^ self textFrom: aBinaryStream encoding: ZnUTF8Encoder default
 ]
 
 { #category : 'accessing' }
@@ -398,7 +398,7 @@ TSNode >> textFrom: aBinaryStream encoding: anEncoding [
 { #category : 'accessing' }
 TSNode >> textFromSourceText: string [
 
-	^ self textFromSourceText: string encoding: #utf8
+	^ self textFromSourceText: string encoding: ZnUTF8Encoder default
 ]
 
 { #category : 'accessing' }
