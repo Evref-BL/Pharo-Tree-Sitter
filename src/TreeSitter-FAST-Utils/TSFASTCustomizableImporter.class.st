@@ -108,9 +108,25 @@ TSFASTCustomizableImporter >> rawVisitChildren: aTSNode [
 ]
 
 { #category : 'utilities' }
-TSFASTCustomizableImporter >> sourceCodeOf: aTSNode [
+TSFASTCustomizableImporter >> sourceCodeFromByte: aStartByte to: anEndByte [
+	"I am here to get substrings in a fast way. See the comment of #sourceCodeOf:"
 
-	^ aTSNode textFromSourceText: self originString
+	^ self originString copyFrom: (self characterPositionAtByte: aStartByte) to: (self characterPositionAtByte: anEndByte)
+]
+
+{ #category : 'utilities' }
+TSFASTCustomizableImporter >> sourceCodeOf: aTSNode [
+	"We coulde be using a simpler version of the method like this:
+	
+	aTSNode textFromSourceText: self originString
+	
+	But this way will create new characters and strings object and are in the and way way slower.
+
+	[ aTSNode textFromSourceText: self originString ] bench.  => 16,066 iterations in 5 seconds 2 milliseconds. 3211.915 per second
+
+	[ self originString copyFrom: (self characterPositionAtByte: aTSNode startByte) to: (self characterPositionAtByte: aTSNode endByte) ] bench. =>2,959,196 iterations in 5 seconds 2 milliseconds. 591602.559 per second"
+
+	^ self sourceCodeFromByte: aTSNode startByte to: aTSNode endByte
 ]
 
 { #category : 'visiting' }
