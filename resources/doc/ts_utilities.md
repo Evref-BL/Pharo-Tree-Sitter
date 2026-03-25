@@ -53,7 +53,9 @@ For example, here we see at the left the list of node types found in CPython. On
 
 We can also see a piece of code of an `else_clause` is an `alterative` field.
 
-> Note: Be careful, you are not guarantee to have all possible child and parents since it will produce the mapping from what it encounters in the files you will provide. To be more accurate, give it the maximum number of sources possible.
+
+> [!NOTE]
+> Be careful, you are not guarantee to have all possible child and parents since it will produce the mapping from what it encounters in the files you will provide. To be more accurate, give it the maximum number of sources possible.
 
 ## Look for a specific pattern in your tree with TSNodeFinderVisitor
 
