@@ -102,7 +102,65 @@ In this generated metamodel, only one relation exist between any entities from #
 
 ### Implement the importer
 
-TODO 
+Now that we have a basic metamodel, we can import a FAST model like this:
+
+```Smalltalk
+| parser tsLanguage importer |
+
+parser := TSParser new.
+tsLanguage := TSLanguage python.
+parser language: tsLanguage.
+string := 'if x > 0:
+    if x < 10:
+        1
+    else:
+        2
+else:
+    3'.
+
+importer := TSFASTImporter new.
+importer tsLanguage: tsLanguage.
+importer languageName: 'Python'.
+importer originString: string.
+
+^ importer import: (parser parseString: string) rootNode
+```
+
+This is not really practical so it is recommended to implement a subclass of `TSFASTAbsractImporter`.
+
+For example for Python:
+
+```Smalltalk
+TSFASTAbstractImporter << #FASTPythonImporter
+	slots: {};
+	package: 'FAST-Python-Tools'
+```
+
+Once we have this class, we just need to implement the method `tsLanguage` to make it work. 
+
+```Smalltalk
+FASTPythonImporter>>tsLanguage
+
+	^ TSLanguage python
+```
+
+And the previous script can now be replaced by:
+
+```Smalltalk
+FASTPythonImporter parse: 'if x > 0:
+    if x < 10:
+        1
+    else:
+        2
+else:
+    3'
+```
+
+or: 
+
+```Smalltalk
+FASTPythonImporter parseFile: 'myFile.py'
+```
 
 ## Customize your metamodel and visitor
 
