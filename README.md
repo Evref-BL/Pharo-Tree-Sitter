@@ -7,6 +7,30 @@
 This project provides **Pharo bindings to [Tree-sitter](https://tree-sitter.github.io/tree-sitter/)**.  
 It allows you to analyze and highlight code using existing Tree-sitter parsers developed by the community.
 
+
+<!-- TOC -->
+
+- [Pharo Tree-Sitter](#pharo-tree-sitter)
+  - [Installation](#installation)
+  - [Native Libraries Required](#native-libraries-required)
+  - [Automated Library Generation](#automated-library-generation)
+    - [How It Works](#how-it-works)
+    - [Required Tools for MacOS and Linux](#required-tools-for-macos-and-linux)
+    - [Required Tools for Windows](#required-tools-for-windows)
+  - [Manual Installation](#manual-installation)
+    - [macOS](#macos)
+    - [Building Tree-sitter Shared Library](#building-tree-sitter-shared-library)
+    - [Archlinux](#archlinux)
+  - [Quick Example](#quick-example)
+  - [Moose: TreeSitter to build FAST and Famix models](#moose-treesitter-to-build-fast-and-famix-models)
+  - [Utilities and Debugging](#utilities-and-debugging)
+  - [Pre-built Libraries (Temporary Solution)](#pre-built-libraries-temporary-solution)
+- [Create a new FASTLanguageMetamodel using PharoTreeSitter](#create-a-new-fastlanguagemetamodel-using-pharotreesitter)
+
+<!-- /TOC -->
+
+## Installation 
+
 To install it in **Pharo**, run the following script in a Playground:
 
 ```smalltalk
@@ -14,6 +38,14 @@ Metacello new
   baseline: 'TreeSitter';
   repository: 'github://Evref-BL/Pharo-Tree-Sitter:main/src';
   load.
+```
+
+To add this project to your baseline you can copy paste: 
+
+```Smalltalk
+spec
+	baseline: 'TreeSitter'
+	with: [ spec repository: 'github://Evref-BL/Pharo-Tree-Sitter:main/src' ]
 ```
 
 ## Native Libraries Required
@@ -131,24 +163,6 @@ So you only have to install tree-sitter and the grammar you wanna use with your 
 yay tree-sitter tree-sitter-grammars
 ```
 
-
-## Debug
-
-You might want to debug a tree sitter parser from Pharo.
-Whereas we did not find _yet_ a way to use the pharo debugger.
-You can create a logger attached to the parser.
-
-```st
-callback := (TSLogCallback on: [ :payload :log_type :buffer | Transcript crShow: buffer  ] ).
-logger := TSLogger new log: callback .
-parser logger: logger.
-```
-
-## Pre-built Libraries (Temporary Solution)
-
-If you face issues building the libraries, you can download pre-built libraries (for Windows and macOS) here:
-https://doi.org/10.5281/zenodo.15423234
-
 ## Quick Example
 
 Here is a basic usage example in Pharo:
@@ -160,6 +174,28 @@ string := 'print("Hello, I''m Python!") # comment'.
 tree := parser parseString: string.
 tree rootNode
 ```
+
+## Moose: TreeSitter to build FAST and Famix models
+
+[`Moose`](https://github.com/moosetechnology/Moose)is a software analysis platform. It can manage two kinds of models:
+- Famix been a dependency model 
+- FAST (Famix AST) been an AST representation of the language
+
+It exist some utilities to help building a Famix model for a language supported by TreeSitter. You can find this project here: [https://github.com/moosetechnology/TreeSitterFamixIntegration](https://github.com/moosetechnology/TreeSitterFamixIntegration)
+
+And this project provides a way to easily create a FAST importer. You can find the documentation here: [Documentation](resources/doc/fast_importer.md)
+
+## Utilities and Debugging
+
+This project provides a few utilities to help you debug a tree sitter parser or to help you with its manipulation.
+
+Those utilises are documented here: [Documentation](resources/doc/ts_utilities.md)
+
+## Pre-built Libraries (Temporary Solution)
+
+If you face issues building the libraries, you can download pre-built libraries (for Windows and macOS) here:
+https://doi.org/10.5281/zenodo.15423234
+
 
 # Create a new FASTLanguageMetamodel using PharoTreeSitter
 
