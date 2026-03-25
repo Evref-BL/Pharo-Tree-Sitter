@@ -1,5 +1,20 @@
 "
-I build a FAST metamodel generator based on a tree sitter language
+I build a FAST metamodel generator based on a tree sitter language.
+
+The output will be a FAST generator producing a class for each possible nodes and one relation between #genericChildren and #genericParent.
+
+You will need to refine this generator yourself to introduce hierarchies, traits, relations and properties.
+
+Here is an example of usage:
+
+```
+TSFASTBuilder new
+    languageName: 'Py';
+    tsLanguage: TSLanguage python;
+    build.
+
+FASTPythonMetamodelGenerator new generate
+```
 "
 Class {
 	#name : 'TSFASTBuilder',
