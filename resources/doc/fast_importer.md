@@ -1,9 +1,9 @@
 # Create a FAST importer with TreeSitter
 
-This section will cover the content of the package `TreeSitter-FAST-Utils` and explain how to use it to create a [FAST model](https://modularmoose.org/users/ast/fast/) for the [`Moose plateform`](https://github.com/moosetechnology/Moose).
+This section covers the content of the package `TreeSitter-FAST-Utils` and explain how to use it to create a [FAST model](https://modularmoose.org/users/ast/fast/) for the [`Moose plateform`](https://github.com/moosetechnology/Moose).
 
 > [!NOTE]
-> Here is some context for this documentation. It was produced after a new iteration over the FAST importer of TreeSitter and the production of [FAST-Python](https://github.com/moosetechnology/FAST-Python). Multiple utilities got extracted from `FAST-Python` to `pharo-tree-sitter`. This documentation will be explained as if all those utilities were present in `pharo-tree-sitter` before `FAST-Python` was started and most of the examples provided here will be from `FAST-Python`. 
+> Here is some context for this documentation: It was produced after a new iteration over the FAST importer of TreeSitter and the production of [FAST-Python](https://github.com/moosetechnology/FAST-Python). Multiple utilities got extracted from `FAST-Python` to `pharo-tree-sitter`. This documentation explains as if all those utilities were present in `pharo-tree-sitter` before `FAST-Python` was started and most of the examples provided here will be from `FAST-Python`. 
 
 <!-- TOC -->
 
@@ -53,7 +53,7 @@ Metacello new
   load.
 ```
 
-Once you project will have a baseline, you need to add tree sitter as a dependency:
+Once you project has a baseline, you need to add tree sitter as a dependency:
 
 ```smalltalk
 spec
@@ -81,7 +81,7 @@ TSFASTBuilder new
     build.
 ```
 
-The language name will be use for the prefix of the class names. They will be on the form of `FASTPrefixSymbol` like `FASTPyFunctionDefinition`.
+The language name is used for the prefix of the class names. They are on the form of `FASTPrefixSymbol` like `FASTPyFunctionDefinition`.
 
 The tsLanguage is the tree sitter language to use to retrieve the possible symbols.
 
@@ -95,10 +95,10 @@ Example of generated code:
 
 ![Screenshot of the basic MM](basicMM.png)
 
-In this generated metamodel, only one relation exist between any entities from #`genericChildren` to #`genericParent`. This relation will be used to manage all relations in this basic importer. We will be able to improve this later.
+In this generated metamodel, only one relation exist between any entities from #`genericChildren` to #`genericParent`. This relation is used to manage all relations in this basic importer. We will be able to improve this later.
 
 > [!TIP]
-> The metamodel generated will be only a base. It will have a class for each element of the syntax but it will habe no hierarchy, no trait usage, no specific relations and no properties. We provide an explanation of the possible customizations in the section: [customize your metamodel and visitor](#customize-your-metamodel-and-visitor).
+> The metamodel generated is only a base. It has a class for each element of the syntax but it has no hierarchy, no trait usage, no specific relations and no properties. We provide an explanation of the possible customizations in the section: [customize your metamodel and visitor](#customize-your-metamodel-and-visitor).
 
 ### Implement the importer
 
