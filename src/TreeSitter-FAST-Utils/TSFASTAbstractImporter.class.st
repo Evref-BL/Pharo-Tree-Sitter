@@ -30,6 +30,21 @@ TSFASTAbstractImporter class >> isAbstract [
 	^ self = TSFASTAbstractImporter
 ]
 
+{ #category : 'parsing' }
+TSFASTAbstractImporter class >> parse: aString [
+
+	^ self new parse: aString
+]
+
+{ #category : 'parsing' }
+TSFASTAbstractImporter class >> parseFile: aFileReference [
+	"We could optimize by using the binary read stream of the file, but that means we would have to manage the encoding and the importer is not managing that yet.
+	
+	This implementation only accept utf8 for now. Next step would be to detect the encoding of the file before reading the contents."
+
+	^ self parse: aFileReference asFileReference contents
+]
+
 { #category : 'initialization' }
 TSFASTAbstractImporter >> deleteTreeSitterParser [
 
