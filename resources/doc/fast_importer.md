@@ -9,8 +9,11 @@ This section will cover the content of the package `TreeSitter-FAST-Utils` and e
 
 - [Create a FAST importer with TreeSitter](#create-a-fast-importer-with-treesitter)
   - [Some context](#some-context)
-  - [Install TreeSitter](#install-treesitter)
-  - [Generate the base of the Metamodel](#generate-the-base-of-the-metamodel)
+  - [Get a working baisc FAST importer](#get-a-working-baisc-fast-importer)
+    - [Install TreeSitter](#install-treesitter)
+    - [Generate the base of the Metamodel](#generate-the-base-of-the-metamodel)
+    - [Implement the importer](#implement-the-importer)
+  - [Customize your metamodel and visitor](#customize-your-metamodel-and-visitor)
 
 <!-- /TOC -->
 
@@ -36,8 +39,10 @@ This documentation assume you are already familiar with:
 > The generation of any new version of a FAST-Language metamodel can only be achieved through the metamodel generator.
 > As you will see in this post, Pharo-Tree-Sitter enables you to define a new metamodel generator. Once executed, it produces the corresponding FAST-Language metamodel. We will explain this process in more detail in the following sections.
 
-## Install TreeSitter
 
+## Get a working baisc FAST importer 
+
+### Install TreeSitter
 
 First you need to create a Moose image and download [Pharo-Tree-Sitter](https://github.com/Evref-BL/Pharo-Tree-Sitter/):
 
@@ -65,17 +70,41 @@ This is needed to launch the process of downloading the original **[tree-sitter]
 
 Now that you have the libraries, you can parse python code and get an AST corresponding to the tree-sitter grammar, but not FAST-Python model. The next step will be to generate a basic FAST metamodel for our language.
 
-## Generate the base of the Metamodel
+### Generate the base of the Metamodel
 
-TODO
+It is possible to generate a first basic version of the FAST model using this the `TSFASTBuilder` like this:
 
 ```smalltalk
 TSFASTBuilder new
     languageName: 'Python';
     tsLanguage: TSLanguage python;
     build.
-
-FASTPythonMetamodelGenerator new generate
 ```
 
+The language name will be use for the prefix of the class names. They will be on the form of `FASTPrefixSymbol` like `FASTPyFunctionDefinition`.
+
+The tsLanguage is the tree sitter language to use to retrieve the possible symbols.
+
+Once this code is executed, a new FAST generator will be in your image and you can generate the classes with it:
+
+```smalltalk
+FASTPythonMetamodelGenerator generate
+```
+
+Example of generated code:
+
 ![Screenshot of the basic MM](basicMM.png)
+
+In this generated metamodel, only one relation exist between any entities from #`genericChildren` to #`genericParent`. This relation will be used to manage all relations in this basic importer. We will be able to improve this later.
+
+> [!TIP]
+> The metamodel generated will be only a base. It will have a class for each element of the syntax but it will habe no hierarchy, no trait usage, no specific relations and no properties. We provide an explanation of the possible customizations in the section: [customize your metamodel and visitor](#customize-your-metamodel-and-visitor).
+
+### Implement the importer
+
+TODO 
+
+## Customize your metamodel and visitor
+
+TODO
+
