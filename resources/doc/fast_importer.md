@@ -16,9 +16,14 @@ This section covers the content of the package `TreeSitter-FAST-Utils` and expla
   - [Customize your metamodel and visitor](#customize-your-metamodel-and-visitor)
     - [Improve relations management](#improve-relations-management)
     - [Implement a specialized visitor](#implement-a-specialized-visitor)
+      - [Specialized visit methods](#specialized-visit-methods)
+      - [Change the class produced by a node](#change-the-class-produced-by-a-node)
+      - [Handle the parent/children relation yourself](#handle-the-parentchildren-relation-yourself)
+      - [The context management](#the-context-management)
   - [Add regression tests to your project](#add-regression-tests-to-your-project)
   - [Cyril's tips on how to work](#cyrils-tips-on-how-to-work)
 
+<!-- /TOC -->
 <!-- /TOC -->
 
 ## Some context
@@ -171,6 +176,9 @@ FASTPythonImporter parseFile: 'myFile.py'
 > [!WARNING]
 This documentation expects the reader to know how to develop a Moose metamodel generator. If this is not the case, you will need to learn how to handle entities hirerachy, relations between entities, properties declaration and hanlding of traits in order to fully understant this section. [See documentation.](https://modularmoose.org/developers/create-new-metamodel/)
 
+> [!WARNING]
+When you update your generator (`FASTPythonMetamodelGenerator` in this documentation), do not forget to regenerate your metamodel.
+
 We are now able to have a FAST model, but this models has multiple limitations such has:
 - There is no management of inheritance and usage of traits in FAST entities
 - The relations are all stored in #`genericChildren` and #`genericParent` relation
@@ -235,7 +243,151 @@ In order to make further improvements, we can use `TSFASTCustomizableVisitor`.
 
 ### Implement a specialized visitor
 
-TODO
+In order to apply more customizations to your FAST model, we will need to subclass `TSFASTCustomizableVisitor` like this:
+
+```Smalltalk
+TSFASTCustomizableVisitor << #FASTPythonVisitor
+	slots: {};
+	package: 'FAST-Python-Tools'
+```
+
+It should have an initialize method to specify the language:
+
+```Smalltalk
+initialize
+
+	super initialize.
+	self languageName: 'Python'
+```
+
+Then you need to indicate to your importer that it needs to use this visitor.
+
+```Smalltalk
+FASTPythonImporter>>visitorClass
+
+	^ FASTPythonVisitor
+```
+
+We now have the possibility to apply a new set of customizations that are explained in the next sections. 
+
+> [!NOTE]
+> Each section will assume that you have read the previous sections.
+
+#### Specialized visit methods
+
+By default, `TSVisitor` has only one visit method: `#visitNode:`. This is a limitation while developping an importer. Your new visitor is able to lift this limitation. 
+
+We can use the type of a `TSNode` to implement a custom visit method. The visit method you implement should begin by `visit`, then the type in camel case format and the method takes one parameter: the `TSNode`. 
+
+For example, in python the `TSNode` for a string is of type `string` and has 3 children:
+- `string_start`
+- `string_content`
+- `string_end`
+
+The generator has `FASTPythonString`, `FASTPythonStringStart`, `FASTPythonStringContent` and `FASTPythonStringEnd`.
+
+Those nodes are useless to us since we just need the String node. 
+
+In that case, we can remove the declaration of the 3 children in `FASTPtyhonMetamodelGenerator>>#defineClasses` and regenerate and we can modify the visitor to not produce any node for those 3 `TSNodes`. 
+
+```Smalltalk
+FASTPythonVisitor>>visitStringStart: aNode
+	"We only want one node for the string, my parent. So I do nothing"
+    
+```
+
+```Smalltalk
+FASTPythonVisitor>>visitStringContent: aNode
+	"We only want one node for the string, my parent. So I do nothing"
+    
+```
+
+```Smalltalk
+FASTPythonVisitor>>visitStringEnd: aNode
+	"We only want one node for the string, my parent. So I do nothing"
+    
+```
+
+We are able to implement one visit method for each node type. Here it was used to skip some nodes in the `TSTree`. Much more usages will be shown in the next sections. 
+
+If you did not implement a specialized visit method, the visitor will backup to the basic visit:
+
+```Smalltalk
+TSFASTVisitor>>visitNode: aTSNode
+
+    ^ self handleNode: aTSNode
+```
+
+#### Change the class produced by a node
+
+In some cases it can be better to update the name of an entity. 
+
+For example, the python `TSTree` represent attribute access with a node named `attribute`. This name is missleading in the context of `FAST`. We can rename the node in the generator and explicitly provide the class to the visitor.
+
+In `FASTPythonMetamodelGenerator`, the line:
+
+```Smalltalk
+attribute := builder newClassNamed: #Attribute.
+```
+
+by:
+
+```Smalltalk
+attribute := builder newClassNamed: #AttributeAccess.
+```
+
+Now that the metamodel is updated, we need to adapt the visitor:
+
+```Smalltalk
+FASTPythonVisitor>>visitAttribute: aTSNode
+
+	^ self handleNode: aTSNode kind: FASTPyAttributeAccess
+```
+
+#### Handle the parent/children relation yourself
+
+By default, when we are trying to set the parent of an entity, we are invoking the method `#setParentTo:`. This method takes as parameter the FAST entity represented by the node and will add itself in the children of the parent FAST entity. 
+
+This method will check if we have a fame property of the same name as the field in which the node is. If yes, it will use this fame relation property to set the child in the right slot. Else it will use `#addGenericChild:`. 
+
+Sometimes, we might need or prefer to set the parent ourselves. This is possible using:
+- `#handleNode:parentBlock:`
+- `#handleNode:kind:parentBlock:`
+
+For example, in python all entities can have a comment. Comments are entities annoying to manage because they are everywhere. We could manage them all at once.
+
+We can add this line:
+
+```Smalltalk
+FASTPythonMetamodelGenerator>>#defineTraits
+    [...]
+    tWithComment := self remoteTrait: #TWithComments withPrefix: #FAST.    
+```
+
+And this line:
+
+```Smalltalk
+FASTPythonMetamodelGenerator>>#defineHierarchy
+    [...]
+    entity --|> tWithComment    
+```
+
+Now in the visitor we can tell it that it will use `#addComment:` on its parent.
+
+```Smalltalk
+FASTPythonVisitor>>visitComment: aTSNode
+
+	^ self handleNode: aTSNode parentBlock: [ :entity | self topFastEntity addComment: entity ]
+```
+
+> [!NOTE]
+> `self topFastEntity` will return the parent of the FAST entity we are creating. The name of the method refer to the concept of context that will be explaine if the section [The context management](#the-context-management).
+
+
+#### The context management
+
+
+
 
 ## Add regression tests to your project
 
