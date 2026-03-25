@@ -54,8 +54,8 @@ Like this, we duplicate less code.
 TODO: Add more documentation
 "
 Class {
-	#name : 'TSFASTCustomizableImporter',
-	#superclass : 'TSFASTImporter',
+	#name : 'TSFASTCustomizableVisitor',
+	#superclass : 'TSFASTVisitor',
 	#instVars : [
 		'nextContextCustomization'
 	],
@@ -64,7 +64,7 @@ Class {
 }
 
 { #category : 'private' }
-TSFASTCustomizableImporter >> buildVisitMethodNameFor: aTSNode [
+TSFASTCustomizableVisitor >> buildVisitMethodNameFor: aTSNode [
 
 	^ (String streamContents: [ :aStream |
 			   aStream nextPutAll: 'visit'.
@@ -73,7 +73,7 @@ TSFASTCustomizableImporter >> buildVisitMethodNameFor: aTSNode [
 ]
 
 { #category : 'utilities' }
-TSFASTCustomizableImporter >> customizeNewContext: aContextEntry [
+TSFASTCustomizableVisitor >> customizeNewContext: aContextEntry [
 	"This is a hook used to let the user customize the next context even before it is created. 
 	This might be useful for example to add aliases to the fileds to import."
 
@@ -83,7 +83,7 @@ TSFASTCustomizableImporter >> customizeNewContext: aContextEntry [
 ]
 
 { #category : 'reflective operations' }
-TSFASTCustomizableImporter >> doesNotUnderstand: aMessage [
+TSFASTCustomizableVisitor >> doesNotUnderstand: aMessage [
 
 	(aMessage selector beginsWith: 'visit') ifTrue: [ ^ super visitNode: aMessage argument ].
 
@@ -91,14 +91,14 @@ TSFASTCustomizableImporter >> doesNotUnderstand: aMessage [
 ]
 
 { #category : 'actions' }
-TSFASTCustomizableImporter >> onNextContextDo: aBlock [
+TSFASTCustomizableVisitor >> onNextContextDo: aBlock [
 	"Save a block to execute to customize the next context entry created"
 
 	nextContextCustomization := aBlock
 ]
 
 { #category : 'utilities' }
-TSFASTCustomizableImporter >> rawVisitChildren: aTSNode [
+TSFASTCustomizableVisitor >> rawVisitChildren: aTSNode [
 	"Like #visitChildren: I will visit the children of the TSNode, but I will not take care of updating the context in case we need to skip a level of TSNode.
 	
 	For example, this is useful in Python to manage aliased_import. An import has a import_statement node. This node has a field `name` that can either be a dotted_name or an aliased_import contaning the dotted_name and an identifier defining the alias. 
@@ -108,14 +108,14 @@ TSFASTCustomizableImporter >> rawVisitChildren: aTSNode [
 ]
 
 { #category : 'utilities' }
-TSFASTCustomizableImporter >> sourceCodeFromByte: aStartByte to: anEndByte [
+TSFASTCustomizableVisitor >> sourceCodeFromByte: aStartByte to: anEndByte [
 	"I am here to get substrings in a fast way. See the comment of #sourceCodeOf:"
 
 	^ self originString copyFrom: (self characterPositionAtByte: aStartByte) to: (self characterPositionAtByte: anEndByte)
 ]
 
 { #category : 'utilities' }
-TSFASTCustomizableImporter >> sourceCodeOf: aTSNode [
+TSFASTCustomizableVisitor >> sourceCodeOf: aTSNode [
 	"We coulde be using a simpler version of the method like this:
 	
 	aTSNode textFromSourceText: self originString
@@ -130,7 +130,7 @@ TSFASTCustomizableImporter >> sourceCodeOf: aTSNode [
 ]
 
 { #category : 'visiting' }
-TSFASTCustomizableImporter >> visitNode: aTSNode [
+TSFASTCustomizableVisitor >> visitNode: aTSNode [
 	"Here we are performing a special visit method. If it is not implemented the #doesNotUnderstood: will call my super visitNode:. The reason we are doing this is to simplify the debugging of a visitor to not have to step over a lot of method calls..."
 
 	^ self handleErrorsDuring: [ self perform: (self buildVisitMethodNameFor: aTSNode) with: aTSNode ]

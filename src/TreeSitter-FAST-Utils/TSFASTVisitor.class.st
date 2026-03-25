@@ -1,15 +1,15 @@
 "
 ## Description 
 
-I am a generic importer for a FAST model.
-
+I am a generic visitor to import a FAST model from a TreeSitter tree.
+ 
 I will create all the nodes and relations of the FAST model taking a root node as parameter. 
 
 I will do an exact match to the Tree Sitter AST but I have a subclass that can allow to tweak the model to generate.
 
 ## Implementation details
 
-When checking my code you might think that I have a lot of methods for what I do. The reason is that I am letting a lot of hooks in order for the `TSFASTCustomizableImporter` to be effective. 
+When checking my code you might think that I have a lot of methods for what I do. The reason is that I am letting a lot of hooks in order for the `TSFASTCustomizableVisitor` to be effective. 
 Please, do not simplify the API, we need all those parameters.
 
 ### Context
@@ -22,7 +22,7 @@ The fmProperty can either be nil or a FMProperty. If it is a property, it means 
 
  #containedEntitiesPropertiesMap will save for each kind of FAST class the possible children properties for perf reasons
 
-The context can do more but this will be detailed in `TSFASTContextEntry` and `TSFASTCustomizableImporter` class comments.
+The context can do more but this will be detailed in `TSFASTContextEntry` and `TSFASTCustomizableVisitor` class comments.
 
 ### Source positions management
 
@@ -44,7 +44,7 @@ This behavior can be changed by overriding the method or setting #errorReportBlo
 During development you can toggle a debug mode in the Pharo ""Debug"" menu.
 "
 Class {
-	#name : 'TSFASTImporter',
+	#name : 'TSFASTVisitor',
 	#superclass : 'TSVisitor',
 	#instVars : [
 		'classesPrefix',
@@ -64,20 +64,25 @@ Class {
 	#package : 'TreeSitter-FAST-Utils'
 }
 
+{ #category : 'class initialization' }
+TSFASTVisitor class >> initialize [
+	self deprecatedAliases: { #TSFASTImporter }
+]
+
 { #category : 'testing' }
-TSFASTImporter class >> isInDebugMode [
+TSFASTVisitor class >> isInDebugMode [
 
 	^ IsInDebugMode ifNil: [ IsInDebugMode := false ]
 ]
 
 { #category : 'testing' }
-TSFASTImporter class >> isInDebugMode: aBoolean [
+TSFASTVisitor class >> isInDebugMode: aBoolean [
 
 	IsInDebugMode := aBoolean
 ]
 
 { #category : 'world menu' }
-TSFASTImporter class >> menuCommandOn: aBuilder [
+TSFASTVisitor class >> menuCommandOn: aBuilder [
 
 	<worldMenu>
 	(aBuilder item: #'Toggle FAST Importer Debug mode')
@@ -90,13 +95,13 @@ TSFASTImporter class >> menuCommandOn: aBuilder [
 ]
 
 { #category : 'visiting' }
-TSFASTImporter >> addSelectorFor: aSelector [
+TSFASTVisitor >> addSelectorFor: aSelector [
 
 	^ addSelectors at: aSelector ifAbsentPut: [ ('add' , aSelector asSingular capitalized , ':') asSymbol ]
 ]
 
 { #category : 'private' }
-TSFASTImporter >> bytesToCharacterMap [
+TSFASTVisitor >> bytesToCharacterMap [
 	"We consider that the string is UTF8 encoded in the FAST importer. If we parse a file in UTF16 or another encoding, we should decode it and encode it in UTF8.
 	
 	In Famix we cannot do that since the source code is in files. But in FAST we keep the source code in a Pharo string allowing to do this."
@@ -105,45 +110,45 @@ TSFASTImporter >> bytesToCharacterMap [
 ]
 
 { #category : 'private' }
-TSFASTImporter >> characterPositionAtByte: aNumber [
+TSFASTVisitor >> characterPositionAtByte: aNumber [
 
 	^ self bytesToCharacterMap at: aNumber ifAbsent: [ SubscriptOutOfBounds signalFor: aNumber ]
 ]
 
 { #category : 'accessing' }
-TSFASTImporter >> classesPrefix [
+TSFASTVisitor >> classesPrefix [
 
 	^ classesPrefix
 ]
 
 { #category : 'private' }
-TSFASTImporter >> containedEntitiesPropertiesFor: aClass [
+TSFASTVisitor >> containedEntitiesPropertiesFor: aClass [
 	"I am a cache to know for a FAST class the list of Fame properties they have to define a contained entity."
 
 	^ containedEntitiesPropertiesMap at: aClass ifAbsentPut: [ aClass mooseDescription allProperties select: #isChildrenProperty ]
 ]
 
 { #category : 'utilities' }
-TSFASTImporter >> customizeNewContext: aContextEntry [
+TSFASTVisitor >> customizeNewContext: aContextEntry [
 	"Hook"
 
 	
 ]
 
 { #category : 'initialization' }
-TSFASTImporter >> errorReportBlock: aBlock [
+TSFASTVisitor >> errorReportBlock: aBlock [
 
 	errorReportBlock := aBlock
 ]
 
 { #category : 'accessing' }
-TSFASTImporter >> errors [
+TSFASTVisitor >> errors [
 
 	^ errors
 ]
 
 { #category : 'private' }
-TSFASTImporter >> handleErrorsDuring: aBlock [
+TSFASTVisitor >> handleErrorsDuring: aBlock [
 	"During the visit of the nodes, if an error happens and the debug mode is not enabled, we save the errors in an error report and we keep going with the parsing of the following nodes."
 
 	^ aBlock onErrorDo: [ :error |
@@ -155,19 +160,19 @@ TSFASTImporter >> handleErrorsDuring: aBlock [
 ]
 
 { #category : 'visiting' }
-TSFASTImporter >> handleNode: aTSNode [
+TSFASTVisitor >> handleNode: aTSNode [
 
 	^ self handleNode: aTSNode kind: (self kindForType: aTSNode type)
 ]
 
 { #category : 'visiting' }
-TSFASTImporter >> handleNode: aTSNode kind: aFASTClass [
+TSFASTVisitor >> handleNode: aTSNode kind: aFASTClass [
 
 	^ self handleNode: aTSNode kind: aFASTClass parentBlock: [ :entity | self setParentOf: entity ]
 ]
 
 { #category : 'visiting' }
-TSFASTImporter >> handleNode: aTSNode kind: aFASTClass parentBlock: aBlock [
+TSFASTVisitor >> handleNode: aTSNode kind: aFASTClass parentBlock: aBlock [
 
 	| fastEntity |
 	fastEntity := self instantiateFastEntity: aFASTClass from: aTSNode.
@@ -184,13 +189,13 @@ TSFASTImporter >> handleNode: aTSNode kind: aFASTClass parentBlock: aBlock [
 ]
 
 { #category : 'visiting' }
-TSFASTImporter >> handleNode: aTSNode parentBlock: aBlock [
+TSFASTVisitor >> handleNode: aTSNode parentBlock: aBlock [
 
 	^ self handleNode: aTSNode kind: (self class environment at: (self classesPrefix , aTSNode type pascalized) asSymbol) parentBlock: aBlock
 ]
 
 { #category : 'actions' }
-TSFASTImporter >> import: aTSNode [
+TSFASTVisitor >> import: aTSNode [
 	"Consider we will not add duplicated entities with the algo of the importer."
 
 	FMShouldCheckForDuplicatedEntitiesInMultivalueLinks value: false during: [
@@ -202,7 +207,7 @@ TSFASTImporter >> import: aTSNode [
 ]
 
 { #category : 'initialization' }
-TSFASTImporter >> initialize [
+TSFASTVisitor >> initialize [
 
 	super initialize.
 	containedEntitiesPropertiesMap := IdentityDictionary new.
@@ -213,7 +218,7 @@ TSFASTImporter >> initialize [
 ]
 
 { #category : 'actions' }
-TSFASTImporter >> instantiateFastEntity: aFASTClass from: aTSNode [
+TSFASTVisitor >> instantiateFastEntity: aFASTClass from: aTSNode [
 	"We instantiate the right class, add it to the model and set the sources positions."
 
 	| fastEntity |
@@ -228,44 +233,44 @@ TSFASTImporter >> instantiateFastEntity: aFASTClass from: aTSNode [
 ]
 
 { #category : 'accessing' }
-TSFASTImporter >> kindForType: aSymbol [
+TSFASTVisitor >> kindForType: aSymbol [
 
 	^ self class environment at: (self classesPrefix , aSymbol pascalized) asSymbol
 ]
 
 { #category : 'accessing' }
-TSFASTImporter >> languageName: aString [
+TSFASTVisitor >> languageName: aString [
 
 	classesPrefix := 'FAST' , aString
 ]
 
 { #category : 'actions' }
-TSFASTImporter >> manageErrorReport [
+TSFASTVisitor >> manageErrorReport [
 	"By default if errors happens I inspect the list. If you want other behaviors you can override me in order to do what you want for the error reporting or set the #errorReportBlock."
 
 	^ errorReportBlock cull: self
 ]
 
 { #category : 'utilities' }
-TSFASTImporter >> newInstanceOfClassNamed: aString [
+TSFASTVisitor >> newInstanceOfClassNamed: aString [
 
 	^ (aString asClassInEnvironment: self class environment) new
 ]
 
 { #category : 'accessing' }
-TSFASTImporter >> originString [
+TSFASTVisitor >> originString [
 
 	^ originString
 ]
 
 { #category : 'accessing' }
-TSFASTImporter >> originString: aString [
+TSFASTVisitor >> originString: aString [
 
 	originString := aString
 ]
 
 { #category : 'visiting' }
-TSFASTImporter >> pushContext: fastEntity node: aTSNode during: aBlock [
+TSFASTVisitor >> pushContext: fastEntity node: aTSNode during: aBlock [
 
 	[
 		context push: (TSFASTContextEntry fastEntity: fastEntity tsNode: aTSNode).
@@ -274,7 +279,7 @@ TSFASTImporter >> pushContext: fastEntity node: aTSNode during: aBlock [
 ]
 
 { #category : 'visiting' }
-TSFASTImporter >> setParentOf: entity [
+TSFASTVisitor >> setParentOf: entity [
 	"By default, I have two way to set myself in my parent:
 		- Either my parent have a children property of the same name as the field the node belongs to and we set it there. This is the case if the current property is not nil
 		- Else I add the entity to the generic children."
@@ -288,7 +293,7 @@ TSFASTImporter >> setParentOf: entity [
 ]
 
 { #category : 'utilities' }
-TSFASTImporter >> setTopFieldTo: field [
+TSFASTVisitor >> setTopFieldTo: field [
 
 	context top field: field.
 	
@@ -299,20 +304,20 @@ TSFASTImporter >> setTopFieldTo: field [
 ]
 
 { #category : 'accessing' }
-TSFASTImporter >> topFastEntity [
+TSFASTVisitor >> topFastEntity [
 	"helper"
 
 	^ context top fastEntity
 ]
 
 { #category : 'accessing' }
-TSFASTImporter >> tsLanguage: anObject [
+TSFASTVisitor >> tsLanguage: anObject [
 
 	self deprecated: 'This is not used and can be removed.'
 ]
 
 { #category : 'visiting' }
-TSFASTImporter >> visitChildren: aTSNode [
+TSFASTVisitor >> visitChildren: aTSNode [
 	"Now we will visit the children after adding myself as the top context so that they can find their parent."
 
 	aTSNode collectFieldNameOfNamedChild keysAndValuesDo: [ :field :nodes |
@@ -321,7 +326,7 @@ TSFASTImporter >> visitChildren: aTSNode [
 ]
 
 { #category : 'visiting' }
-TSFASTImporter >> visitNode: aTSNode [
+TSFASTVisitor >> visitNode: aTSNode [
 
 	^ self handleErrorsDuring: [ self handleNode: aTSNode ]
 ]
