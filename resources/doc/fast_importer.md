@@ -341,7 +341,7 @@ Now that the metamodel is updated, we need to adapt the visitor:
 ```Smalltalk
 FASTPythonVisitor>>visitAttribute: aTSNode
 
-	^ self handleNode: aTSNode kind: FASTPyAttributeAccess
+	^ self handleNode: aTSNode kind: FASTPythonAttributeAccess
 ```
 
 #### Handle the parent/children relation yourself
@@ -379,6 +379,16 @@ FASTPythonVisitor>>visitComment: aTSNode
 
 	^ self handleNode: aTSNode parentBlock: [ :entity | self topFastEntity addComment: entity ]
 ```
+
+or
+
+```Smalltalk
+FASTPythonVisitor>>visitComment: aTSNode
+
+	^ self handleNode: aTSNode kind: FASTPythonComment parentBlock: [ :entity | self topFastEntity addComment: entity ]
+```
+
+Passing explicitly the class or not depend on your preference. Specifying it is a little bit faster during runtime. But the gain is often unsignificant.
 
 > [!NOTE]
 > `self topFastEntity` will return the parent of the FAST entity we are creating. The name of the method refer to the concept of context that will be explaine if the section [The context management](#the-context-management).
