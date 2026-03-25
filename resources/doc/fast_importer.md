@@ -14,6 +14,10 @@ This section covers the content of the package `TreeSitter-FAST-Utils` and expla
     - [Generate the base of the Metamodel](#generate-the-base-of-the-metamodel)
     - [Implement the importer](#implement-the-importer)
   - [Customize your metamodel and visitor](#customize-your-metamodel-and-visitor)
+    - [Improve relations management](#improve-relations-management)
+    - [Implement a specialized visitor](#implement-a-specialized-visitor)
+  - [Add regression tests to your project](#add-regression-tests-to-your-project)
+  - [Cyril's tips on how to work](#cyrils-tips-on-how-to-work)
 
 <!-- /TOC -->
 
@@ -164,5 +168,86 @@ FASTPythonImporter parseFile: 'myFile.py'
 
 ## Customize your metamodel and visitor
 
+> [!WARNING]
+This documentation expects the reader to know how to develop a Moose metamodel generator. If this is not the case, you will need to learn how to handle entities hirerachy, relations between entities, properties declaration and hanlding of traits in order to fully understant this section. [See documentation.](https://modularmoose.org/developers/create-new-metamodel/)
+
+We are now able to have a FAST model, but this models has multiple limitations such has:
+- There is no management of inheritance and usage of traits in FAST entities
+- The relations are all stored in #`genericChildren` and #`genericParent` relation
+- There is no property
+- The AST of the tree-sitter grammar does not necessarily make a good AST and some nodes could gain to be customized
+
+In some cases, the model produce can be enough. This project was originally done in order to do pattern matching and have a good AST is not necessary. But, in order to use most Moose's tooling, we need to improve the generated code. 
+
+Thus, this project provides a set a tools to customize our Metamodel and Importer.
+
+### Improve relations management
+
+A first way to improve the model is to improve the FAST generator and use specific relations instead of the generic one we generated.
+
+In order to create a FAST model, the importer will first use tree sitter to obtain a `TSTree`. This tree represent the AST of the source code parsed. We then visit its nodes to generate the FAST model.
+
+The `TSNodes` of the tree are grouping their children by `fields`.
+
+For example, we can see on the result of a tool we will explain later in the documentation:
+
+![Inspector](TSSymbolsBuilderVisitor.png)
+
+Here we see `if_statement` nodes have 4 fields:
+- `condition` that always have 1 child
+- `consequence` that always have 1 child
+- `alternative` that is optional and can have multiple children
+- an unnamed field that is optional and can have multiple children
+
+If the name a field matches the name of a Fame property (in the Moose description), then this relation will be used.
+
+In the case of our `if_statement`, the FAST node representing it should use `FASTTWithCondition` and store the condition expression into the `condition` relation.
+
+If order to do this, we need to retrieve `FASTTWithCondition` in our generator and make the `ifStatment` use it.
+
+```Smalltalk
+FASTPythonMetamodelGenerator>>defineTraits
+
+    super defineTraits.
+
+    tWithCondition := self remoteTrait: #TWithCondition withPrefix: #FAST
+```
+
+```Smalltalk
+FASTPythonMetamodelGenerator>>defineHierarchy
+
+    super defineHierarchy.
+
+    ifStatment --|> tWithCondition
+```
+
+> [!TIP]
+> Do not forget to regenerate your metamodel afterward by executing `FASTPythonMetamodelGenerator generate`
+
+> [!NOTE]
+> The importer will check if the relation used is multivalued or not. In case it is monovalue, it will use the setter. If it is multivalued, it will use `#addRelationName:`.
+
+This method is good because we just need to improve the metamodel generator to make it work. But it has its limits:
+- Some fields are unnamed and cannot be mapped directly to a fame relation
+- Some fileds are good names for a basic AST, but not good in an AST specialized for software analysis such as in Moose. For example, the left side of an asssignment can be named `left` in tree sitter, but should be named `variable` in a FAST model. Or a field can be named `expression` in tree sitter because it can contain one or multiple expression. But in Moose, a multivalued relation should be plurial and we need the relation to be named `expressions`.
+
+In order to make further improvements, we can use `TSFASTCustomizableVisitor`.
+
+### Implement a specialized visitor
+
 TODO
 
+## Add regression tests to your project
+
+TODO
+
+## Cyril's tips on how to work
+
+TODO
+
+
+
+More:
+- Error handling
+- Error node
+- Utilities
