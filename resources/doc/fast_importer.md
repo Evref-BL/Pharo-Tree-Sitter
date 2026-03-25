@@ -23,6 +23,10 @@ This section covers the content of the package `TreeSitter-FAST-Utils` and expla
       - [Customize fields relation name matching](#customize-fields-relation-name-matching)
       - [Manage properties](#manage-properties)
   - [Add regression tests to your project](#add-regression-tests-to-your-project)
+  - [Error handling](#error-handling)
+    - [Error node](#error-node)
+    - [Error report](#error-report)
+  - [Utilities](#utilities)
   - [Cyril's tips on how to work](#cyrils-tips-on-how-to-work)
 
 <!-- /TOC -->
@@ -490,17 +494,33 @@ FASTPythonVisitor>>visitAssertStatement: aTSNode
 
 TODO
 
+- TNamed
+- source code of nodes
+
 ## Add regression tests to your project
 
 TODO
 
-## Cyril's tips on how to work
+
+## Error handling
 
 TODO
 
 
+### Error node
 
-More:
-- Error handling
-- Error node
-- Utilities
+TODO
+
+
+### Error report
+
+
+TODO
+
+## Utilities
+
+Some utilities are really great to help us customize our FAST model and implement the visitor. They are explained in the section [Tree Sitter utilities](ts_utilities.md).
+
+## Cyril's tips on how to work
+
+TODO
