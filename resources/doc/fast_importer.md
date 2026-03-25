@@ -20,6 +20,8 @@ This section covers the content of the package `TreeSitter-FAST-Utils` and expla
       - [Change the class produced by a node](#change-the-class-produced-by-a-node)
       - [Handle the parent/children relation yourself](#handle-the-parentchildren-relation-yourself)
       - [The context management](#the-context-management)
+      - [Customize fields relation name matching](#customize-fields-relation-name-matching)
+      - [Manage properties](#manage-properties)
   - [Add regression tests to your project](#add-regression-tests-to-your-project)
   - [Cyril's tips on how to work](#cyrils-tips-on-how-to-work)
 
@@ -271,7 +273,7 @@ FASTPythonImporter>>visitorClass
 We now have the possibility to apply a new set of customizations that are explained in the next sections. 
 
 > [!NOTE]
-> Each section will assume that you have read the previous sections.
+> Each section will assume that you have read the previous sections. This means that everything in the examples provided will have been explained.
 
 #### Specialized visit methods
 
@@ -396,8 +398,97 @@ Passing explicitly the class or not depend on your preference. Specifying it is 
 
 #### The context management
 
+In order to be effective in our customizations, it is good to understand the context system of the visitor. 
 
+Your visitor is maintaining a `Stack` named `context`. Its elements are `TSFASTContextEntry`. Each entry represent a node parent to the node we are visiting until we arrive at the root of the model. 
 
+The entry will save multiple interesting informations such has:
+- The fast entity produced by the node
+- The `TSNode` corresponding to the context
+- The filed name containing the nodes been pushed later on the stack 
+- The fm property corresponding to the field been visited. If it is not nil while `setParentTo:` is been invoked, it will be use the set the parent/child relation.
+
+This context stack explain why `topFastEntity` returns the parent of the node we are visiting. We get the top entry and we return its FAST entity.
+
+Those info in the context will be useful to import and also to customize the importers with `TSFASTCustomizableVisitor`.
+
+For example, in Python both method definitions and function definitions are managed by a node of type `function_definition`. But in our AST we want to distinguish them.
+
+For that we can add a new entity:
+
+```Smalltalk
+FASTPythonMetamodelGenerator>>defineClasses
+    [...]
+    methodDefinition := builder newClassNamed: #MethodDefinition.
+```
+
+And we can customize our function definition visit:
+
+```Smalltalk
+FASTPythonVisitor>>visitFunctionDefinition: aNode
+	"TreeSitter has the same nodes for method and function definitions but in FAST we want to disambiguate."
+
+	^ (context anySatisfy: [ :entry | entry fastEntity isClassDefinition ])
+		  ifTrue: [ self handleNode: aNode kind: FASTPyMethodDefinition ]
+		  ifFalse: [ self handleNode: aNode kind: FASTPyFunctionDefinition ]
+```
+
+We can access all informations about the parent chain both in FAST entities and TS nodes.
+
+#### Customize fields relation name matching 
+
+As we saw in a previous sections, the way we automatically resolve the relation to use in the parent/child relations have limits. The bigest one been that field names in tree sitter and relation names in FAST needs to be the same.
+
+The customizable visitor can use the context management to define some aliases for some fields and resolve this problem.
+
+For example in Python the `FASTTBinaryExpression` defines `leftOperand` and `rightOperand` but the fields in the node of type `binary_operator` are called `left` and `right`. 
+
+Once the trait has been added to `FASTPythonBinaryOperator` in the generator, here is how to manage this:
+
+```st
+FASTPythonImporter>>visitBinaryOperator: aTSNode
+
+	| fastEntity |
+	fastEntity := self instantiateFastEntity: FASTPythonBinaryOperator from: aTSNode.
+
+	self setParentOf: fastEntity.
+
+	self pushContext: fastEntity node: aTSNode during: [
+			context top add: 'leftOperand' asAliasOfField: 'left'.
+			context top add: 'rightOperand' asAliasOfField: 'right'.
+			self visitChildren: aTSNode in: fastEntity ].
+
+	^ fastEntity
+```
+
+We cans do even better by using `#onNextContextDo:`. This method allow to apply a customization to the next context we create. Allowing to add the aliases before calling the normal node method handling:
+
+```Smalltalk
+visitBinaryOperator: aTSNode
+
+	self onNextContextDo: [ :entry |
+			entry
+				add: 'leftOperand' asAliasOfField: 'left';
+				add: 'rightOperand' asAliasOfField: 'right' ].
+
+	^ self handleNode: aTSNode kind: FASTPyBinaryOperator
+```
+
+A last problem solved by this alias mechanism is the case of unnamed fields. 
+
+You can define an alias to it using `#aliasUnnamedFieldAs:`. For example, in python an assert statement has unnamed children. If we declare in the generator that an assert statement has a relation named `#expressions`, we can define:
+
+```Smalltalk
+FASTPythonVisitor>>visitAssertStatement: aTSNode
+
+	self onNextContextDo: [ :entry | entry aliasUnnamedFieldAs: #expressions ].
+
+	^ self handleNode: aTSNode kind: FASTPyAssertStatement
+```
+
+#### Manage properties
+
+TODO
 
 ## Add regression tests to your project
 
