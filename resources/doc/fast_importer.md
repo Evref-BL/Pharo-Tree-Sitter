@@ -740,7 +740,81 @@ Some utilities are really great to help us customize our FAST model and implemen
 
 ## Cyril's tips on how to work
 
-TODO
+When doing the Python importer I used all the tools presented. 
+
+In general my playground looked like this:
+
+```Smalltalk
+FASTPythonMetamodelGenerator generate.
+
+code := 'yield from x'.
+FASTPythonImporterTest generateTestNamed: 'yieldFrom' fromCode: code protocol: 'tests'.
+
+FASTPythonImporterTest regenerateAllTests.
+
+"======================="
+
+Dictionary new
+	at: 'identifier' put: 'x';
+	"at: 'attribute' put: 'x.y';
+	at: 'await' put: '(await x)';
+	at: 'binaryOperator' put: '1 + x';
+	at: 'booleanOperator' put: 'x or y';"
+	at: 'call' put: 'factory()';
+	"at: 'comparisonOperator' put: 'x > y';"
+	at: 'conditionalExpression' put: '(x if True else y)';
+	"at: 'dictionary' put: '{ 1:x }';
+	at: 'dictionaryComprehension' put: '{ v:x for v in y }';
+	at: 'dictionarySplat' put: '**kwargs';
+	at: 'ellipsis' put: '...';
+	at: 'false' put: 'False';
+	at: 'float' put: '0.0';
+	at: 'integer' put: '0';
+	at: 'complexe' put: '0j';
+	at: 'lambda' put: '(lambda x:x)';
+	at: 'list' put: '[ 1 ]';
+	at: 'listComprehension' put: '[i + x for i in range(3)]';
+	at: 'listSplat' put: '*args';
+	at: 'none' put: 'None';
+	at: 'notOperator' put: '(not old)';
+	at: 'patternList' put: 'a, b';
+	at: 'set' put: '{ 1 }';
+	at: 'setComprehension' put: '{i + x for i in range(3) }';"
+	at: 'string' put: '"print "Hello""';
+	at: 'subscript' put: 'x[2]';
+"	at: 'true' put: 'True';
+	at: 'tuple' put: '(x, y)';
+	at: 'unaryOperator' put: '-x';"
+	keysAndValuesDo: [ :name :code |
+		FASTPythonImporterTest generateTestNamed: 'execStatementOf' , name capitalized fromCode: 'exec ', code protocol: 'tests - statements' ].
+	
+"======================="
+
+(TSParser new language: TSLanguage python; parseString: 'yield from x' withPlatformLineEndings) rootNode.
+
+"======================="
+
+folder := '/Users/cyril/marius/10batches' asFileReference.
+folder := '/Users/cyril/testPython/cpython-main' asFileReference.
+
+TSSymbolsBuilderVisitor language: TSLanguage python extensions: #( 'py' ) buildOn: folder.
+
+"======================="
+
+TSNodeFinderVisitor language: TSLanguage python extensions: #( 'py' ) selection: [ :node |
+	node type = #assignment and: [ node collectFieldNameOfNamedChild at: #right  ifPresent: [ : n | false ] ifAbsent: [ true ] ] ] buildOn: folder.
+
+```
+
+The first section allow to generate a test after regenerating the MM or to negenerate all tests. 
+
+The second allow to generate a batch of tests.
+
+The third one allow to get a `TSTree` from a piece of code.
+
+The fourth one allow to have informations on all symbols present in a folder of code.
+
+The last one allow to detect some patterns of TS trees and find a piece of code to produce the pattern.
 
 
-- Add doc on source management?
+Here is the end of this documentation, hoping this can help you implement your own fast importer!
