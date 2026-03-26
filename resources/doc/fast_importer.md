@@ -23,6 +23,11 @@ This section covers the content of the package `TreeSitter-FAST-Utils` and expla
       - [Customize fields relation name matching](#customize-fields-relation-name-matching)
       - [Manage properties](#manage-properties)
   - [Add regression tests to your project](#add-regression-tests-to-your-project)
+    - [TSFASTAbstractImporterTest](#tsfastabstractimportertest)
+    - [Regression tests generation](#regression-tests-generation)
+    - [Customize the test generation](#customize-the-test-generation)
+    - [Regenerate all tests](#regenerate-all-tests)
+    - [Generate multiple tests](#generate-multiple-tests)
   - [Error handling](#error-handling)
     - [Error node](#error-node)
     - [Error report](#error-report)
@@ -600,8 +605,117 @@ visitAugmentedAssignment: aTSNode
 
 ## Add regression tests to your project
 
-TODO
+Writting an importer is not an easy task. If you have experience in that field, you know that each change can have unexpected side effects and that the number of pattern possible in the code are huge. 
 
+This makes having tests really important, but it takes time to implement them and it's hard to test all possibilities. 
+
+This work is simplified by `TSFASTAbstractImporterTest` and `TSFASTImporterTestGenerator`. 
+
+### TSFASTAbstractImporterTest
+
+We provide an abstract class to subclass to implement your tests. It will retrieve the importer based of its name if the prefix are the same and allow to use the `#parse:` method to create a FAST model from a piece of code.
+
+But the most interesting part is the regression test generation.
+
+### Regression tests generation
+
+I implement with `TSFASTImporterTestGeneration` a way to generate regression tests. 
+
+In order to work, I need the importer to be able to handle the code to parse. If it works, I can give the piece of code to the generator and generate a test. 
+The test builds a model and assert a lot of things based on Fame properties (the moose descriptions). 
+
+For example I can do:
+
+```Smalltalk
+code := 'yield from x'.
+FASTPythonImporterTest generateTestNamed: 'yieldFrom' fromCode: code protocol: 'tests'.
+```
+
+And this will generate:
+
+```Smalltalk
+testYieldFrom
+	<generated>
+	"Generated as regression test by FASTPyImporterTestGenerator>>#generateTestNamed:fromCode:protocol:
+	Regenerate executing: 	self regenerateTest: #testYieldFrom 	"
+
+	self parse: 'yield from x'.
+
+	self assert: (fast allWithType: FASTPyIdentifier) size equals: 1.
+	self assert: (fast allWithType: FASTPyModule) size equals: 1.
+	self assert: (fast allWithType: FASTPyYield) size equals: 1.
+
+	stack push: fast rootEntities anyOne containedEntities first.
+	self assert: self topEntity sourceCode equals: 'yield from x'.
+	self assert: (self topEntity isOfType: FASTPyYield).
+	
+	"Testing value of monovalue relation expression"
+	self assert: self topEntity expression isNotNil.
+
+		stack push: self topEntity expression.
+		self assert: self topEntity sourceCode equals: 'x'.
+		self assert: (self topEntity isOfType: FASTPyIdentifier)
+```
+
+### Customize the test generation
+
+We can add hooks to the test generation. 
+
+A first hook is here to define which traits we should verify. Sometimes we want to ensure a class has some traits (for example because they are used by FAST algos). In that case, we can add them to `TSFASTAbstractImporterTest>>#traitsToTest` by overriding the method. If an entity has one of the trait returned by this method, we will assert that the entities are using the trait. 
+
+A second customization possible is about properties. 
+
+By default, the test generator will test all properties that:
+- Are not derived (derived properties should be tested in the FAST model, not in the importer)
+- Are not defining a parent (Since we are testing children and relations are bidirectional, it is useless)
+- Are not nil or returning an empty collection
+
+It is also possible to reject some properties using `#propertiesToExclude`. By default, we reject `#startPos` and `#endPos`.
+
+### Regenerate all tests
+
+It is possible to regenerate all tests if the model had a big change using `#regenerateAllTests`. 
+BUT BE CAREFUL! We should ALWAYS read each test that got modifier. NEVER commit regenerated code that you do not double check, else tests are useless.
+
+### Generate multiple tests
+
+Here is a little snippet I used when developing the FAST-Python importer:
+
+```Smalltalk
+Dictionary new
+	at: 'identifier' put: 'x';
+	at: 'attribute' put: 'x.y';
+	at: 'await' put: 'await x';
+	at: 'binaryOperator' put: '1 + x';
+	at: 'booleanOperator' put: 'x or y';
+	at: 'call' put: 'factory()';
+	at: 'comparisonOperator' put: 'x > y';
+	at: 'conditionalExpression' put: 'x if True else y';
+	at: 'dictionary' put: '{ 1:x }';
+	at: 'dictionaryComprehension' put: '{ v:x for v in y }';
+	at: 'dictionarySplat' put: '**kwargs';
+	at: 'ellipsis' put: '...';
+	at: 'false' put: 'False';
+	at: 'float' put: '0.0';
+	at: 'integer' put: '0';
+	at: 'complexe' put: '0j';
+	at: 'lambda' put: '(lambda x:x)';
+	at: 'list' put: '[ 1 ]';
+	at: 'listComprehension' put: '[i + x for i in range(3)]';
+	at: 'listSplat' put: '*args';
+	at: 'none' put: 'None';
+	at: 'notOperator' put: '(not old)';
+	"at: 'patternList' put: 'a, b';"
+	at: 'set' put: '{ 1 }';
+	at: 'setComprehension' put: '{i + x for i in range(3) }';
+	at: 'string' put: '"Hello"';
+	at: 'subscript' put: 'x[2]';
+	at: 'true' put: 'True';
+	at: 'tuple' put: '(x, y)';
+	at: 'unaryOperator' put: '-x';
+	keysAndValuesDo: [ :name :code |
+		FASTPythonImporterTest generateTestNamed: 'calWithArgument' , name capitalized fromCode: 'f(', code , ')' protocol: 'tests - calls' ].
+```
 
 ## Error handling
 
