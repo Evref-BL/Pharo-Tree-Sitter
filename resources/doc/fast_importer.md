@@ -492,10 +492,111 @@ FASTPythonVisitor>>visitAssertStatement: aTSNode
 
 #### Manage properties
 
-TODO
+This mecanism of specialized visits is also useful to be able to handle some properties.
 
-- TNamed
-- source code of nodes
+For example, in python, multiple `TSNodes` have a child that can only be an `identifier` node and that represent the name of en entity.
+
+I did not wish to have too many `FASTPythonIdentifier` nodes representing names while FAST provides a `FASTTNamedEntity` trait with a `name` property.
+
+In order to do this, I first use this trait from FAST in the generator:
+
+```Smalltalk
+FASTPythonMetamodelGenerator>>defineTraits
+    [...]
+    
+	tNamedEntity := self remoteTrait: #TNamedEntity withPrefix: #FAST.
+```
+
+Then we can use it:
+
+```Smalltalk
+FASTPythonMetamodelGenerator>>defineHierarchy
+    [...]
+    
+    attribute --|> tNamedEntity.
+    
+    classDefinition --|> tNamedEntity.
+    
+    functionDefinition --|> tNamedEntity.
+    
+    genericType --|> tNamedEntity.
+
+    keywordPattern --|> tNamedEntity.
+    
+    methodDefinition --|> tNamedEntity.
+    
+    namedExpression --|> tNamedEntity.
+
+    splatType --|> tNamedEntity.
+```
+
+> [!NOTE]
+> If you check the finished FAST-Python you will notice that it is not `classDefinition`, `methodDefinition` and `functionDefinition` using this trait because I introduced a new trait `tDefinition` to share some behavior between all behavioural definitions.
+
+Now that our named entities are using `FASTTNamedEntity`, they have a `name` property we need to fill instead of creating an identifier node by updating the visitor.
+
+A first version I implemented was:
+
+```Samlltalk
+FASTPythonVisitor>>visitIdentifier: aTSNode
+    (self topFastEntity isOfType: FASTTNamedEntity) ifTrue: [ ^ self topFastEntity name: (self sourceCodeOf: aNode) ].
+
+    ^ self handleNode: aTSNode
+```
+
+Here, if the parent has the trait `FASTTNamedEntity` we do not visit it but set the `name` property instead by retrieving the source code of this specific node.
+
+> [!TIP]
+> The method `#sourceCodeOf:` takes a `TSNode` and return the source code corresponding. This method is planned to be performant since source manipulation can be a performance bottleneck. If possible, use this method instead of doing a customized source management.
+
+Now, this method I implemented was too naive because the identifier node is not always representing the name of an entity.
+
+I order to manage this, I improved the code to also check the field in some cases:
+
+```Smalltalk
+FASTPythonVisitor>>visitIdentifier: aTSNode
+    self shouldIdentifierSetNameProperty ifTrue: [ ^ self topFastEntity name: (self sourceCodeOf: aNode) ].
+
+    ^ self handleNode: aTSNode
+```
+
+```Smalltalk
+FASTPythonVisitor>>shouldIdentifierSetNameProperty
+
+    ({ FASTPyGenericType.  FASTPySplatType } anySatisfy: [ :class | context top isOfFASTType: class ]) ifTrue: [ ^ true ].
+	
+    (context top field = #attribute and: [ context top isOfFASTType: FASTPyAttributeAccess ]) ifTrue: [ ^ true ].
+
+    ^ context top field = #name and: [ context top isOfFASTType: FASTTNamedEntity ]
+```
+
+This is a way to handle properties.
+
+Now a second example: In the node `augmented_assignment` we do not have any node to represent the operator used. In our FAST model we want this operator.
+
+We can add a property in our FAST entity like this:
+
+```Smalltalk
+FASTPythonMetamodelGenerator>>defineProperties
+    [...]
+	
+    augmentedAssignment property: #operator type: #String. 
+```
+
+And we can add this property in the visitor:
+
+```Smalltalk
+visitAugmentedAssignment: aTSNode
+
+	| fastEntity |
+
+	fastEntity := self handleNode: aTSNode kind: FASTPyAugmentedAssignment.
+	
+	"TreeSitter does not seems to manage operator, so I try to het this property manually."
+	fastEntity operator: (fastEntity sourceText copyFrom: fastEntity left endPos + 1 to: fastEntity right startPos - 1) trim.
+
+	^ fastEntity
+```
 
 ## Add regression tests to your project
 
@@ -524,3 +625,6 @@ Some utilities are really great to help us customize our FAST model and implemen
 ## Cyril's tips on how to work
 
 TODO
+
+
+- Add doc on source management?
