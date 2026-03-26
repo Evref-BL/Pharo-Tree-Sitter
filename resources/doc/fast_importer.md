@@ -719,18 +719,20 @@ Dictionary new
 
 ## Error handling
 
-TODO
-
-
 ### Error node
 
-TODO
+In some case it can happen that we parse some code with syntax errors or it is possible to find a bug in tree sitter. 
 
+If this happens, we will generate a `FASTXXErrorNode` (XX been the prefix of your language).
 
 ### Error report
+ 
+Since it is common to have errors during the import of a project (importers are hard to build since so many things can happen), we catch the errors happening during the visit of the nodes and we proceed with the visit.
 
+At the end of the import, the errors are inspected by default.
+This behavior can be changed by overriding the method or setting `#errorReportBlock:` to do something else.
 
-TODO
+During development you can toggle a debug mode in the Pharo "Debug" menu.
 
 ## Utilities
 
