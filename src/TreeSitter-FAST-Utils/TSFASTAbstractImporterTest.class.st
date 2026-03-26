@@ -62,6 +62,46 @@ It is also possible to reject some properties using `#propertiesToExclude`. By d
 
 It is possible to regenerate all tests if the model had a big change using `#regenerateAllTests`. 
 BUT BE CAREFUL! We should ALWAYS read each test that got modifier. NEVER commit regenerated code that you do not double check, else tests are useless.
+
+### Generate multiple tests
+
+Here is a little snippet I used when developing the FAST-Python importer:
+
+```st
+Dictionary new
+	at: 'identifier' put: 'x';
+	at: 'attribute' put: 'x.y';
+	at: 'await' put: 'await x';
+	at: 'binaryOperator' put: '1 + x';
+	at: 'booleanOperator' put: 'x or y';
+	at: 'call' put: 'factory()';
+	at: 'comparisonOperator' put: 'x > y';
+	at: 'conditionalExpression' put: 'x if True else y';
+	at: 'dictionary' put: '{ 1:x }';
+	at: 'dictionaryComprehension' put: '{ v:x for v in y }';
+	at: 'dictionarySplat' put: '**kwargs';
+	at: 'ellipsis' put: '...';
+	at: 'false' put: 'False';
+	at: 'float' put: '0.0';
+	at: 'integer' put: '0';
+	at: 'complexe' put: '0j';
+	at: 'lambda' put: '(lambda x:x)';
+	at: 'list' put: '[ 1 ]';
+	at: 'listComprehension' put: '[i + x for i in range(3)]';
+	at: 'listSplat' put: '*args';
+	at: 'none' put: 'None';
+	at: 'notOperator' put: '(not old)';
+	""at: 'patternList' put: 'a, b';""
+	at: 'set' put: '{ 1 }';
+	at: 'setComprehension' put: '{i + x for i in range(3) }';
+	at: 'string' put: '""Hello""';
+	at: 'subscript' put: 'x[2]';
+	at: 'true' put: 'True';
+	at: 'tuple' put: '(x, y)';
+	at: 'unaryOperator' put: '-x';
+	keysAndValuesDo: [ :name :code |
+		FASTPythonImporterTest generateTestNamed: 'calWithArgument' , name capitalized fromCode: 'f(', code , ')' protocol: 'tests - calls' ].
+```
 "
 Class {
 	#name : 'TSFASTAbstractImporterTest',
