@@ -222,7 +222,7 @@ TSFASTVisitor >> instantiateFastEntity: aFASTClass from: aTSNode [
 	"We instantiate the right class, add it to the model and set the sources positions."
 
 	| fastEntity |
-	fastEntity := aFASTClass new.
+	fastEntity := aFASTClass newTenured.
 
 	model add: fastEntity.
 
@@ -254,7 +254,7 @@ TSFASTVisitor >> manageErrorReport [
 { #category : 'utilities' }
 TSFASTVisitor >> newInstanceOfClassNamed: aString [
 
-	^ (aString asClassInEnvironment: self class environment) new
+	^ (aString asClassInEnvironment: self class environment) newTenured
 ]
 
 { #category : 'accessing' }
