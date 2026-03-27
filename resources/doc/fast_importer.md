@@ -12,7 +12,7 @@ This section covers the content of the package `TreeSitter-FAST-Utils` and expla
   - [Get a working baisc FAST importer](#get-a-working-baisc-fast-importer)
     - [Install TreeSitter](#install-treesitter)
     - [Generate the base of the Metamodel](#generate-the-base-of-the-metamodel)
-    - [Implement the importer](#implement-the-importer)
+    - [FAST importer](#fast-importer)
   - [Customize your metamodel and visitor](#customize-your-metamodel-and-visitor)
     - [Improve relations management](#improve-relations-management)
     - [Implement a specialized visitor](#implement-a-specialized-visitor)
@@ -103,7 +103,7 @@ TSFASTBuilder new
 
 The language name is used for the prefix of the class names. They are on the form of `FASTPrefixSymbol` like `FASTPyFunctionDefinition`.
 
-The tsLanguage is the tree sitter language to use to retrieve the possible symbols.
+The `tsLanguage` is the tree sitter language to use to retrieve the possible symbols.
 
 Once this code is executed, a new FAST generator will be in your image and you can generate the classes with it:
 
@@ -120,7 +120,9 @@ In this generated metamodel, only one relation exist between any entities from #
 > [!TIP]
 > The metamodel generated is only a base. It has a class for each element of the syntax but it has no hierarchy, no trait usage, no specific relations and no properties. We provide an explanation of the possible customizations in the section: [customize your metamodel and visitor](#customize-your-metamodel-and-visitor).
 
-### Implement the importer
+This builder will also generate the base of an importer. We will explore that in the next section.
+
+### FAST importer
 
 Now that we have a basic metamodel, we can import a FAST model like this:
 
@@ -146,23 +148,9 @@ importer originString: string.
 ^ importer import: (parser parseString: string) rootNode
 ```
 
-This is not really practical so it is recommended to implement a subclass of `TSFASTAbsractImporter`.
+This is not really practical so it is recommended to implement a subclass of `TSFASTAbsractImporter`. With the current version of Tree Sitter, this should now happens automatically using `TSFASTBuilder`. 
 
-For example for Python:
-
-```Smalltalk
-TSFASTAbstractImporter << #FASTPythonImporter
-	slots: {};
-	package: 'FAST-Python-Tools'
-```
-
-Once we have this class, we just need to implement the method `tsLanguage` to make it work. 
-
-```Smalltalk
-FASTPythonImporter>>tsLanguage
-
-	^ TSLanguage python
-```
+For example for Python we now have a `FASTPythonImporter`.
 
 And the previous script can now be replaced by:
 
