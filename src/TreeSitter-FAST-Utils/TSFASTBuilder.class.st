@@ -47,7 +47,7 @@ TSFASTBuilder >> addDefineClassIn: metamodelGeneratorClass [
 									          << '	';
 									          << type uncapitalized pharoLiteralCompatible;
 									          << ' := '.
-								          stream << 'builder ensureClassNamed: #' << type pascalized << '.' ] ]
+								          stream << 'builder newClassNamed: #' << type pascalized << '.' ] ]
 				          separatedBy: [
 						          stream << '
 ' ] ].
