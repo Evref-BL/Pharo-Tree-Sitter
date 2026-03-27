@@ -5,6 +5,8 @@ The output will be a FAST generator producing a class for each possible nodes an
 
 You will need to refine this generator yourself to introduce hierarchies, traits, relations and properties.
 
+This will also generate the base of an importer to import the generated code.
+
 Here is an example of usage:
 
 ```
@@ -143,7 +145,25 @@ TSFASTBuilder >> build [
 	self addDefineTraitsIn: metamodelGeneratorClass.
 	self addDefineHierarchyIn: metamodelGeneratorClass.
 	self addDefineRelationsIn: metamodelGeneratorClass.
+	self createImporter.
 	^ metamodelGeneratorClass
+]
+
+{ #category : 'building' }
+TSFASTBuilder >> createImporter [
+
+	| class |
+	class := self class classInstaller make: [ :aBuilder |
+			         aBuilder
+				         name: #FAST , self languageName , #Importer;
+				         superclass: TSFASTAbstractImporter;
+				         package: #FAST , '-' , self languageName , #'-Tools' ].
+
+	class
+		compile: 'tsLanguage
+
+	^ TSLanguage ' , tsLanguage name
+		classified: 'accessing'
 ]
 
 { #category : 'building' }
