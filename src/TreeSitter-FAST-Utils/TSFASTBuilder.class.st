@@ -1,5 +1,22 @@
 "
-I build a FAST metamodel generator based on a tree sitter language
+I build a FAST metamodel generator based on a tree sitter language.
+
+The output will be a FAST generator producing a class for each possible nodes and one relation between #genericChildren and #genericParent.
+
+You will need to refine this generator yourself to introduce hierarchies, traits, relations and properties.
+
+This will also generate the base of an importer to import the generated code.
+
+Here is an example of usage:
+
+```
+TSFASTBuilder new
+    languageName: 'Py';
+    tsLanguage: TSLanguage python;
+    build.
+
+FASTPythonMetamodelGenerator new generate
+```
 "
 Class {
 	#name : 'TSFASTBuilder',
@@ -32,7 +49,7 @@ TSFASTBuilder >> addDefineClassIn: metamodelGeneratorClass [
 									          << '	';
 									          << type uncapitalized pharoLiteralCompatible;
 									          << ' := '.
-								          stream << 'builder ensureClassNamed: #' << type pascalized << '.' ] ]
+								          stream << 'builder newClassNamed: #' << type pascalized << '.' ] ]
 				          separatedBy: [
 						          stream << '
 ' ] ].
@@ -128,7 +145,25 @@ TSFASTBuilder >> build [
 	self addDefineTraitsIn: metamodelGeneratorClass.
 	self addDefineHierarchyIn: metamodelGeneratorClass.
 	self addDefineRelationsIn: metamodelGeneratorClass.
+	self createImporter.
 	^ metamodelGeneratorClass
+]
+
+{ #category : 'building' }
+TSFASTBuilder >> createImporter [
+
+	| class |
+	class := self class classInstaller make: [ :aBuilder |
+			         aBuilder
+				         name: #FAST , self languageName , #Importer;
+				         superclass: TSFASTAbstractImporter;
+				         package: #FAST , '-' , self languageName , #'-Tools' ].
+
+	class
+		compile: 'tsLanguage
+
+	^ TSLanguage ' , tsLanguage name
+		classified: 'accessing'
 ]
 
 { #category : 'building' }

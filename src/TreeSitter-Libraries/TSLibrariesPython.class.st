@@ -13,7 +13,7 @@ TSLibrariesPython >> cloneTreeSitterPython [
 	clonePath := self originalLibrariesDirectory , '/tree-sitter-python'.
 
 	"before cloning get the latest release"	
-	lastReleasedVersion := self latestReleaseTagForOwner: 'tree-sitter' repo: 'tree-sitter-python'.
+	lastReleasedVersion := self class gitBranchToUse ifNil: [ self latestReleaseTagForOwner: 'tree-sitter' repo: 'tree-sitter-python' ].
 
 	
 	"Execute clone command"

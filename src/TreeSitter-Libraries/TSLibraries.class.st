@@ -1,9 +1,24 @@
 Class {
 	#name : 'TSLibraries',
 	#superclass : 'Object',
+	#classVars : [
+		'GitBranchToUse'
+	],
 	#category : 'TreeSitter-Libraries',
 	#package : 'TreeSitter-Libraries'
 }
+
+{ #category : 'accessing' }
+TSLibraries class >> gitBranchToUse [
+
+	^ GitBranchToUse
+]
+
+{ #category : 'accessing' }
+TSLibraries class >> gitBranchToUse: aString [
+
+	GitBranchToUse := aString
+]
 
 { #category : 'as yet unclassified' }
 TSLibraries >> cloneTreeSitter [

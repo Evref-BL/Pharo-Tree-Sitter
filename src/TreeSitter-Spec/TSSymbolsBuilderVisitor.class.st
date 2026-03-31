@@ -47,17 +47,18 @@ TSSymbolsBuilderVisitor >> symbolsInspector: aBuilder [
 { #category : 'visiting' }
 TSSymbolsBuilderVisitor >> visitNode: aTSNode [
 
-	| fields |
+	| fields childrenMap |
 	"This needs to be done here and not in the bloc for nodes that cannot have a child"
+	childrenMap := aTSNode collectFieldNameOfNamedChild. "Saving it to save time in FFI calls"
 	fields := symbolDictionary
 		          at: aTSNode type
 		          ifPresent: [ :flds | "We check if some fields are missing in the current node to mark them as optional, meaning the minimal number of nodes for this field can be 0"
 				          flds
-					          reject: [ :field | aTSNode collectFieldNameOfNamedChild keys includes: field field ]
+					          reject: [ :field | childrenMap keys includes: field field ]
 					          thenDo: [ :field | field isOptional: true ] ]
 		          ifAbsentPut: [ OrderedCollection new ].
 
-	aTSNode collectFieldNameOfNamedChild keysAndValuesDo: [ :field :nodes |
+	childrenMap keysAndValuesDo: [ :field :nodes |
 			| wrap |
 			wrap := fields
 				        detect: [ :wrapper | wrapper field = field ]
