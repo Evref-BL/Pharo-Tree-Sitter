@@ -125,7 +125,7 @@ TSFASTVisitor >> classesPrefix [
 TSFASTVisitor >> containedEntitiesPropertiesFor: aClass [
 	"I am a cache to know for a FAST class the list of Fame properties they have to define a contained entity."
 
-	^ containedEntitiesPropertiesMap at: aClass ifAbsentPut: [ aClass mooseDescription allProperties select: #isChildrenProperty ]
+	^ containedEntitiesPropertiesMap at: aClass ifAbsentPut: [ aClass allDeclaredProperties select: #isChildrenProperty ]
 ]
 
 { #category : 'utilities' }

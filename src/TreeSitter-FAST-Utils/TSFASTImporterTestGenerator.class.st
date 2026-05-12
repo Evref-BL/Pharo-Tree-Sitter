@@ -64,7 +64,7 @@ TSFASTImporterTestGenerator >> generateAssertionsFor: entity pushing: pushString
 	| propertiesToAssert |
 	indentation := indentation + 1.
 
-	propertiesToAssert := entity mooseDescription allProperties select: [ :property | self shouldSelectProperty: property of: entity ]. "Sorting properties in order to always have the same order."
+	propertiesToAssert := entity allDeclaredProperties select: [ :property | self shouldSelectProperty: property of: entity ]. "Sorting properties in order to always have the same order."
 	propertiesToAssert sort: #name ascending.
 
 	stream
