@@ -125,7 +125,11 @@ TSFASTVisitor >> classesPrefix [
 TSFASTVisitor >> containedEntitiesPropertiesFor: aClass [
 	"I am a cache to know for a FAST class the list of Fame properties they have to define a contained entity."
 
-	^ containedEntitiesPropertiesMap at: aClass ifAbsentPut: [ aClass allDeclaredProperties select: #isChildrenProperty ]
+	^ containedEntitiesPropertiesMap at: aClass ifAbsentPut: [
+			  | properties |
+			  "This it here for Moose 12 compatibility. When the support will be drop we can remove the onErrorDo:"
+			  properties := [ aClass metadescription allProperties ] onErrorDo: [ aClass mooseDescription allProperties ].
+			  properties select: #isChildrenProperty ]
 ]
 
 { #category : 'utilities' }
