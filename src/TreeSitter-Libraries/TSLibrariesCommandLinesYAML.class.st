@@ -10,15 +10,17 @@ TSLibrariesCommandLinesYAML >> cmdLinuxTreeSitterYAML [
 
 	"^ self tsBuildCommandForMacAndLinux: '/tree-sitter-yaml'"
 	
-	| path command |
+	| path  command |
 	path := TSLibraries new originalLibrariesDirectory , '/tree-sitter-yaml'.
 	command := 'cd ' , path, String lf.
-	command := command , String lf,
-		'clang -O3 -fPIC -Isrc -c src/parser.c -o parser.o', String lf,
-    	'clang++ -O3 -fPIC -Isrc -c src/scanner.cc -o scanner.o', String lf,
-    	'clang++ -shared -o libtree-sitter-yaml.so parser.o scanner.o'.
+	command := command , 'clang -O3 -fPIC -Isrc -c src/parser.c -o parser.o', String lf.
+	command := command , 'clang++ -O3 -fPIC -Isrc -c src/scanner.cc -o scanner.o', String lf.
+	command := command , 'clang++ -shared -o libtree-sitter-yaml.so parser.o scanner.o', String lf.
+	command := command , 'rm -f parser.o scanner.o', String lf.
 	
 	^ command.
+	
+	 
 ]
 
 { #category : 'as yet unclassified' }
