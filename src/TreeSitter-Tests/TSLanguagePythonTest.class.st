@@ -39,7 +39,7 @@ TSLanguagePythonTest >> testCollectAllSymbolOfOneSymbolType [
 { #category : 'tests' }
 TSLanguagePythonTest >> testPythonNumberOfSymbol [
 
-	self assert: parser language symbolCount equals: 274
+	self assert: parser language symbolCount equals: 275
 ]
 
 { #category : 'tests' }
