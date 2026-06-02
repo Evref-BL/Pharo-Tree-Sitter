@@ -15,11 +15,11 @@ TSLibrariesHTML >> cloneTreeSitterHTML [
 	"before cloning get the latest release"	
 	lastReleasedVersion := self class gitBranchToUse ifNil: [ self latestReleaseTagForOwner: 'tree-sitter' repo: 'tree-sitter-html' ].
 
-	"Execute clone command"
-	"cloneCommand := 'git clone https://github.com/tree-sitter/tree-sitter-html.git '
-	                , clonePath."
-	cloneCommand := 'git clone --branch ', lastReleasedVersion ,' --depth 1 https://github.com/tree-sitter/tree-sitter-html.git '
-	                , clonePath.
+	"Execute clone command" 
+	cloneCommand := self
+		gitCloneCommandFor: 'https://github.com/tree-sitter/tree-sitter-html.git'
+		branch: lastReleasedVersion
+		destination: clonePath.
 
 	self logInTranscript:
 		'Start cloning Tree-Sitter-HTML in' , clonePath.

@@ -8,7 +8,7 @@ Class {
 { #category : 'as yet unclassified' }
 TSLibrariesYAML >> cloneTreeSitterYAML [
 
-	| clonePath cloneCommand status lastReleasedVersion|
+	| clonePath cloneCommand status |
 	"Construct clone path"
 	clonePath := self originalLibrariesDirectory , '/tree-sitter-yaml'.
 
@@ -19,7 +19,7 @@ TSLibrariesYAML >> cloneTreeSitterYAML [
 	cloneCommand := 'git clone https://github.com/ikatyang/tree-sitter-yaml.git '
 	                , clonePath.
 	"cloneCommand := 'git clone --branch ', lastReleasedVersion ,' --depth 1 https://github.com/ikatyang/tree-sitter-yaml.git '
-	                , clonePath."
+	                , clonePath." 
 
 	self logInTranscript:
 		'Start cloning Tree-Sitter-YAML in' , clonePath.

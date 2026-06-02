@@ -15,12 +15,11 @@ TSLibrariesPython >> cloneTreeSitterPython [
 	"before cloning get the latest release"	
 	lastReleasedVersion := self class gitBranchToUse ifNil: [ self latestReleaseTagForOwner: 'tree-sitter' repo: 'tree-sitter-python' ].
 
-	
 	"Execute clone command"
-	"cloneCommand := 'git clone https://github.com/tree-sitter/tree-sitter-python.git '
-	                , clonePath."
-	cloneCommand := 'git clone --branch ', lastReleasedVersion ,' --depth 1 https://github.com/tree-sitter/tree-sitter-python.git '
-	                , clonePath.
+	cloneCommand := self
+		gitCloneCommandFor: 'https://github.com/tree-sitter/tree-sitter-python.git'
+		branch: lastReleasedVersion
+		destination: clonePath.
 
 	self logInTranscript:
 		'Start cloning Tree-Sitter-python in' , clonePath.
