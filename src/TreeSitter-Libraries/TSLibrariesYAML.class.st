@@ -86,7 +86,7 @@ TSLibrariesYAML >> generateTreeSitterYAMLLibraries [
 { #category : 'as yet unclassified' }
 TSLibrariesYAML >> moveYAMLLibraryToPharoVM [
 
-	self moveLibrary: self yamlLibraryName from: '/tree-sitter-yaml/'
+	self moveLibrary: self yamlLibraryName from: '/tree-sitter-YAML/'
 ]
 
 { #category : 'as yet unclassified' }
