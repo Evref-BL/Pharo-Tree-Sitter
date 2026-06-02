@@ -23,19 +23,18 @@ TSLibraries class >> gitBranchToUse: aString [
 { #category : 'as yet unclassified' }
 TSLibraries >> cloneTreeSitter [
 
-	| clonePath cloneCommand status lastReleasedVersion|
+	| clonePath cloneCommand status lastReleasedVersion |
 	"Construct clone path"
 	clonePath := self originalLibrariesDirectory , '/tree-sitter'.
 	
 	"before cloning get the latest release"	
-	lastReleasedVersion := self latestReleaseTagForOwner: 'tree-sitter' repo: 'tree-sitter'.
+	lastReleasedVersion := self class gitBranchToUse ifNil: [ self latestReleaseTagForOwner: 'tree-sitter' repo: 'tree-sitter' ].
 
 	"Execute clone command"
-	"cloneCommand := 'git clone https://github.com/tree-sitter/tree-sitter.git '
-	                , clonePath."
-	
-	cloneCommand := 'git clone --branch ', lastReleasedVersion ,' --depth 1 https://github.com/tree-sitter/tree-sitter.git '
-	                , clonePath.
+	cloneCommand := self
+		gitCloneCommandFor: 'https://github.com/tree-sitter/tree-sitter.git'
+		branch: lastReleasedVersion
+		destination: clonePath.
 
 	self logInTranscript: 'Start cloning TreeSitter in ' , clonePath.
 
@@ -95,6 +94,15 @@ TSLibraries >> generateTreeSitterLibraries [
 	^ status
 ]
 
+{ #category : 'as yet unclassified' }
+TSLibraries >> gitCloneCommandFor: repositoryUrl branch: branchName destination: clonePath [ 
+
+	branchName ifNil: [
+		^ 'git clone --depth 1 ', repositoryUrl, ' ', clonePath ].
+ 
+	^ 'git clone --branch ', branchName, ' --depth 1 ', repositoryUrl, ' ', clonePath
+]
+
 { #category : 'testing' }
 TSLibraries >> isLinux [
 	"Smalltalk os isLinux"
@@ -117,7 +125,7 @@ TSLibraries >> isWindows [
 { #category : 'as yet unclassified' }
 TSLibraries >> latestReleaseTagForOwner: owner repo: repoName [
 
-	"I am a method that uses github apis to get the latest release version of a repo based on its name and its owner."
+	"I am a method that uses github apis to get the latest release version of a repo based on its name and its owner. If HTTPS is not available in the current VM, answer nil so callers can fall back to a plain git clone."
 
 	| url  json client body status|
 	
@@ -126,23 +134,27 @@ TSLibraries >> latestReleaseTagForOwner: owner repo: repoName [
 		, owner , '/'
 		, repoName
 		, '/releases/latest'.
- 
-	 client := ZnClient new.
-    client
-        url: url.
-	
-	body := client get.
-	
-	"getting status because I need to check if it is successful or not to avoid issues when retrieving the data"
-	status := client response status. 
-	status = 200 ifFalse: [
-		self error: 'Cannot fetch latest release for ', repoName ].
-	
-	"parsing contents"
-	json := NeoJSONReader fromString: body.
 
-	"getting the version"
-	^ json at: 'tag_name'
+	^ [
+		client := ZnClient new.
+		client url: url.
+		body := client get.
+		
+		"getting status because I need to check if it is successful or not to avoid issues when retrieving the data"
+		status := client response status.
+		status = 200 ifFalse: [ ^ nil ].
+		
+		"parsing contents"
+		json := NeoJSONReader fromString: body.
+		
+		"getting the version"
+		json at: 'tag_name'
+	] on: Error do: [ :ex |
+		self logInTranscript:
+			'Could not fetch latest release for ', repoName,
+			'. Falling back to default git clone.'.
+		nil
+	]
 
 ]
 

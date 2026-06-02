@@ -14,12 +14,12 @@ TSLibrariesTypescript >> cloneTreeSitterTypescript [
 	
 	"before cloning get the latest release"	
 	lastReleasedVersion := self class gitBranchToUse ifNil: [ self latestReleaseTagForOwner: 'tree-sitter' repo: 'tree-sitter-typescript' ].
-
+ 
 	"Execute clone command"
-	"cloneCommand := 'git clone https://github.com/tree-sitter/tree-sitter-typescript.git '
-	                , clonePath."
-	cloneCommand := 'git clone --branch ', lastReleasedVersion ,' --depth 1 https://github.com/tree-sitter/tree-sitter-typescript.git '
-	                , clonePath.
+	cloneCommand := self
+		gitCloneCommandFor: 'https://github.com/tree-sitter/tree-sitter-typescript.git'
+		branch: lastReleasedVersion
+		destination: clonePath.
 
 	self logInTranscript:
 		'Start cloning Tree-Sitter-typescript in' , clonePath.

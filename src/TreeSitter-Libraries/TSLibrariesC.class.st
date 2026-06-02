@@ -38,10 +38,10 @@ TSLibrariesC >> cloneTreeSitterC [
 	lastReleasedVersion := self class gitBranchToUse ifNil: [ self latestReleaseTagForOwner: 'tree-sitter' repo: 'tree-sitter-c' ].
 	
 	"Execute clone command"
-	"cloneCommand := 'git clone https://github.com/tree-sitter/tree-sitter-c.git '
-	                , clonePath."
-	cloneCommand := 'git clone --branch ', lastReleasedVersion ,' --depth 1 https://github.com/tree-sitter/tree-sitter-c.git '
-	                , clonePath.
+	cloneCommand := self
+		gitCloneCommandFor: 'https://github.com/tree-sitter/tree-sitter-c.git'
+		branch: lastReleasedVersion
+		destination: clonePath.
 
 	self logInTranscript:
 		'Start cloning Tree-Sitter-c in' , clonePath.
