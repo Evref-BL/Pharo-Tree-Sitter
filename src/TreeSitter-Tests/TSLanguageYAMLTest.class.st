@@ -33,7 +33,7 @@ TSLanguageYAMLTest >> testCollectAllSymbolOfOneSymbolType [
 		assert:
 		(parser language symbolsOfType: TSSymbolType tssymboltyperegular)
 			size
-		equals: 156
+		equals: 157
 ]
 
 { #category : 'tests' }
