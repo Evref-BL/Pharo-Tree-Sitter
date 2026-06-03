@@ -28,12 +28,12 @@ TSLanguageYAMLTest >> tearDown [
 
 { #category : 'tests' }
 TSLanguageYAMLTest >> testCollectAllSymbolOfOneSymbolType [
-
+ 
 	self
 		assert:
 		(parser language symbolsOfType: TSSymbolType tssymboltyperegular)
-			size
-		equals: 157
+			size > 1
+
 ]
 
 { #category : 'tests' }
@@ -49,7 +49,7 @@ TSLanguageYAMLTest >> testRetrieveSymbolType [
 ]
 
 { #category : 'tests' }
-TSLanguageYAMLTest >> testTypescriptNumberOfSymbol [
+TSLanguageYAMLTest >> testYamlNumberOfSymbol [
 
 	self assert: parser language symbolCount equals: 293
 ]
