@@ -124,38 +124,25 @@ TSLibraries >> isWindows [
 
 { #category : 'as yet unclassified' }
 TSLibraries >> latestReleaseTagForOwner: owner repo: repoName [
-
 	"I am a method that uses github apis to get the latest release version of a repo based on its name and its owner. If HTTPS is not available in the current VM, answer nil so callers can fall back to a plain git clone."
+	| url json client body status |
+	url := 'https://api.github.com/repos/' , owner , '/' , repoName
+	       , '/releases/latest'.
 
-	| url  json client body status|
-	
-	"I am using github apis to get the latest release version"
-	url := 'https://api.github.com/repos/'
-		, owner , '/'
-		, repoName
-		, '/releases/latest'.
+	client := ZnClient new.
 
 	^ [
-		client := ZnClient new.
-		client url: url.
-		body := client get.
-		
-		"getting status because I need to check if it is successful or not to avoid issues when retrieving the data"
-		status := client response status.
-		status = 200 ifFalse: [ ^ nil ].
-		
-		"parsing contents"
-		json := NeoJSONReader fromString: body.
-		
-		"getting the version"
-		json at: 'tag_name'
-	] on: Error do: [ :ex |
-		self logInTranscript:
-			'Could not fetch latest release for ', repoName,
-			'. Falling back to default git clone.'.
-		nil
-	]
+	  client beOneShot.
+	  client url: url.
 
+	  body := client get.
+	  status := client response status.
+
+	  status = 200 ifFalse: [
+		  self error: 'Cannot fetch latest release for ' , repoName ].
+
+	  json := NeoJSONReader fromString: body.
+	  json at: 'tag_name' ] ensure: [ client close ]
 ]
 
 { #category : 'as yet unclassified' }
