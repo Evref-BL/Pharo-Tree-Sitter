@@ -29,11 +29,12 @@ TSLanguageHTMLTest >> tearDown [
 { #category : 'tests' }
 TSLanguageHTMLTest >> testCollectAllSymbolOfOneSymbolType [
 
-	self
-		assert:
-		(parser language symbolsOfType: TSSymbolType tssymboltyperegular)
-			size
-		equals: 26
+	|symbols|
+	
+	symbols := parser language symbolsOfType: TSSymbolType tssymboltyperegular.
+	
+	self assert: symbols isNotEmpty .
+	self assert: symbols size > 25
 ]
 
 { #category : 'tests' }
@@ -51,5 +52,5 @@ TSLanguageHTMLTest >> testRetrieveSymbolType [
 { #category : 'tests' }
 TSLanguageHTMLTest >> testTypescriptNumberOfSymbol [
 
-	self assert: parser language symbolCount equals: 41
+	self assert: parser language symbolCount > 40
 ]

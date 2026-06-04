@@ -29,10 +29,12 @@ TSLanguageYAMLTest >> tearDown [
 { #category : 'tests' }
 TSLanguageYAMLTest >> testCollectAllSymbolOfOneSymbolType [
  
-	self
-		assert:
-		(parser language symbolsOfType: TSSymbolType tssymboltyperegular)
-			size > 1
+	|symbols|
+
+	symbols := parser language symbolsOfType: TSSymbolType tssymboltyperegular.
+
+	self assert: symbols isNotEmpty. 
+	self assert: symbols size > 150
 
 ]
 
