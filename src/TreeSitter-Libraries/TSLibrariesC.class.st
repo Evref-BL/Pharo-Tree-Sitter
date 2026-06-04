@@ -6,25 +6,10 @@ Class {
 }
 
 { #category : 'as yet unclassified' }
-TSLibrariesC >> cLibraryExists [
-
-	^ (self vmLibrariesDirectory / self cLibraryName)
-		  asFileReference exists
-]
-
-{ #category : 'as yet unclassified' }
 TSLibrariesC >> cLibraryExistsInDocuments [
 
-	^ (self originalLibrariesDirectory asFileReference / self cLibraryName)
+	^ (self originalLibrariesDirectory asFileReference / self libraryName)
 		  asFileReference exists
-]
-
-{ #category : 'as yet unclassified' }
-TSLibrariesC >> cLibraryName [
-
-	^ self libraryName: 'libtree-sitter-c'.
-
-	 
 ]
 
 { #category : 'as yet unclassified' }
@@ -63,7 +48,7 @@ TSLibrariesC >> cloneTreeSitterC [
 { #category : 'as yet unclassified' }
 TSLibrariesC >> ensureCLibraryExists [
 
-	self cLibraryExists ifFalse: [
+	self libraryExists ifFalse: [
 		self cLibraryExistsInDocuments ifFalse: [
 			self
 				cloneTreeSitterC ;
@@ -104,8 +89,16 @@ TSLibrariesC >> generateTreeSitterCLibraries [
 ]
 
 { #category : 'as yet unclassified' }
+TSLibrariesC >> libraryName [
+
+	^ self libraryName: 'libtree-sitter-c'.
+
+	 
+]
+
+{ #category : 'as yet unclassified' }
 TSLibrariesC >> moveCLibraryToPharoVM [
 
-	self moveLibrary: self cLibraryName from: '/tree-sitter-c/'
+	self moveLibrary: self libraryName from: '/tree-sitter-c/'
 
 ]

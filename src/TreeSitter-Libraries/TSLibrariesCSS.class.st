@@ -40,29 +40,16 @@ TSLibrariesCSS >> cloneTreeSitterCSS [
 ]
 
 { #category : 'as yet unclassified' }
-TSLibrariesCSS >> cssLibraryExists [
-
-	^ (self vmLibrariesDirectory / self cssLibraryName)
-		  asFileReference exists
-]
-
-{ #category : 'as yet unclassified' }
 TSLibrariesCSS >> cssLibraryExistsInDocuments [
 
-	^ (self originalLibrariesDirectory asFileReference / self cssLibraryName)
+	^ (self originalLibrariesDirectory asFileReference / self libraryName)
 		  asFileReference exists
-]
-
-{ #category : 'as yet unclassified' }
-TSLibrariesCSS >> cssLibraryName [
-
-	^ self libraryName: 'libtree-sitter-css'.
 ]
 
 { #category : 'as yet unclassified' }
 TSLibrariesCSS >> ensureCSSLibraryExists [
 
-	self cssLibraryExists ifFalse: [
+	self libraryExists ifFalse: [
 		self cssLibraryExistsInDocuments ifFalse: [
 			self
 				cloneTreeSitterCSS ;
@@ -103,8 +90,14 @@ TSLibrariesCSS >> generateTreeSitterCSSLibraries [
 ]
 
 { #category : 'as yet unclassified' }
+TSLibrariesCSS >> libraryName [
+
+	^ self libraryName: 'libtree-sitter-css'.
+]
+
+{ #category : 'as yet unclassified' }
 TSLibrariesCSS >> moveCSSLibraryToPharoVM [
 
-	self moveLibrary: self cssLibraryName from: '/tree-sitter-css/'
+	self moveLibrary: self libraryName from: '/tree-sitter-css/'
 
 ]

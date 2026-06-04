@@ -41,7 +41,7 @@ TSLibrariesHTML >> cloneTreeSitterHTML [
 { #category : 'as yet unclassified' }
 TSLibrariesHTML >> ensureHTMLLibraryExists [
 
-	self htmlLibraryExists ifFalse: [
+	self libraryExists ifFalse: [
 		self htmlLibraryExistsInDocuments ifFalse: [
 			self
 				cloneTreeSitterHTML ;
@@ -82,21 +82,14 @@ TSLibrariesHTML >> generateTreeSitterHTMLLibraries [
 ]
 
 { #category : 'as yet unclassified' }
-TSLibrariesHTML >> htmlLibraryExists [
-
-	^ (self vmLibrariesDirectory / self htmlLibraryName)
-		  asFileReference exists
-]
-
-{ #category : 'as yet unclassified' }
 TSLibrariesHTML >> htmlLibraryExistsInDocuments [
 
-	^ (self originalLibrariesDirectory asFileReference / self htmlLibraryName)
+	^ (self originalLibrariesDirectory asFileReference / self libraryName)
 		  asFileReference exists
 ]
 
 { #category : 'as yet unclassified' }
-TSLibrariesHTML >> htmlLibraryName [
+TSLibrariesHTML >> libraryName [
 
 	^ self libraryName: 'libtree-sitter-html'.
 
@@ -106,6 +99,6 @@ TSLibrariesHTML >> htmlLibraryName [
 { #category : 'as yet unclassified' }
 TSLibrariesHTML >> moveHTMLLibraryToPharoVM [
 
-	self moveLibrary: self htmlLibraryName from: '/tree-sitter-html/'
+	self moveLibrary: self libraryName from: '/tree-sitter-html/'
 
 ]

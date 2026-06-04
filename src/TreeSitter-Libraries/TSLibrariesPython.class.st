@@ -41,7 +41,7 @@ TSLibrariesPython >> cloneTreeSitterPython [
 { #category : 'as yet unclassified' }
 TSLibrariesPython >> ensurePythonLibraryExists [
 
-	self pythonLibraryExists ifFalse: [
+	self libraryExists ifFalse: [
 		self pythonLibraryExistsInDocuments ifFalse: [
 			self
 				cloneTreeSitterPython ;
@@ -82,30 +82,23 @@ TSLibrariesPython >> generateTreeSitterPythonLibraries [
 ]
 
 { #category : 'as yet unclassified' }
-TSLibrariesPython >> movePythonLibraryToPharoVM [
+TSLibrariesPython >> libraryName [
 
-	self moveLibrary: self pythonLibraryName from: '/tree-sitter-python/'
+	^ self libraryName: 'libtree-sitter-python'.
 
+	 
 ]
 
 { #category : 'as yet unclassified' }
-TSLibrariesPython >> pythonLibraryExists [
+TSLibrariesPython >> movePythonLibraryToPharoVM [
 
-	^ (self vmLibrariesDirectory / self pythonLibraryName)
-		  asFileReference exists
+	self moveLibrary: self libraryName from: '/tree-sitter-python/'
+
 ]
 
 { #category : 'as yet unclassified' }
 TSLibrariesPython >> pythonLibraryExistsInDocuments [
 
-	^ (self originalLibrariesDirectory asFileReference / self pythonLibraryName)
+	^ (self originalLibrariesDirectory asFileReference / self libraryName)
 		  asFileReference exists
-]
-
-{ #category : 'as yet unclassified' }
-TSLibrariesPython >> pythonLibraryName [
-
-	^ self libraryName: 'libtree-sitter-python'.
-
-	 
 ]

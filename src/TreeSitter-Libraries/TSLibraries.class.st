@@ -154,8 +154,7 @@ TSLibraries >> librariesLocationInDocuments [
 ]
 
 { #category : 'as yet unclassified' }
-TSLibraries >> libraryExists [
-
+TSLibraries >> libraryExists [ 
 	^ (self vmLibrariesDirectory / self libraryName)
 		  asFileReference exists
 ]
