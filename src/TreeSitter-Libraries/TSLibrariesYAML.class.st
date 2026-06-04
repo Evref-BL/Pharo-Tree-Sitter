@@ -41,7 +41,7 @@ TSLibrariesYAML >> cloneTreeSitterYAML [
 { #category : 'as yet unclassified' }
 TSLibrariesYAML >> ensureYAMLLibraryExists [
 	self libraryExists ifFalse: [
-		self yamlLibraryExistsInDocuments ifFalse: [
+		self libraryExistsInDocuments ifFalse: [
 			self
 				cloneTreeSitterYAML ;
 				generateTreeSitterYAMLLibraries ].
@@ -92,11 +92,4 @@ TSLibrariesYAML >> libraryName [
 TSLibrariesYAML >> moveYAMLLibraryToPharoVM [
 
 	self moveLibrary: self libraryName from: '/tree-sitter-yaml/'
-]
-
-{ #category : 'as yet unclassified' }
-TSLibrariesYAML >> yamlLibraryExistsInDocuments [
-
-	^ (self originalLibrariesDirectory asFileReference / self libraryName)
-		  asFileReference exists
 ]

@@ -160,10 +160,9 @@ TSLibraries >> libraryExists [
 ]
 
 { #category : 'as yet unclassified' }
-TSLibraries >> libraryExistsInDocuments [
-
-	^ ((self originalLibrariesDirectory , self librariesLocationInDocuments)
-		   asFileReference / self libraryName) asFileReference exists
+TSLibraries >> libraryExistsInDocuments [ 
+	^ (self originalLibrariesDirectory asFileReference / self libraryName)
+		  asFileReference exists
 ]
 
 { #category : 'accessing' }

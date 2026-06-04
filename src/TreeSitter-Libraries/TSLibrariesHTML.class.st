@@ -42,7 +42,7 @@ TSLibrariesHTML >> cloneTreeSitterHTML [
 TSLibrariesHTML >> ensureHTMLLibraryExists [
 
 	self libraryExists ifFalse: [
-		self htmlLibraryExistsInDocuments ifFalse: [
+		self libraryExistsInDocuments ifFalse: [
 			self
 				cloneTreeSitterHTML ;
 				generateTreeSitterHTMLLibraries ].
@@ -79,13 +79,6 @@ TSLibrariesHTML >> generateTreeSitterHTMLLibraries [
 				'Tree Sitter HTML was not generated successfully' ].
 
 	^ status
-]
-
-{ #category : 'as yet unclassified' }
-TSLibrariesHTML >> htmlLibraryExistsInDocuments [
-
-	^ (self originalLibrariesDirectory asFileReference / self libraryName)
-		  asFileReference exists
 ]
 
 { #category : 'as yet unclassified' }

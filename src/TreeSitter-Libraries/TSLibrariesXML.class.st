@@ -42,7 +42,7 @@ TSLibrariesXML >> cloneTreeSitterXML [
 TSLibrariesXML >> ensureXMLLibraryExists [
 
 	self libraryExists ifFalse: [
-		self xmlLibraryExistsInDocuments ifFalse: [
+		self libraryExistsInDocuments ifFalse: [
 			self
 				cloneTreeSitterXML ;
 				generateTreeSitterXMLLibraries ].
@@ -94,11 +94,4 @@ TSLibrariesXML >> moveXMLLibraryToPharoVM [
 
 	self moveLibrary: self libraryName from: '/tree-sitter-xml/xml/'
 
-]
-
-{ #category : 'as yet unclassified' }
-TSLibrariesXML >> xmlLibraryExistsInDocuments [
-
-	^ (self originalLibrariesDirectory asFileReference / self libraryName)
-		  asFileReference exists
 ]

@@ -6,13 +6,6 @@ Class {
 }
 
 { #category : 'as yet unclassified' }
-TSLibrariesC >> cLibraryExistsInDocuments [
-
-	^ (self originalLibrariesDirectory asFileReference / self libraryName)
-		  asFileReference exists
-]
-
-{ #category : 'as yet unclassified' }
 TSLibrariesC >> cloneTreeSitterC [
 
 	| clonePath cloneCommand status lastReleasedVersion|
@@ -49,7 +42,7 @@ TSLibrariesC >> cloneTreeSitterC [
 TSLibrariesC >> ensureCLibraryExists [
 
 	self libraryExists ifFalse: [
-		self cLibraryExistsInDocuments ifFalse: [
+		self libraryExistsInDocuments ifFalse: [
 			self
 				cloneTreeSitterC ;
 				generateTreeSitterCLibraries ].

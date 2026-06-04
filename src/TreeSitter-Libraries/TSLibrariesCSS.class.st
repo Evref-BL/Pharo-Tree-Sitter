@@ -40,17 +40,10 @@ TSLibrariesCSS >> cloneTreeSitterCSS [
 ]
 
 { #category : 'as yet unclassified' }
-TSLibrariesCSS >> cssLibraryExistsInDocuments [
-
-	^ (self originalLibrariesDirectory asFileReference / self libraryName)
-		  asFileReference exists
-]
-
-{ #category : 'as yet unclassified' }
 TSLibrariesCSS >> ensureCSSLibraryExists [
 
 	self libraryExists ifFalse: [
-		self cssLibraryExistsInDocuments ifFalse: [
+		self libraryExistsInDocuments ifFalse: [
 			self
 				cloneTreeSitterCSS ;
 				generateTreeSitterCSSLibraries ].
