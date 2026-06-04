@@ -12,7 +12,8 @@ BaselineOfTreeSitter >> baseline: spec [
 	spec for: #common do: [
 		self defineDependencies: spec.
 		self definePackages: spec.
-		self defineGroups: spec ]
+		self defineGroups: spec.
+		spec postLoadDoIt: #postLoadTSLibraries  ]
 ]
 
 { #category : 'baselines' }
@@ -44,7 +45,8 @@ BaselineOfTreeSitter >> defineGroups: spec [
 	spec group: 'groovy' with: #( 'default' 'TreeSitter-Groovy' ).
 	spec group: 'python' with: #( 'default' 'TreeSitter-Python' ).
 	spec group: 'xml' with: #( 'default' 'TreeSitter-XML' ).
-	spec group: 'yaml' with: #( 'default' 'TreeSitter-YAML' ).
+	spec group: 'yaml' with: #( 'default' 'TreeSitter-YAML' );
+		 postLoadDoIt: #postLoadYAMLLibraries.
 	spec group: 'html' with: #( 'default' 'TreeSitter-HTML' ).
 	spec group: 'css' with: #( 'default' 'TreeSitter-CSS' ).
 	spec group: 'typescript' with: #( 'default' 'TreeSitter-Typescript' ).
@@ -73,4 +75,16 @@ BaselineOfTreeSitter >> definePackages: spec [
 	
 	"Moose integration for reyfication"
 	spec package: 'TreeSitter-FAST-Utils' with: [ spec requires: #( 'TreeSitter-Visitor' ) ].
+]
+
+{ #category : 'as yet unclassified' }
+BaselineOfTreeSitter >> postLoadTSLibraries [
+    
+	TSLibraries new ensureTreeSitterLibraryExists.
+]
+
+{ #category : 'as yet unclassified' }
+BaselineOfTreeSitter >> postLoadYAMLLibraries [
+	
+	TSLibrariesYAML new ensureYAMLLibraryExists.
 ]
