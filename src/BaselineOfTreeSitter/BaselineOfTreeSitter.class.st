@@ -45,8 +45,7 @@ BaselineOfTreeSitter >> defineGroups: spec [
 	spec group: 'groovy' with: #( 'default' 'TreeSitter-Groovy' ).
 	spec group: 'python' with: #( 'default' 'TreeSitter-Python' ).
 	spec group: 'xml' with: #( 'default' 'TreeSitter-XML' ).
-	spec group: 'yaml' with: #( 'default' 'TreeSitter-YAML' );
-		 postLoadDoIt: #postLoadYAMLLibraries.
+	spec group: 'yaml' with: #( 'default' 'TreeSitter-YAML' ).
 	spec group: 'html' with: #( 'default' 'TreeSitter-HTML' ).
 	spec group: 'css' with: #( 'default' 'TreeSitter-CSS' ).
 	spec group: 'typescript' with: #( 'default' 'TreeSitter-Typescript' ).
@@ -81,10 +80,4 @@ BaselineOfTreeSitter >> definePackages: spec [
 BaselineOfTreeSitter >> postLoadTSLibraries [
     
 	TSLibraries new ensureTreeSitterLibraryExists.
-]
-
-{ #category : 'as yet unclassified' }
-BaselineOfTreeSitter >> postLoadYAMLLibraries [
-	
-	TSLibrariesYAML new ensureYAMLLibraryExists.
 ]
