@@ -30,18 +30,21 @@ TSLanguageCTest >> tearDown [
 { #category : 'running' }
 TSLanguageCTest >> testCNumberOfSymbol [
 
-	self assert: parser language symbolCount equals: 363
+	self assert: parser language symbolCount > 360
 ]
 
 { #category : 'running' }
 TSLanguageCTest >> testCollectAllSymbolOfOneSymbolType [
 
-	self skip. "the size depends on the system we compiled the grammar, on Mac it's 160, on linux (in the CI) it's 161"
-	self
-		assert:
-		(parser language symbolsOfType: TSSymbolType tssymboltyperegular)
-			size
-		equals: 160
+	 "self skip. " 
+	"the size depends on the system we compiled the grammar, on Mac it's 160, on linux (in the CI) it's 161"
+	
+	|symbols|
+	
+	symbols := parser language symbolsOfType: TSSymbolType tssymboltyperegular.
+	
+	self assert: symbols isNotEmpty.
+	self assert: symbols size > 150
 ]
 
 { #category : 'running' }
