@@ -41,12 +41,12 @@ TSLibrariesC >> cloneTreeSitterC [
 { #category : 'as yet unclassified' }
 TSLibrariesC >> ensureCLibraryExists [
 
-	self libraryExists ifFalse: [
-		self libraryExistsInDocuments ifFalse: [
-			self
-				cloneTreeSitterC;
-				generateTreeSitterCLibraries ].
-		self moveLibraryToPharoVM ]
+	self libraryExists ifTrue: [ ^ self ].
+	self libraryExistsInDocuments ifFalse: [
+		self
+			cloneTreeSitterC;
+			generateTreeSitterCLibraries ].
+	self moveLibraryToPharoVM
 ]
 
 { #category : 'as yet unclassified' }

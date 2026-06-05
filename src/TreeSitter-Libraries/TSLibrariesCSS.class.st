@@ -42,12 +42,12 @@ TSLibrariesCSS >> cloneTreeSitterCSS [
 { #category : 'as yet unclassified' }
 TSLibrariesCSS >> ensureCSSLibraryExists [
 
-	self libraryExists ifFalse: [
-		self libraryExistsInDocuments ifFalse: [
-			self
-				cloneTreeSitterCSS;
-				generateTreeSitterCSSLibraries ].
-		self moveLibraryToPharoVM ]
+	self libraryExists ifTrue: [ ^ self ].
+	self libraryExistsInDocuments ifFalse: [
+		self
+			cloneTreeSitterCSS;
+			generateTreeSitterCSSLibraries ].
+	self moveLibraryToPharoVM
 ]
 
 { #category : 'as yet unclassified' }

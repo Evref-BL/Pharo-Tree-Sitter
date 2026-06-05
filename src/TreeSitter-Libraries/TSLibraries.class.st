@@ -53,14 +53,13 @@ TSLibraries >> cloneTreeSitter [
 
 { #category : 'as yet unclassified' }
 TSLibraries >> ensureTreeSitterLibraryExists [
-	
-	self libraryExists ifFalse: [
-		self libraryExistsInDocuments ifFalse: [
-			self
-				cloneTreeSitter;
-				generateTreeSitterLibraries ].
 
-		self moveLibraryToPharoVM ]
+	self libraryExists ifTrue: [ ^ self ].
+	self libraryExistsInDocuments ifFalse: [
+		self
+			cloneTreeSitter;
+			generateTreeSitterLibraries ].
+	self moveLibraryToPharoVM
 ]
 
 { #category : 'as yet unclassified' }
@@ -68,13 +67,12 @@ TSLibraries >> generateTreeSitterLibraries [
 
 	| command status cmdLines |
 	cmdLines := TSLibrariesCommandLines new.
-
-	self isMacOS
-		ifTrue: [ command := cmdLines cmdMacTreeSitter ]
-		ifFalse: [
-			self isWindows
-				ifTrue: [ command := cmdLines cmdWindowsTreeSitter ]
-				ifFalse: [ command := cmdLines cmdLinuxTreeSitter ] ].
+	command := self isMacOS
+		           ifTrue: [ cmdLines cmdMacTreeSitter ]
+		           ifFalse: [
+			           self isWindows
+				           ifTrue: [ cmdLines cmdWindowsTreeSitter ]
+				           ifFalse: [ cmdLines cmdLinuxTreeSitter ] ].
 
 	self logInTranscript: 'Start generating TreeSitter library'.
 
@@ -89,8 +87,7 @@ TSLibraries >> generateTreeSitterLibraries [
 		ifTrue: [
 		self logInTranscript: 'TreeSitter library generated successfully' ]
 		ifFalse: [
-			Error signal:
-				'TreeSitter library was not generated successfully' ].
+		Error signal: 'TreeSitter library was not generated successfully' ].
 
 	^ status
 ]

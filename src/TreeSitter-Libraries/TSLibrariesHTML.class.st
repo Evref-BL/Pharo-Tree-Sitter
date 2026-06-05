@@ -41,12 +41,12 @@ TSLibrariesHTML >> cloneTreeSitterHTML [
 { #category : 'as yet unclassified' }
 TSLibrariesHTML >> ensureHTMLLibraryExists [
 
-	self libraryExists ifFalse: [
-		self libraryExistsInDocuments ifFalse: [
-			self
-				cloneTreeSitterHTML;
-				generateTreeSitterHTMLLibraries ].
-		self moveLibraryToPharoVM ]
+	self libraryExists ifTrue: [ ^ self ].
+	self libraryExistsInDocuments ifFalse: [
+		self
+			cloneTreeSitterHTML;
+			generateTreeSitterHTMLLibraries ].
+	self moveLibraryToPharoVM
 ]
 
 { #category : 'as yet unclassified' }

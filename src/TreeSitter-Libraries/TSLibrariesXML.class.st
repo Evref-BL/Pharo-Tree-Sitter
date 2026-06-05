@@ -41,12 +41,12 @@ TSLibrariesXML >> cloneTreeSitterXML [
 { #category : 'as yet unclassified' }
 TSLibrariesXML >> ensureXMLLibraryExists [
 
-	self libraryExists ifFalse: [
-		self libraryExistsInDocuments ifFalse: [
-			self
-				cloneTreeSitterXML;
-				generateTreeSitterXMLLibraries ].
-		self moveLibraryToPharoVM ]
+	self libraryExists ifTrue: [ ^ self ].
+	self libraryExistsInDocuments ifFalse: [
+		self
+			cloneTreeSitterXML;
+			generateTreeSitterXMLLibraries ].
+	self moveLibraryToPharoVM
 ]
 
 { #category : 'as yet unclassified' }

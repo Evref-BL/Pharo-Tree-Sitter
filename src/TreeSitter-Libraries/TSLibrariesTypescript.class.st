@@ -66,14 +66,12 @@ TSLibrariesTypescript >> deleteTreeSitterFolderInCommon [
 { #category : 'as yet unclassified' }
 TSLibrariesTypescript >> ensureTypescriptLibraryExists [
 
-	self libraryExists ifFalse: [
-		self libraryExistsInDocuments ifFalse: [
-			self
-				cloneTreeSitterTypescript;
-				generateTreeSitterTypescriptLibraries ].
-
-
-		self moveLibraryToPharoVM ]
+	self libraryExists ifTrue: [ ^ self ].
+	self libraryExistsInDocuments ifFalse: [
+		self
+			cloneTreeSitterTypescript;
+			generateTreeSitterTypescriptLibraries ]. 
+	self moveLibraryToPharoVM
 ]
 
 { #category : 'as yet unclassified' }

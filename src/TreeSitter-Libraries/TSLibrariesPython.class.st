@@ -41,13 +41,12 @@ TSLibrariesPython >> cloneTreeSitterPython [
 { #category : 'as yet unclassified' }
 TSLibrariesPython >> ensurePythonLibraryExists [
 
-	
-	self libraryExists ifFalse: [
-		self libraryExistsInDocuments ifFalse: [
-			self
-				cloneTreeSitterPython;
-				generateTreeSitterPythonLibraries ].
-		self moveLibraryToPharoVM ]
+	self libraryExists ifTrue: [ ^ self ].
+	self libraryExistsInDocuments ifFalse: [
+		self
+			cloneTreeSitterPython;
+			generateTreeSitterPythonLibraries ].
+	self moveLibraryToPharoVM
 ]
 
 { #category : 'as yet unclassified' }
