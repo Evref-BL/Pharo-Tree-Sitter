@@ -38,6 +38,12 @@ TSLibrariesXML >> cloneTreeSitterXML [
 				, status asString ]
 ]
 
+{ #category : 'accessing' }
+TSLibrariesXML >> commandLine [
+
+	^ TSLibrariesCommandLines  xml
+]
+
 { #category : 'as yet unclassified' }
 TSLibrariesXML >> ensureXMLLibraryExists [
 
@@ -45,35 +51,14 @@ TSLibrariesXML >> ensureXMLLibraryExists [
 	self libraryExistsInDocuments ifFalse: [
 		self
 			cloneTreeSitterXML;
-			generateTreeSitterXMLLibraries ].
+			generateTreeSitterLibrary ].
 	self moveLibraryToPharoVM
 ]
 
-{ #category : 'as yet unclassified' }
-TSLibrariesXML >> generateTreeSitterXMLLibraries [
+{ #category : 'accessing' }
+TSLibrariesXML >> languageName [
 
-	| command status |
-	
-	command := self platformCommandFor: TSLibrariesCommandLines xml.
-
-	self logInTranscript: 'Start generating Tree Sitter XML library'.
-
-	"Run the command"
-	status := LibC uniqueInstance system: command.
-
-	self logInTranscript:
-		'Tree Sitter Python library generation command is finished'.
-
-	"Verify success"
-	status = 0
-		ifTrue: [
-			self logInTranscript:
-				'Tree Sitter Python library generated successfully' ]
-		ifFalse: [
-			Error signal:
-				'Tree Sitter Python library was not generated successfully' ].
-
-	^ status
+	^ 'XML'
 ]
 
 { #category : 'as yet unclassified' }

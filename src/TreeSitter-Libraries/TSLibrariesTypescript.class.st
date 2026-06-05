@@ -6,6 +6,17 @@ Class {
 }
 
 { #category : 'as yet unclassified' }
+TSLibrariesTypescript >> afterGenerateTreeSitterLibrary [
+	self deleteTreeSitterFolderInCommon
+]
+
+{ #category : 'as yet unclassified' }
+TSLibrariesTypescript >> beforeGenerateTreeSitterLibrary [
+	self copyFoldersInTreeSitterTypescript
+
+]
+
+{ #category : 'as yet unclassified' }
 TSLibrariesTypescript >> cloneTreeSitterTypescript [
 
 	| clonePath cloneCommand status lastReleasedVersion|
@@ -36,6 +47,12 @@ TSLibrariesTypescript >> cloneTreeSitterTypescript [
 			self logInTranscript:
 				'Tree Sitter Typescript clone failed with exit code: '
 				, status asString ]
+]
+
+{ #category : 'accessing' }
+TSLibrariesTypescript >> commandLine [
+
+	^ TSLibrariesCommandLines typescript 
 ]
 
 { #category : 'copying' }
@@ -70,41 +87,14 @@ TSLibrariesTypescript >> ensureTypescriptLibraryExists [
 	self libraryExistsInDocuments ifFalse: [
 		self
 			cloneTreeSitterTypescript;
-			generateTreeSitterTypescriptLibraries ]. 
+			generateTreeSitterLibrary ].
 	self moveLibraryToPharoVM
 ]
 
-{ #category : 'as yet unclassified' }
-TSLibrariesTypescript >> generateTreeSitterTypescriptLibraries [
+{ #category : 'accessing' }
+TSLibrariesTypescript >> languageName [
 
-	| command status |
-	 
-	"make sure to copy the tree_sitter folder in common"
-	self copyFoldersInTreeSitterTypescript. 
-	
-	command := self platformCommandFor: TSLibrariesCommandLines typescript .
-
-	self logInTranscript:
-		'Start generating Tree Sitter Typescript library'.
-
-	"Run the command"
-	status := LibC uniqueInstance system: command.
-
-	self logInTranscript:
-		'Tree Sitter Typescript library generation command is finished'.
-
-	self deleteTreeSitterFolderInCommon.
-
-	"Verify success"
-	status = 0
-		ifTrue: [
-			self logInTranscript:
-				'Tree Sitter Typescript library generated successfully' ]
-		ifFalse: [
-			Error signal:
-				'Tree Sitter Typescript library was not generated successfully' ].
-
-	^ status
+	^ 'TypeScript'
 ]
 
 { #category : 'as yet unclassified' }

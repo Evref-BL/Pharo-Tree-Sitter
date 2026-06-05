@@ -38,6 +38,12 @@ TSLibrariesC >> cloneTreeSitterC [
 				, status asString ]
 ]
 
+{ #category : 'accessing' }
+TSLibrariesC >> commandLine [
+
+	^ TSLibrariesCommandLines c
+]
+
 { #category : 'as yet unclassified' }
 TSLibrariesC >> ensureCLibraryExists [
 
@@ -45,34 +51,14 @@ TSLibrariesC >> ensureCLibraryExists [
 	self libraryExistsInDocuments ifFalse: [
 		self
 			cloneTreeSitterC;
-			generateTreeSitterCLibraries ].
+			generateTreeSitterLibrary ].
 	self moveLibraryToPharoVM
 ]
 
-{ #category : 'as yet unclassified' }
-TSLibrariesC >> generateTreeSitterCLibraries [
+{ #category : 'accessing' }
+TSLibrariesC >> languageName [
 
-	| command status |
-	command := self platformCommandFor: TSLibrariesCommandLines c.
-
-	self logInTranscript: 'Start generating Tree Sitter C library'.
-
-	"Run the command"
-	status := LibC uniqueInstance system: command.
-
-	self logInTranscript:
-		'Tree Sitter C library generation command is finished'.
-
-	"Verify success"
-	status = 0
-		ifTrue: [
-			self logInTranscript:
-				'Tree Sitter C library generated successfully' ]
-		ifFalse: [
-			Error signal:
-				'Tree Sitter C library was not generated successfully' ].
-
-	^ status
+	^ 'C'
 ]
 
 { #category : 'as yet unclassified' }

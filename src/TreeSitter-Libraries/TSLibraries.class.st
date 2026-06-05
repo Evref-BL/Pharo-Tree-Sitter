@@ -21,6 +21,16 @@ TSLibraries class >> gitBranchToUse: aString [
 ]
 
 { #category : 'as yet unclassified' }
+TSLibraries >> afterGenerateTreeSitterLibrary [
+	"Default: do nothing cz this is the reposnsability of subclasses; sometimes nothing to be done; but this is not the case of TypeScript."
+]
+
+{ #category : 'as yet unclassified' }
+TSLibraries >> beforeGenerateTreeSitterLibrary [
+	"Default: do nothing cz this is the reposnsability of subclasses; sometimes nothing to be done; but this is not the case of TypeScript."
+]
+
+{ #category : 'as yet unclassified' }
 TSLibraries >> cloneTreeSitter [
 
 	| clonePath cloneCommand status lastReleasedVersion |
@@ -88,6 +98,36 @@ TSLibraries >> generateTreeSitterLibraries [
 		self logInTranscript: 'TreeSitter library generated successfully' ]
 		ifFalse: [
 		Error signal: 'TreeSitter library was not generated successfully' ].
+
+	^ status
+]
+
+{ #category : 'as yet unclassified' }
+TSLibraries >> generateTreeSitterLibrary [
+
+	| command status |
+	self beforeGenerateTreeSitterLibrary. 
+	
+	command := self platformCommandFor: self commandLine.
+
+	self logInTranscript:
+		'Start generating Tree Sitter ' , self languageName , ' library'.
+
+	status := LibC uniqueInstance system: command.
+
+	self logInTranscript: 'Tree Sitter ' , self languageName
+		, ' library generation command is finished'.
+
+	self afterGenerateTreeSitterLibrary.
+
+	status = 0
+		ifTrue: [
+			self logInTranscript:
+				'Tree Sitter ' , self languageName
+				, ' library generated successfully' ]
+		ifFalse: [
+			Error signal: 'Tree Sitter ' , self languageName
+				, ' library was not generated successfully' ].
 
 	^ status
 ]

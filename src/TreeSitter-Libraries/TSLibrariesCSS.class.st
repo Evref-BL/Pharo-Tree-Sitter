@@ -39,6 +39,11 @@ TSLibrariesCSS >> cloneTreeSitterCSS [
 				, status asString ]
 ]
 
+{ #category : 'accessing' }
+TSLibrariesCSS >> commandLine [
+	^ TSLibrariesCommandLines css 
+]
+
 { #category : 'as yet unclassified' }
 TSLibrariesCSS >> ensureCSSLibraryExists [
 
@@ -46,32 +51,14 @@ TSLibrariesCSS >> ensureCSSLibraryExists [
 	self libraryExistsInDocuments ifFalse: [
 		self
 			cloneTreeSitterCSS;
-			generateTreeSitterCSSLibraries ].
+			generateTreeSitterLibrary ].
 	self moveLibraryToPharoVM
 ]
 
-{ #category : 'as yet unclassified' }
-TSLibrariesCSS >> generateTreeSitterCSSLibraries [
+{ #category : 'accessing' }
+TSLibrariesCSS >> languageName [
 
-	| command status |
-	command := self platformCommandFor: TSLibrariesCommandLines css.
-
-	self logInTranscript: 'Start generating Tree Sitter CSS library'.
-
-	"Run the command"
-	status := LibC uniqueInstance system: command.
-
-	self logInTranscript:
-		'Tree Sitter CSS library generation command is finished'.
-
-	"Verify success"
-	status = 0
-		ifTrue: [
-		self logInTranscript: 'Tree Sitter CSS generated successfully' ]
-		ifFalse: [
-		Error signal: 'Tree Sitter CSS was not generated successfully' ].
-
-	^ status
+	^ 'CSS'
 ]
 
 { #category : 'as yet unclassified' }

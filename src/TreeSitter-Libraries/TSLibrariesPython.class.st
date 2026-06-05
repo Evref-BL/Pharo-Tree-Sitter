@@ -38,6 +38,12 @@ TSLibrariesPython >> cloneTreeSitterPython [
 				, status asString ]
 ]
 
+{ #category : 'accessing' }
+TSLibrariesPython >> commandLine [
+
+	^ TSLibrariesCommandLines python 
+]
+
 { #category : 'as yet unclassified' }
 TSLibrariesPython >> ensurePythonLibraryExists [
 
@@ -45,34 +51,14 @@ TSLibrariesPython >> ensurePythonLibraryExists [
 	self libraryExistsInDocuments ifFalse: [
 		self
 			cloneTreeSitterPython;
-			generateTreeSitterPythonLibraries ].
+			generateTreeSitterLibrary ].
 	self moveLibraryToPharoVM
 ]
 
-{ #category : 'as yet unclassified' }
-TSLibrariesPython >> generateTreeSitterPythonLibraries [
+{ #category : 'accessing' }
+TSLibrariesPython >> languageName [
 
-	| command status |
-	command := self platformCommandFor: TSLibrariesCommandLines python.
-
-	self logInTranscript: 'Start generating Tree Sitter Python library'.
-
-	"Run the command"
-	status := LibC uniqueInstance system: command.
-
-	self logInTranscript:
-		'Tree Sitter Python library generation command is finished'.
-
-	"Verify success"
-	status = 0
-		ifTrue: [
-			self logInTranscript:
-				'Tree Sitter Python library generated successfully' ]
-		ifFalse: [
-			Error signal:
-				'Tree Sitter Python library was not generated successfully' ].
-
-	^ status
+	^ 'Python'
 ]
 
 { #category : 'as yet unclassified' }

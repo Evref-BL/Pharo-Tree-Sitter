@@ -38,6 +38,12 @@ TSLibrariesHTML >> cloneTreeSitterHTML [
 				, status asString ]
 ]
 
+{ #category : 'accessing' }
+TSLibrariesHTML >> commandLine [
+
+	^ TSLibrariesCommandLines html
+]
+
 { #category : 'as yet unclassified' }
 TSLibrariesHTML >> ensureHTMLLibraryExists [
 
@@ -45,33 +51,14 @@ TSLibrariesHTML >> ensureHTMLLibraryExists [
 	self libraryExistsInDocuments ifFalse: [
 		self
 			cloneTreeSitterHTML;
-			generateTreeSitterHTMLLibraries ].
+			generateTreeSitterLibrary ].
 	self moveLibraryToPharoVM
 ]
 
-{ #category : 'as yet unclassified' }
-TSLibrariesHTML >> generateTreeSitterHTMLLibraries [
+{ #category : 'accessing' }
+TSLibrariesHTML >> languageName [
 
-	| command status |
-	
-	command := self platformCommandFor: TSLibrariesCommandLines html.
-
-	self logInTranscript: 'Start generating Tree Sitter HTML library'.
-
-	"Run the command"
-	status := LibC uniqueInstance system: command.
-
-	self logInTranscript:
-		'Tree Sitter HTML library generation command is finished'.
-
-	"Verify success"
-	status = 0
-		ifTrue: [
-		self logInTranscript: 'Tree Sitter HTML generated successfully' ]
-		ifFalse: [
-		Error signal: 'Tree Sitter HTML was not generated successfully' ].
-
-	^ status
+	^ 'HTML'
 ]
 
 { #category : 'as yet unclassified' }
