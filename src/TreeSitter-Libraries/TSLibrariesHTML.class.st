@@ -44,22 +44,17 @@ TSLibrariesHTML >> ensureHTMLLibraryExists [
 	self libraryExists ifFalse: [
 		self libraryExistsInDocuments ifFalse: [
 			self
-				cloneTreeSitterHTML ;
+				cloneTreeSitterHTML;
 				generateTreeSitterHTMLLibraries ].
-		self moveHTMLLibraryToPharoVM ]
+		self moveLibraryToPharoVM ]
 ]
 
 { #category : 'as yet unclassified' }
 TSLibrariesHTML >> generateTreeSitterHTMLLibraries [
 
-	| command status cmdLines |
-	cmdLines := TSLibrariesCommandLinesHTML new.
-	self isMacOS
-		ifTrue: [ command := cmdLines cmdMacTreeSitterHTML ]
-		ifFalse: [
-			self isWindows
-				ifTrue: [ command := cmdLines cmdWindowsTreeSitterHTML ]
-				ifFalse: [ command := cmdLines cmdLinuxTreeSitterHTML ] ].
+	| command status |
+	
+	command := self platformCommandFor: TSLibrariesCommandLines html.
 
 	self logInTranscript: 'Start generating Tree Sitter HTML library'.
 
@@ -72,11 +67,9 @@ TSLibrariesHTML >> generateTreeSitterHTMLLibraries [
 	"Verify success"
 	status = 0
 		ifTrue: [
-			self logInTranscript:
-				'Tree Sitter HTML generated successfully' ]
+		self logInTranscript: 'Tree Sitter HTML generated successfully' ]
 		ifFalse: [
-			Error signal:
-				'Tree Sitter HTML was not generated successfully' ].
+		Error signal: 'Tree Sitter HTML was not generated successfully' ].
 
 	^ status
 ]
@@ -90,8 +83,7 @@ TSLibrariesHTML >> libraryName [
 ]
 
 { #category : 'as yet unclassified' }
-TSLibrariesHTML >> moveHTMLLibraryToPharoVM [
+TSLibrariesHTML >> libraryRootInDocuments [
 
-	self moveLibrary: self libraryName from: '/tree-sitter-html/'
-
+	^ '/tree-sitter-html/'
 ]

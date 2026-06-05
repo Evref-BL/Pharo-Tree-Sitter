@@ -53,13 +53,14 @@ TSLibraries >> cloneTreeSitter [
 
 { #category : 'as yet unclassified' }
 TSLibraries >> ensureTreeSitterLibraryExists [
+	
 	self libraryExists ifFalse: [
 		self libraryExistsInDocuments ifFalse: [
 			self
 				cloneTreeSitter;
 				generateTreeSitterLibraries ].
 
-		self moveLibraryToPharoVM ].
+		self moveLibraryToPharoVM ]
 ]
 
 { #category : 'as yet unclassified' }
@@ -117,6 +118,12 @@ TSLibraries >> isMacOS [
 ]
 
 { #category : 'testing' }
+TSLibraries >> isMainTreeSitterLibrary [
+
+	^ (self libraryName copyUpTo: $.)  = 'libtree-sitter'
+]
+
+{ #category : 'testing' }
 TSLibraries >> isWindows [
 
 	^ OSPlatform current isWindows
@@ -146,23 +153,16 @@ TSLibraries >> latestReleaseTagForOwner: owner repo: repoName [
 ]
 
 { #category : 'as yet unclassified' }
-TSLibraries >> librariesLocationInDocuments [
-
-	self isWindows
-		ifTrue: [ ^ '\tree-sitter\build\' ]
-		ifFalse: [ ^ '/tree-sitter/' ]
-]
-
-{ #category : 'as yet unclassified' }
 TSLibraries >> libraryExists [ 
 	^ (self vmLibrariesDirectory / self libraryName)
 		  asFileReference exists
 ]
 
 { #category : 'as yet unclassified' }
-TSLibraries >> libraryExistsInDocuments [ 
-	^ (self originalLibrariesDirectory asFileReference / self libraryName)
-		  asFileReference exists
+TSLibraries >> libraryExistsInDocuments [
+
+	^ ((self originalLibrariesDirectory , self libraryRootInDocuments)
+		  asFileReference / self libraryName)  exists
 ]
 
 { #category : 'accessing' }
@@ -180,6 +180,14 @@ TSLibraries >> libraryName: aName [
 			self isMacOS
 				ifTrue: [ ^ aName , '.dylib' ]
 				ifFalse: [ ^ aName , '.so' ] ]
+]
+
+{ #category : 'as yet unclassified' }
+TSLibraries >> libraryRootInDocuments [
+
+	self isWindows
+		ifTrue: [ ^ '\tree-sitter\build\' ]
+		ifFalse: [ ^ '/tree-sitter/' ]
 ]
 
 { #category : 'as yet unclassified' }
@@ -202,7 +210,7 @@ TSLibraries >> moveLibrary: aLibraryName from: initialLocation [
 
 { #category : 'as yet unclassified' }
 TSLibraries >> moveLibraryToPharoVM [
-	self moveLibrary: self libraryName from: self librariesLocationInDocuments
+	self moveLibrary: self libraryName from: self libraryRootInDocuments
 ]
 
 { #category : 'as yet unclassified' }
@@ -210,6 +218,14 @@ TSLibraries >> originalLibrariesDirectory [
 	"check if this works for any OS"
 
 	^ FileLocator documents fullName , '/tree-sitter-libraries'
+]
+
+{ #category : 'as yet unclassified' }
+TSLibraries >> platformCommandFor: aCmdLines [
+
+	self isMacOS ifTrue: [ ^ aCmdLines cmdMac ].
+	self isWindows ifTrue: [ ^ aCmdLines cmdWindows ].
+	^ aCmdLines cmdLinux
 ]
 
 { #category : 'as yet unclassified' }

@@ -44,22 +44,17 @@ TSLibrariesXML >> ensureXMLLibraryExists [
 	self libraryExists ifFalse: [
 		self libraryExistsInDocuments ifFalse: [
 			self
-				cloneTreeSitterXML ;
+				cloneTreeSitterXML;
 				generateTreeSitterXMLLibraries ].
-		self moveXMLLibraryToPharoVM ]
+		self moveLibraryToPharoVM ]
 ]
 
 { #category : 'as yet unclassified' }
 TSLibrariesXML >> generateTreeSitterXMLLibraries [
 
-	| command status cmdLines |
-	cmdLines := TSLibrariesCommandLinesXML new.
-	self isMacOS
-		ifTrue: [ command := cmdLines cmdMacTreeSitterXML ]
-		ifFalse: [
-			self isWindows
-				ifTrue: [ command := cmdLines cmdWindowsTreeSitterXML ]
-				ifFalse: [ command := cmdLines cmdLinuxTreeSitterXML ] ].
+	| command status |
+	
+	command := self platformCommandFor: TSLibrariesCommandLines xml.
 
 	self logInTranscript: 'Start generating Tree Sitter XML library'.
 
@@ -90,8 +85,7 @@ TSLibrariesXML >> libraryName [
 ]
 
 { #category : 'as yet unclassified' }
-TSLibrariesXML >> moveXMLLibraryToPharoVM [
+TSLibrariesXML >> libraryRootInDocuments [
 
-	self moveLibrary: self libraryName from: '/tree-sitter-xml/xml/'
-
+	^ '/tree-sitter-xml/xml/'
 ]

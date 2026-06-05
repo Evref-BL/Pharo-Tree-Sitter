@@ -73,23 +73,18 @@ TSLibrariesTypescript >> ensureTypescriptLibraryExists [
 				generateTreeSitterTypescriptLibraries ].
 
 
-		self moveTypescriptLibraryToPharoVM ]
+		self moveLibraryToPharoVM ]
 ]
 
 { #category : 'as yet unclassified' }
 TSLibrariesTypescript >> generateTreeSitterTypescriptLibraries [
 
-	| command status cmdLines |
-	cmdLines := TSLibrariesCommandLinesTypescript new.
+	| command status |
+	 
 	"make sure to copy the tree_sitter folder in common"
-	self copyFoldersInTreeSitterTypescript.
-
-	self isMacOS
-		ifTrue: [ command := cmdLines cmdMacTreeSitterTypescript ]
-		ifFalse: [
-			self isWindows
-				ifTrue: [ command := cmdLines cmdWindowsTreeSitterTypescript ]
-				ifFalse: [ command := cmdLines cmdLinuxTreeSitterTypescript ] ].
+	self copyFoldersInTreeSitterTypescript. 
+	
+	command := self platformCommandFor: TSLibrariesCommandLines typescript .
 
 	self logInTranscript:
 		'Start generating Tree Sitter Typescript library'.
@@ -121,9 +116,7 @@ TSLibrariesTypescript >> libraryName [
 ]
 
 { #category : 'as yet unclassified' }
-TSLibrariesTypescript >> moveTypescriptLibraryToPharoVM [
+TSLibrariesTypescript >> libraryRootInDocuments [
 
-	self
-		moveLibrary: self libraryName
-		from: '/tree-sitter-typescript/typescript/'
+	^ '/tree-sitter-typescript/typescript/'
 ]

@@ -41,25 +41,20 @@ TSLibrariesPython >> cloneTreeSitterPython [
 { #category : 'as yet unclassified' }
 TSLibrariesPython >> ensurePythonLibraryExists [
 
+	
 	self libraryExists ifFalse: [
 		self libraryExistsInDocuments ifFalse: [
 			self
-				cloneTreeSitterPython ;
+				cloneTreeSitterPython;
 				generateTreeSitterPythonLibraries ].
-		self movePythonLibraryToPharoVM ]
+		self moveLibraryToPharoVM ]
 ]
 
 { #category : 'as yet unclassified' }
 TSLibrariesPython >> generateTreeSitterPythonLibraries [
 
-	| command status cmdLines |
-	cmdLines := TSLibrariesCommandLinesPython new.
-	self isMacOS
-		ifTrue: [ command := cmdLines cmdMacTreeSitterPython ]
-		ifFalse: [
-			self isWindows
-				ifTrue: [ command := cmdLines cmdWindowsTreeSitterPython ]
-				ifFalse: [ command := cmdLines cmdLinuxTreeSitterPython ] ].
+	| command status |
+	command := self platformCommandFor: TSLibrariesCommandLines python.
 
 	self logInTranscript: 'Start generating Tree Sitter Python library'.
 
@@ -90,8 +85,7 @@ TSLibrariesPython >> libraryName [
 ]
 
 { #category : 'as yet unclassified' }
-TSLibrariesPython >> movePythonLibraryToPharoVM [
+TSLibrariesPython >> libraryRootInDocuments [
 
-	self moveLibrary: self libraryName from: '/tree-sitter-python/'
-
+	^ '/tree-sitter-python/'
 ]

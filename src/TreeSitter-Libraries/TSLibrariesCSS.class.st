@@ -45,22 +45,16 @@ TSLibrariesCSS >> ensureCSSLibraryExists [
 	self libraryExists ifFalse: [
 		self libraryExistsInDocuments ifFalse: [
 			self
-				cloneTreeSitterCSS ;
+				cloneTreeSitterCSS;
 				generateTreeSitterCSSLibraries ].
-		self moveCSSLibraryToPharoVM ]
+		self moveLibraryToPharoVM ]
 ]
 
 { #category : 'as yet unclassified' }
 TSLibrariesCSS >> generateTreeSitterCSSLibraries [
 
-	| command status cmdLines |
-	cmdLines := TSLibrariesCommandLinesCSS new.
-	self isMacOS
-		ifTrue: [ command := cmdLines cmdMacTreeSitterCSS ]
-		ifFalse: [
-			self isWindows
-				ifTrue: [ command := cmdLines cmdWindowsTreeSitterCSS ]
-				ifFalse: [ command := cmdLines cmdLinuxTreeSitterCSS ] ].
+	| command status |
+	command := self platformCommandFor: TSLibrariesCommandLines css.
 
 	self logInTranscript: 'Start generating Tree Sitter CSS library'.
 
@@ -73,11 +67,9 @@ TSLibrariesCSS >> generateTreeSitterCSSLibraries [
 	"Verify success"
 	status = 0
 		ifTrue: [
-			self logInTranscript:
-				'Tree Sitter CSS generated successfully' ]
+		self logInTranscript: 'Tree Sitter CSS generated successfully' ]
 		ifFalse: [
-			Error signal:
-				'Tree Sitter CSS was not generated successfully' ].
+		Error signal: 'Tree Sitter CSS was not generated successfully' ].
 
 	^ status
 ]
@@ -89,8 +81,7 @@ TSLibrariesCSS >> libraryName [
 ]
 
 { #category : 'as yet unclassified' }
-TSLibrariesCSS >> moveCSSLibraryToPharoVM [
+TSLibrariesCSS >> libraryRootInDocuments [
 
-	self moveLibrary: self libraryName from: '/tree-sitter-css/'
-
+	^ '/tree-sitter-css/'
 ]

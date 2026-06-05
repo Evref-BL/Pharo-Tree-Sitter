@@ -40,25 +40,21 @@ TSLibrariesYAML >> cloneTreeSitterYAML [
 
 { #category : 'as yet unclassified' }
 TSLibrariesYAML >> ensureYAMLLibraryExists [
+
 	self libraryExists ifFalse: [
 		self libraryExistsInDocuments ifFalse: [
 			self
-				cloneTreeSitterYAML ;
+				cloneTreeSitterYAML;
 				generateTreeSitterYAMLLibraries ].
-		self moveYAMLLibraryToPharoVM ]
+		self moveLibraryToPharoVM ]
 ]
 
 { #category : 'as yet unclassified' }
 TSLibrariesYAML >> generateTreeSitterYAMLLibraries [
 
-	| command status cmdLines |
-	cmdLines := TSLibrariesCommandLinesYAML new.
-	self isMacOS
-		ifTrue: [ command := cmdLines cmdMacTreeSitterYAML ]
-		ifFalse: [
-			self isWindows
-				ifTrue: [ command := cmdLines cmdWindowsTreeSitterYAML ]
-				ifFalse: [ command := cmdLines cmdLinuxTreeSitterYAML ] ].
+	| command status  |
+	
+	command := self platformCommandFor: TSLibrariesCommandLines yaml.
 
 	self logInTranscript: 'Start generating Tree Sitter YAML library'.
 
@@ -76,7 +72,7 @@ TSLibrariesYAML >> generateTreeSitterYAMLLibraries [
 		ifFalse: [
 			Error signal:
 				'Tree Sitter YAML library was not generated successfully' ].
-	
+
 	status := 0.
 
 	^ status
@@ -89,7 +85,7 @@ TSLibrariesYAML >> libraryName [
 ]
 
 { #category : 'as yet unclassified' }
-TSLibrariesYAML >> moveYAMLLibraryToPharoVM [
+TSLibrariesYAML >> libraryRootInDocuments [
 
-	self moveLibrary: self libraryName from: '/tree-sitter-yaml/'
+	^ '/tree-sitter-yaml/'
 ]
