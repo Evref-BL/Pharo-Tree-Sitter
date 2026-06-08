@@ -118,28 +118,9 @@ TSLibraries >> gitCloneCommandFor: repositoryUrl branch: branchName destination:
 ]
 
 { #category : 'testing' }
-TSLibraries >> isLinux [
-	"Smalltalk os isLinux"
-
-	^ OSPlatform current isLinux
-]
-
-{ #category : 'testing' }
-TSLibraries >> isMacOS [ 
-
-	^ OSPlatform current isMacOS
-]
-
-{ #category : 'testing' }
 TSLibraries >> isMainTreeSitterLibrary [
 
 	^ (self libraryName copyUpTo: $.)  = 'libtree-sitter'
-]
-
-{ #category : 'testing' }
-TSLibraries >> isWindows [
-
-	^ OSPlatform current isWindows
 ]
 
 { #category : 'accessing' }
@@ -192,10 +173,10 @@ TSLibraries >> libraryName [
 { #category : 'as yet unclassified' }
 TSLibraries >> libraryName: aName [
 
-	self isWindows
+	OSPlatform current isWindows
 		ifTrue: [ ^ aName , '.dll' ]
 		ifFalse: [
-			self isMacOS
+			OSPlatform current isMacOS
 				ifTrue: [ ^ aName , '.dylib' ]
 				ifFalse: [ ^ aName , '.so' ] ]
 ]
@@ -203,7 +184,7 @@ TSLibraries >> libraryName: aName [
 { #category : 'as yet unclassified' }
 TSLibraries >> libraryRootInDocuments [
 
-	self isWindows
+	OSPlatform current isWindows
 		ifTrue: [ ^ '\tree-sitter\build\' ]
 		ifFalse: [ ^ '/tree-sitter/' ]
 ]
@@ -241,8 +222,8 @@ TSLibraries >> originalLibrariesDirectory [
 { #category : 'as yet unclassified' }
 TSLibraries >> platformCommandFor: aCmdLines [
 
-	self isMacOS ifTrue: [ ^ aCmdLines cmdMac ].
-	self isWindows ifTrue: [ ^ aCmdLines cmdWindows ].
+	OSPlatform current isMacOS ifTrue: [ ^ aCmdLines cmdMac ].
+	OSPlatform current isWindows ifTrue: [ ^ aCmdLines cmdWindows ].
 	^ aCmdLines cmdLinux
 ]
 
@@ -251,15 +232,14 @@ TSLibraries >> vmLibrariesDirectory [
 
 	| dir |
 	"Different for each OS"
-	self isWindows
+	OSPlatform current isWindows
 		ifTrue: [ dir := Smalltalk vm directory ]
 		ifFalse: [
-			self isMacOS
+			OSPlatform current isMacOS
 				ifTrue: [
 				dir := Smalltalk vm directory
 				       , '/Pharo.app/Contents/MacOS/Plugins' ]
-				ifFalse: [
-				dir := Smalltalk vm directory ] ].
+				ifFalse: [ dir := Smalltalk vm directory ] ].
 
 	^ dir asFileReference
 ]
