@@ -61,6 +61,12 @@ TSLibraries >> cloneTreeSitter [
 				'Tree Sitter clone failed with exit code: ' , status asString ]
 ]
 
+{ #category : 'accessing' }
+TSLibraries >> commandLine [
+
+	^ TSLibrariesCommandLines treeSitter 
+]
+
 { #category : 'as yet unclassified' }
 TSLibraries >> ensureTreeSitterLibraryExists [
 
@@ -68,46 +74,16 @@ TSLibraries >> ensureTreeSitterLibraryExists [
 	self libraryExistsInDocuments ifFalse: [
 		self
 			cloneTreeSitter;
-			generateTreeSitterLibraries ].
+			generateTreeSitterLibrary ].
 	self moveLibraryToPharoVM
-]
-
-{ #category : 'as yet unclassified' }
-TSLibraries >> generateTreeSitterLibraries [
-
-	| command status cmdLines |
-	cmdLines := TSLibrariesCommandLines new.
-	command := self isMacOS
-		           ifTrue: [ cmdLines cmdMacTreeSitter ]
-		           ifFalse: [
-			           self isWindows
-				           ifTrue: [ cmdLines cmdWindowsTreeSitter ]
-				           ifFalse: [ cmdLines cmdLinuxTreeSitter ] ].
-
-	self logInTranscript: 'Start generating TreeSitter library'.
-
-	"Run the command"
-	status := LibC uniqueInstance system: command.
-
-	self logInTranscript:
-		'TreeSitter library generation command is finished'.
-
-	"Verify success"
-	status = 0
-		ifTrue: [
-		self logInTranscript: 'TreeSitter library generated successfully' ]
-		ifFalse: [
-		Error signal: 'TreeSitter library was not generated successfully' ].
-
-	^ status
 ]
 
 { #category : 'as yet unclassified' }
 TSLibraries >> generateTreeSitterLibrary [
 
 	| command status |
-	self beforeGenerateTreeSitterLibrary. 
-	
+	self beforeGenerateTreeSitterLibrary.
+
 	command := self platformCommandFor: self commandLine.
 
 	self logInTranscript:
@@ -164,6 +140,11 @@ TSLibraries >> isMainTreeSitterLibrary [
 TSLibraries >> isWindows [
 
 	^ OSPlatform current isWindows
+]
+
+{ #category : 'accessing' }
+TSLibraries >> languageName [
+	^ 'Tree Sitter'
 ]
 
 { #category : 'as yet unclassified' }
