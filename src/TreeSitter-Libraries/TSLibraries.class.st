@@ -31,34 +31,42 @@ TSLibraries >> beforeGenerateTreeSitterLibrary [
 ]
 
 { #category : 'as yet unclassified' }
-TSLibraries >> cloneTreeSitter [
+TSLibraries >> branchToClone [
+	^ self class gitBranchToUse
+		ifNil: [ self latestReleaseTagForOwner: self repositoryOwner repo: self repositoryName ]
+]
 
-	| clonePath cloneCommand status lastReleasedVersion |
-	"Construct clone path"
-	clonePath := self originalLibrariesDirectory , '/tree-sitter'.
-	
-	"before cloning get the latest release"	
-	lastReleasedVersion := self class gitBranchToUse ifNil: [ self latestReleaseTagForOwner: 'tree-sitter' repo: 'tree-sitter' ].
+{ #category : 'as yet unclassified' }
+TSLibraries >> cloneLibrary [
 
-	"Execute clone command"
+	| clonePath cloneCommand status |
+	"Construct clone path (repositoryName is also the local folder name)"
+	clonePath := self originalLibrariesDirectory , '/'
+	             , self repositoryName.
+
+	"branch may be nil like Yaml, so here it checks from where it has to clone"
 	cloneCommand := self
-		gitCloneCommandFor: 'https://github.com/tree-sitter/tree-sitter.git'
-		branch: lastReleasedVersion
-		destination: clonePath.
+		                gitCloneCommandFor: self repositoryUrl
+		                branch: self branchToClone
+		                destination: clonePath.
 
-	self logInTranscript: 'Start cloning TreeSitter in ' , clonePath.
+	self logInTranscript:
+		'Start cloning Tree Sitter ' , self languageName , ' in '
+		, clonePath.
 
-	"Run the command"
 	status := LibC uniqueInstance system: cloneCommand.
 
-	"Verify success"
 	status = 0
 		ifTrue: [
 			self logInTranscript:
-				'Tree Sitter successfully cloned to: ' , clonePath ]
+				'Tree Sitter ' , self languageName , ' successfully cloned to: '
+				, clonePath ]
 		ifFalse: [
 			self logInTranscript:
-				'Tree Sitter clone failed with exit code: ' , status asString ]
+				'Tree Sitter ' , self languageName
+				, ' clone failed with exit code: ' , status asString ].
+
+	^ status
 ]
 
 { #category : 'accessing' }
@@ -73,7 +81,7 @@ TSLibraries >> ensureTreeSitterLibraryExists [
 	self libraryExists ifTrue: [ ^ self ].
 	self libraryExistsInDocuments ifFalse: [
 		self
-			cloneTreeSitter;
+			cloneLibrary ;
 			generateTreeSitterLibrary ].
 	self moveLibraryToPharoVM
 ]
@@ -225,6 +233,26 @@ TSLibraries >> platformCommandFor: aCmdLines [
 	OSPlatform current isMacOS ifTrue: [ ^ aCmdLines cmdMac ].
 	OSPlatform current isWindows ifTrue: [ ^ aCmdLines cmdWindows ].
 	^ aCmdLines cmdLinux
+]
+
+{ #category : 'accessing' }
+TSLibraries >> repositoryName [
+	^ 'tree-sitter'
+]
+
+{ #category : 'as yet unclassified' }
+TSLibraries >> repositoryOwner [
+	^ 'tree-sitter'
+]
+
+{ #category : 'accessing' }
+TSLibraries >> repositoryUrl [
+
+	^ 'https://github.com/' , 
+		self repositoryOwner , 
+		'/', 
+		self repositoryName , 
+		'.git'
 ]
 
 { #category : 'as yet unclassified' }

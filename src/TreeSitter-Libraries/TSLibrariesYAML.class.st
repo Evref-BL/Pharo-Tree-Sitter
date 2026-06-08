@@ -6,53 +6,15 @@ Class {
 }
 
 { #category : 'as yet unclassified' }
-TSLibrariesYAML >> cloneTreeSitterYAML [
-
-	| clonePath cloneCommand status |
-	"Construct clone path"
-	clonePath := self originalLibrariesDirectory , '/tree-sitter-yaml'.
-
-	"before cloning get the latest release"	
-	"lastReleasedVersion := self class gitBranchToUse ifNil: [ self latestReleaseTagForOwner: 'ikatyang' repo: 'tree-sitter-yaml' ]."
-	
-	"Execute clone command"
-	cloneCommand := 'git clone https://github.com/ikatyang/tree-sitter-yaml.git '
-	                , clonePath.
-	"cloneCommand := 'git clone --branch ', lastReleasedVersion ,' --depth 1 https://github.com/ikatyang/tree-sitter-yaml.git '
-	                , clonePath." 
-
-	self logInTranscript:
-		'Start cloning Tree-Sitter-YAML in' , clonePath.
-
-	"Run the command"
-	status := LibC uniqueInstance system: cloneCommand.
-
-	"Verify success"
-	status = 0
-		ifTrue: [
-			self logInTranscript:
-				'Tree Sitter YAML successfully cloned to: ' , clonePath ]
-		ifFalse: [
-			self logInTranscript:
-				'Tree Sitter YAML clone failed with exit code: '
-				, status asString ]
+TSLibrariesYAML >> branchToClone [
+	"ikatyang/tree-sitter-yaml has no usable release tags"
+	^ nil
 ]
 
 { #category : 'accessing' }
 TSLibrariesYAML >> commandLine [
 
 	^ TSLibrariesCommandLines yaml
-]
-
-{ #category : 'as yet unclassified' }
-TSLibrariesYAML >> ensureYAMLLibraryExists [
-
-	self libraryExists ifTrue: [ ^ self ].
-	self libraryExistsInDocuments ifFalse: [
-		self
-			cloneTreeSitterYAML;
-			generateTreeSitterLibrary ].
-	self moveLibraryToPharoVM
 ]
 
 { #category : 'accessing' }
@@ -71,4 +33,14 @@ TSLibrariesYAML >> libraryName [
 TSLibrariesYAML >> libraryRootInDocuments [
 
 	^ '/tree-sitter-yaml/'
+]
+
+{ #category : 'accessing' }
+TSLibrariesYAML >> repositoryName [
+	^ 'tree-sitter-yaml'
+]
+
+{ #category : 'as yet unclassified' }
+TSLibrariesYAML >> repositoryOwner [
+	^ 'ikatyang'
 ]

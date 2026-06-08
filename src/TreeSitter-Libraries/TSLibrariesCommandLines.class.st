@@ -123,23 +123,11 @@ TSLibrariesCommandLines >> cmdLinux [
 ]
 
 { #category : 'as yet unclassified' }
-TSLibrariesCommandLines >> cmdLinuxTreeSitter [
-
-	^ self tsBuildCommandForMacAndLinux: '/tree-sitter'
-]
-
-{ #category : 'as yet unclassified' }
 TSLibrariesCommandLines >> cmdMac [
 
 	^ self hasCustomBuilder
 		  ifTrue: [ self customBuilder value: self value: #mac ]
 		  ifFalse: [ self makeCommand ]
-]
-
-{ #category : 'as yet unclassified' }
-TSLibrariesCommandLines >> cmdMacTreeSitter [
-
-	^ self tsBuildCommandForMacAndLinux: '/tree-sitter'
 ]
 
 { #category : 'as yet unclassified' }
