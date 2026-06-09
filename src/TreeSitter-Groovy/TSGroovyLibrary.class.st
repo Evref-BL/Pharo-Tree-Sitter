@@ -6,8 +6,9 @@ Class {
 }
 
 { #category : 'accessing - platform' }
-TSGroovyLibrary >> macLibraryName [ 
-		^ FFIMacLibraryFinder findAnyLibrary: #( 'groovy.dylib' "'groovy-beta.dylib'"  )
+TSGroovyLibrary >> macLibraryName [
+
+	^ FFIMacLibraryFinder findAnyLibrary: #( 'libtree-sitter-groovy.dylib' ) "'groovy-beta.dylib'"
 ]
 
 { #category : 'as yet unclassified' }
@@ -33,5 +34,5 @@ TSGroovyLibrary >> unix64LibraryName [
 { #category : 'accessing - platform' }
 TSGroovyLibrary >> win32LibraryName [
 
-	^ FFIWindowsLibraryFinder findAnyLibrary: #('groovy.dll')
+	^ FFIWindowsLibraryFinder findAnyLibrary: #( 'libtree-sitter-groovy.dll' )
 ]
