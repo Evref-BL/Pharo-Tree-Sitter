@@ -16,6 +16,13 @@ TSGroovyLibrary >> tree_sitter_groovy [
 	^ self ffiCall: 'TSLanguage * tree_sitter_groovy ()'
 ]
 
+{ #category : 'accessing' }
+TSGroovyLibrary >> uniqueInstance [
+
+	TSLibrariesGroovy new ensureTreeSitterLibraryExists.
+	^ self
+]
+
 { #category : 'accessing - platform' }
 TSGroovyLibrary >> unix64LibraryName [
 	"Users should use unix32* or unix64*"

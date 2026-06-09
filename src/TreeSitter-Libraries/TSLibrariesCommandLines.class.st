@@ -26,6 +26,16 @@ TSLibrariesCommandLines class >> c [
 TSLibrariesCommandLines class >> css [    ^ self new        folderName: 'tree-sitter-css';        windowsLibName: 'libtree-sitter-css.dll';        sources: #('src/parser.c');        yourself
 ]
 
+{ #category : 'as yet unclassified' }
+TSLibrariesCommandLines class >> groovy [
+
+	^ self new
+		  folderName: 'tree-sitter-groovy';
+		  windowsLibName: 'libtree-sitter-groovy.dll';
+		  sources: #( 'src/parser.c' );
+		  yourself
+]
+
 { #category : 'accessing' }
 TSLibrariesCommandLines class >> html [
 
