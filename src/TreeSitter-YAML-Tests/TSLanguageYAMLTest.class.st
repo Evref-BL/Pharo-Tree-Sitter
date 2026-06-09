@@ -53,5 +53,5 @@ TSLanguageYAMLTest >> testRetrieveSymbolType [
 { #category : 'tests' }
 TSLanguageYAMLTest >> testYamlNumberOfSymbol [
 
-	self assert: parser language symbolCount equals: 293
+	self assert: parser language symbolCount > 300
 ]

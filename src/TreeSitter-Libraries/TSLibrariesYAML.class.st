@@ -5,12 +5,6 @@ Class {
 	#package : 'TreeSitter-Libraries'
 }
 
-{ #category : 'as yet unclassified' }
-TSLibrariesYAML >> branchToClone [
-	"ikatyang/tree-sitter-yaml has no usable release tags"
-	^ nil
-]
-
 { #category : 'accessing' }
 TSLibrariesYAML >> commandLine [
 
@@ -42,5 +36,6 @@ TSLibrariesYAML >> repositoryName [
 
 { #category : 'as yet unclassified' }
 TSLibrariesYAML >> repositoryOwner [
-	^ 'ikatyang'
+
+	^ 'tree-sitter-grammars'
 ]

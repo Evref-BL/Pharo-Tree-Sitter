@@ -87,9 +87,16 @@ TSLibrariesCommandLines class >> xml [
 { #category : 'as yet unclassified' }
 TSLibrariesCommandLines class >> yaml [
 
+	"^ self new
+		  folderName: 'tree-sitter-yaml';
+		  customBuilder: [ :builder :aPlatform |
+			  builder buildYamlFor: aPlatform ];
+		  yourself"
+		
 	^ self new
 		  folderName: 'tree-sitter-yaml';
-		  customBuilder: [ :builder :aPlatform | builder buildYamlFor: aPlatform ];
+		  windowsLibName: 'libtree-sitter-yaml.dll';
+		  sources: #( 'src/parser.c' 'src/scanner.c' );
 		  yourself
 ]
 
