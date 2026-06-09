@@ -37,6 +37,16 @@ TSLibrariesCommandLines class >> html [
 ]
 
 { #category : 'as yet unclassified' }
+TSLibrariesCommandLines class >> mermaid [
+
+	^ self new
+		  folderName: 'singularity-parser-mermaid';
+		  windowsLibName: 'libtree-sitter-mermaid.dll';
+		  sources: #( 'src/parser.c' 'src/scanner.c' );
+		  yourself
+]
+
+{ #category : 'as yet unclassified' }
 TSLibrariesCommandLines class >> python [    ^ self new        folderName: 'tree-sitter-python';        windowsLibName: 'libtree-sitter-python.dll';        sources: #('src/parser.c' 'src/scanner.c');        yourself
 ]
 
