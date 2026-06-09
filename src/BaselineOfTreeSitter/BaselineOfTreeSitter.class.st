@@ -58,7 +58,7 @@ BaselineOfTreeSitter >> definePackages: spec [
 
 	"Core"
 	spec
-		package: 'TreeSitter'          with: [ spec requires: #( 'PharoBackwardCompatibility' ) ];
+		package: 'TreeSitter'  with: [ spec requires: #( 'PharoBackwardCompatibility' ) ];
 		package: 'TreeSitter-Visitor'  with: [ spec requires: #( 'TreeSitter' ) ];
 		package: 'TreeSitter-Highlighter' with: [ spec requires: #( 'TreeSitter' ) ];
 		package: 'TreeSitter-Spec'     with: [ spec requires: #( 'TreeSitter-Visitor' ) ];
@@ -67,7 +67,8 @@ BaselineOfTreeSitter >> definePackages: spec [
 
 	"Core tests ( Only Typescript is loaded by default cz many tests depend on it. )"
 	spec 
-		package: 'TreeSitter-Tests' with: [ spec requires: #( 'TreeSitter' 'TreeSitter-Typescript' ) ].
+		package: 'TreeSitter-Tests' with: [ spec requires: #( 'TreeSitter' 'TreeSitter-Typescript' ). 
+			  spec postLoadDoIt: #postLoadTSLibrary  ].
 	spec 
 		package: 'TreeSitter-Typescript' with: 
 			[ spec requires: #( 'TreeSitter' ). 
@@ -132,7 +133,7 @@ BaselineOfTreeSitter >> postLoadCLibrary [
 ]
 
 { #category : 'as yet unclassified' }
-BaselineOfTreeSitter >> postLoadCSSLibrary [  
+BaselineOfTreeSitter >> postLoadCSSLibrary [   
 	TSLibrariesCSS new ensureTreeSitterLibraryExists 
 ]
 
@@ -147,13 +148,12 @@ BaselineOfTreeSitter >> postLoadPythonLibrary [
 ]
 
 { #category : 'as yet unclassified' }
-BaselineOfTreeSitter >> postLoadTSLibraries [
-    
+BaselineOfTreeSitter >> postLoadTSLibrary [ 
 	TSLibraries new ensureTreeSitterLibraryExists.
 ]
 
 { #category : 'as yet unclassified' }
-BaselineOfTreeSitter >> postLoadTypescriptLibrary [  
+BaselineOfTreeSitter >> postLoadTypescriptLibrary [ 
 	TSLibrariesTypescript new ensureTreeSitterLibraryExists 
  
 ]
