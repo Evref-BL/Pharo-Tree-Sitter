@@ -67,7 +67,7 @@ TSParserCTest >> testRootOfSimpleCHasOneChild [
 ]
 
 { #category : 'running' }
-TSParserCTest >> testRootOfSimplePythonHasOneNamedChild [
+TSParserCTest >> testRootOfSimpleCHasOneNamedChild [
 
 	| string tree |
 	string := 'printf("Hello, I''m C!");'.
