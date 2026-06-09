@@ -5,9 +5,8 @@ Class {
 		'parser',
 		'typescriptLanguage'
 	],
-	#category : 'TreeSitter-Tests-Parsing',
-	#package : 'TreeSitter-Tests',
-	#tag : 'Parsing'
+	#category : 'TreeSitter-Tests',
+	#package : 'TreeSitter-Tests'
 }
 
 { #category : 'as yet unclassified' }

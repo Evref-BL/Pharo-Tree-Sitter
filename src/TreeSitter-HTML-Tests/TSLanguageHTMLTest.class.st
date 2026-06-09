@@ -5,8 +5,8 @@ Class {
 		'parser',
 		'htmlLanguage'
 	],
-	#category : 'TreeSitter-Tests',
-	#package : 'TreeSitter-Tests'
+	#category : 'TreeSitter-HTML-Tests',
+	#package : 'TreeSitter-HTML-Tests'
 }
 
 { #category : 'running' }

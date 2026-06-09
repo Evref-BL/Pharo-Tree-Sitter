@@ -5,8 +5,8 @@ Class {
 		'parser',
 		'cLanguage'
 	],
-	#category : 'TreeSitter-Tests',
-	#package : 'TreeSitter-Tests'
+	#category : 'TreeSitter-C-Tests',
+	#package : 'TreeSitter-C-Tests'
 }
 
 { #category : 'running' }

@@ -5,8 +5,8 @@ Class {
 		'parser',
 		'pythonLanguage'
 	],
-	#category : 'TreeSitter-Tests',
-	#package : 'TreeSitter-Tests'
+	#category : 'TreeSitter-Python-Tests',
+	#package : 'TreeSitter-Python-Tests'
 }
 
 { #category : 'running' }

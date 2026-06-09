@@ -5,8 +5,8 @@ Class {
 		'parser',
 		'xmlLanguage'
 	],
-	#category : 'TreeSitter-Tests',
-	#package : 'TreeSitter-Tests'
+	#category : 'TreeSitter-XML-Tests',
+	#package : 'TreeSitter-XML-Tests'
 }
 
 { #category : 'running' }

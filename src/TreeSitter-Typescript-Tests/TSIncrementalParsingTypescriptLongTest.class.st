@@ -5,9 +5,8 @@ Class {
 		'parser',
 		'typescriptLanguage'
 	],
-	#category : 'TreeSitter-Tests-IncrementalParsing-Typescript',
-	#package : 'TreeSitter-Tests',
-	#tag : 'IncrementalParsing-Typescript'
+	#category : 'TreeSitter-Typescript-Tests',
+	#package : 'TreeSitter-Typescript-Tests'
 }
 
 { #category : 'editing' }
