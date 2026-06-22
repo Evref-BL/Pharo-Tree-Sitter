@@ -48,7 +48,8 @@ BaselineOfTreeSitter >> defineGroups: spec [
 	spec group: 'html' with: #( 'default' 'TreeSitter-HTML' ).
 	spec group: 'css' with: #( 'default' 'TreeSitter-CSS' ).
 	spec group: 'typescript' with: #( 'default' 'TreeSitter-Typescript' ).
-	spec group: 'cLang' with: #( 'default' 'TreeSitter-C' )
+	spec group: 'cLang' with: #( 'default' 'TreeSitter-C' ).
+	spec group: 'java' with: #( 'default' 'TreeSitter-Java' )
 ]
 
 { #category : 'baselines' }
@@ -56,7 +57,7 @@ BaselineOfTreeSitter >> definePackages: spec [
 
 	spec
 		package: 'TreeSitter' with: [ spec requires: #( 'PharoBackwardCompatibility' ) ];
-		package: 'TreeSitter-Tests' with: [ spec requires: #( 'TreeSitter' 'TreeSitter-Python' 'TreeSitter-XML' 'TreeSitter-YAML' 'TreeSitter-Groovy' 'TreeSitter-Typescript' 'TreeSitter-C' 'TreeSitter-CSS' 'TreeSitter-HTML') ];
+		package: 'TreeSitter-Tests' with: [ spec requires: #( 'TreeSitter' 'TreeSitter-Python' 'TreeSitter-XML' 'TreeSitter-YAML' 'TreeSitter-Groovy' 'TreeSitter-Typescript' 'TreeSitter-C' 'TreeSitter-CSS' 'TreeSitter-HTML' 'TreeSitter-Java') ];
 		package: 'TreeSitter-Groovy' with: [ spec requires: #( 'TreeSitter' ) ];
 		package: 'TreeSitter-Python' with: [ spec requires: #( 'TreeSitter' ) ];
 		package: 'TreeSitter-XML' with: [ spec requires: #( 'TreeSitter' ) ];
@@ -65,6 +66,7 @@ BaselineOfTreeSitter >> definePackages: spec [
 		package: 'TreeSitter-CSS' with: [ spec requires: #( 'TreeSitter' ) ];
 		package: 'TreeSitter-Typescript' with: [ spec requires: #( 'TreeSitter' ) ];
 		package: 'TreeSitter-C' with: [ spec requires: #( 'TreeSitter' ) ];
+		package: 'TreeSitter-Java' with: [ spec requires: #( 'TreeSitter' ) ];
 		package: 'TreeSitter-Spec' with: [ spec requires: #( 'TreeSitter-Visitor' ) ];
 		package: 'TreeSitter-Visitor' with: [ spec requires: #( 'TreeSitter' ) ];
 		package: 'TreeSitter-Libraries' with: [ spec requires: #( 'TreeSitter'  'NeoJSON') ];
