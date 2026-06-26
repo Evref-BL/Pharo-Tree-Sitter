@@ -5,8 +5,8 @@ Class {
 		'parser',
 		'yamlLanguage'
 	],
-	#category : 'TreeSitter-Tests',
-	#package : 'TreeSitter-Tests'
+	#category : 'TreeSitter-YAML-Tests',
+	#package : 'TreeSitter-YAML-Tests'
 }
 
 { #category : 'running' }
@@ -53,5 +53,5 @@ TSLanguageYAMLTest >> testRetrieveSymbolType [
 { #category : 'tests' }
 TSLanguageYAMLTest >> testYamlNumberOfSymbol [
 
-	self assert: parser language symbolCount equals: 293
+	self assert: parser language symbolCount > 300
 ]

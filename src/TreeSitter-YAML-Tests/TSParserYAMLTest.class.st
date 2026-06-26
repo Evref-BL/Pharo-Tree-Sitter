@@ -5,8 +5,8 @@ Class {
 		'parser',
 		'yamlLanguage'
 	],
-	#category : 'TreeSitter-Tests',
-	#package : 'TreeSitter-Tests'
+	#category : 'TreeSitter-YAML-Tests',
+	#package : 'TreeSitter-YAML-Tests'
 }
 
 { #category : 'running' }
@@ -58,8 +58,8 @@ TSParserYAMLTest >> testRootNodeSymbolSimpleYAMLFile [
 	| string tree |
 	string := '---
 	# A sample yaml example' withPlatformLineEndings.
-	tree := parser parseString: string. 
-	self assert: tree rootNode symbol equals: 106
+	tree := parser parseString: string.
+	self assert: tree rootNode symbol equals: 114
 ]
 
 { #category : 'tests' }

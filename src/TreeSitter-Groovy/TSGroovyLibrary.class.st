@@ -6,14 +6,22 @@ Class {
 }
 
 { #category : 'accessing - platform' }
-TSGroovyLibrary >> macLibraryName [ 
-		^ FFIMacLibraryFinder findAnyLibrary: #( 'groovy.dylib' "'groovy-beta.dylib'"  )
+TSGroovyLibrary >> macLibraryName [
+
+	^ FFIMacLibraryFinder findAnyLibrary: #( 'libtree-sitter-groovy.dylib' ) "'groovy-beta.dylib'"
 ]
 
 { #category : 'as yet unclassified' }
 TSGroovyLibrary >> tree_sitter_groovy [
 
 	^ self ffiCall: 'TSLanguage * tree_sitter_groovy ()'
+]
+
+{ #category : 'accessing' }
+TSGroovyLibrary >> uniqueInstance [
+
+	TSLibrariesGroovy new ensureTreeSitterLibraryExists.
+	^ self
 ]
 
 { #category : 'accessing - platform' }
@@ -26,5 +34,5 @@ TSGroovyLibrary >> unix64LibraryName [
 { #category : 'accessing - platform' }
 TSGroovyLibrary >> win32LibraryName [
 
-	^ FFIWindowsLibraryFinder findAnyLibrary: #('groovy.dll')
+	^ FFIWindowsLibraryFinder findAnyLibrary: #( 'libtree-sitter-groovy.dll' )
 ]

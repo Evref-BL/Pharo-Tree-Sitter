@@ -21,7 +21,7 @@ TSYAMLLibrary >> tree_sitter_yaml [
 { #category : 'accessing' }
 TSYAMLLibrary >> uniqueInstance [
 
-	TSLibrariesYAML new ensureYAMLLibraryExists .
+	TSLibrariesYAML new ensureTreeSitterLibraryExists.
 	^ self
 ]
 

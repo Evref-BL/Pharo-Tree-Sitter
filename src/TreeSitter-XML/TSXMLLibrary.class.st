@@ -21,7 +21,7 @@ TSXMLLibrary >> tree_sitter_xml [
 { #category : 'accessing' }
 TSXMLLibrary >> uniqueInstance [
 
-	TSLibrariesXML new ensureXMLLibraryExists .
+	TSLibrariesXML new ensureTreeSitterLibraryExists.
 	^ self
 ]
 

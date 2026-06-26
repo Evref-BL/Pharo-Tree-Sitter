@@ -20,7 +20,7 @@ TSCLibrary >> tree_sitter_c [
 { #category : 'as yet unclassified' }
 TSCLibrary >> uniqueInstance [
 
-	TSLibrariesC new ensureCLibraryExists.
+	TSLibrariesC new ensureTreeSitterLibraryExists.
 	^ self
 ]
 

@@ -21,7 +21,7 @@ TSPythonLibrary >> tree_sitter_python [
 { #category : 'accessing' }
 TSPythonLibrary >> uniqueInstance [
 
-	TSLibrariesPython new ensurePythonLibraryExists.
+	TSLibrariesPython new ensureTreeSitterLibraryExists.
 	^ self
 ]
 

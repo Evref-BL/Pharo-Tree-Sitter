@@ -5,98 +5,20 @@ Class {
 	#package : 'TreeSitter-Libraries'
 }
 
-{ #category : 'as yet unclassified' }
-TSLibrariesHTML >> cloneTreeSitterHTML [
+{ #category : 'accessing' }
+TSLibrariesHTML >> commandLine [
 
-	| clonePath cloneCommand status lastReleasedVersion|
-	"Construct clone path"
-	clonePath := self originalLibrariesDirectory , '/tree-sitter-html'.
+	^ TSLibrariesCommandLines html
+]
 
-	"before cloning get the latest release"	
-	lastReleasedVersion := self class gitBranchToUse ifNil: [ self latestReleaseTagForOwner: 'tree-sitter' repo: 'tree-sitter-html' ].
+{ #category : 'accessing' }
+TSLibrariesHTML >> languageName [
 
-	"Execute clone command" 
-	cloneCommand := self
-		gitCloneCommandFor: 'https://github.com/tree-sitter/tree-sitter-html.git'
-		branch: lastReleasedVersion
-		destination: clonePath.
-
-	self logInTranscript:
-		'Start cloning Tree-Sitter-HTML in' , clonePath.
-
-	"Run the command"
-	status := LibC uniqueInstance system: cloneCommand.
-
-	"Verify success"
-	status = 0
-		ifTrue: [
-			self logInTranscript:
-				'Tree Sitter HTML successfully cloned to: ' , clonePath ]
-		ifFalse: [
-			self logInTranscript:
-				'Tree Sitter HTML clone failed with exit code: '
-				, status asString ]
+	^ 'HTML'
 ]
 
 { #category : 'as yet unclassified' }
-TSLibrariesHTML >> ensureHTMLLibraryExists [
-
-	self htmlLibraryExists ifFalse: [
-		self htmlLibraryExistsInDocuments ifFalse: [
-			self
-				cloneTreeSitterHTML ;
-				generateTreeSitterHTMLLibraries ].
-		self moveHTMLLibraryToPharoVM ]
-]
-
-{ #category : 'as yet unclassified' }
-TSLibrariesHTML >> generateTreeSitterHTMLLibraries [
-
-	| command status cmdLines |
-	cmdLines := TSLibrariesCommandLinesHTML new.
-	self isMacOS
-		ifTrue: [ command := cmdLines cmdMacTreeSitterHTML ]
-		ifFalse: [
-			self isWindows
-				ifTrue: [ command := cmdLines cmdWindowsTreeSitterHTML ]
-				ifFalse: [ command := cmdLines cmdLinuxTreeSitterHTML ] ].
-
-	self logInTranscript: 'Start generating Tree Sitter HTML library'.
-
-	"Run the command"
-	status := LibC uniqueInstance system: command.
-
-	self logInTranscript:
-		'Tree Sitter HTML library generation command is finished'.
-
-	"Verify success"
-	status = 0
-		ifTrue: [
-			self logInTranscript:
-				'Tree Sitter HTML generated successfully' ]
-		ifFalse: [
-			Error signal:
-				'Tree Sitter HTML was not generated successfully' ].
-
-	^ status
-]
-
-{ #category : 'as yet unclassified' }
-TSLibrariesHTML >> htmlLibraryExists [
-
-	^ (self vmLibrariesDirectory / self htmlLibraryName)
-		  asFileReference exists
-]
-
-{ #category : 'as yet unclassified' }
-TSLibrariesHTML >> htmlLibraryExistsInDocuments [
-
-	^ (self originalLibrariesDirectory asFileReference / self htmlLibraryName)
-		  asFileReference exists
-]
-
-{ #category : 'as yet unclassified' }
-TSLibrariesHTML >> htmlLibraryName [
+TSLibrariesHTML >> libraryName [
 
 	^ self libraryName: 'libtree-sitter-html'.
 
@@ -104,8 +26,12 @@ TSLibrariesHTML >> htmlLibraryName [
 ]
 
 { #category : 'as yet unclassified' }
-TSLibrariesHTML >> moveHTMLLibraryToPharoVM [
+TSLibrariesHTML >> libraryRootInDocuments [
 
-	self moveLibrary: self htmlLibraryName from: '/tree-sitter-html/'
+	^ '/tree-sitter-html/'
+]
 
+{ #category : 'accessing' }
+TSLibrariesHTML >> repositoryName [
+	^ 'tree-sitter-html'
 ]

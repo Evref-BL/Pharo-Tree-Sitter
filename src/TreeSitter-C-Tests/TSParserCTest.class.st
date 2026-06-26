@@ -5,8 +5,8 @@ Class {
 		'parser',
 		'cLanguage'
 	],
-	#category : 'TreeSitter-Tests',
-	#package : 'TreeSitter-Tests'
+	#category : 'TreeSitter-C-Tests',
+	#package : 'TreeSitter-C-Tests'
 }
 
 { #category : 'running' }
@@ -67,7 +67,7 @@ TSParserCTest >> testRootOfSimpleCHasOneChild [
 ]
 
 { #category : 'running' }
-TSParserCTest >> testRootOfSimplePythonHasOneNamedChild [
+TSParserCTest >> testRootOfSimpleCHasOneNamedChild [
 
 	| string tree |
 	string := 'printf("Hello, I''m C!");'.

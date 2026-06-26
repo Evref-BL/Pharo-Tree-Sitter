@@ -21,7 +21,7 @@ TSTypescriptLibrary >> tree_sitter_typescript [
 { #category : 'accessing' }
 TSTypescriptLibrary >> uniqueInstance [
 
-	TSLibrariesTypescript new ensureTypescriptLibraryExists .
+	TSLibrariesTypescript new ensureTreeSitterLibraryExists.
 	^ self
 ]
 

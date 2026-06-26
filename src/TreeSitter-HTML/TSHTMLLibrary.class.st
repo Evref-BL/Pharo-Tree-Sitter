@@ -21,7 +21,7 @@ TSHTMLLibrary >> tree_sitter_html [
 { #category : 'accessing' }
 TSHTMLLibrary >> uniqueInstance [
 
-	TSLibrariesHTML new ensureHTMLLibraryExists .
+	TSLibrariesHTML new ensureTreeSitterLibraryExists.
 	^ self
 ]
 

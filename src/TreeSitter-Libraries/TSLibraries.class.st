@@ -21,75 +21,97 @@ TSLibraries class >> gitBranchToUse: aString [
 ]
 
 { #category : 'as yet unclassified' }
-TSLibraries >> cloneTreeSitter [
+TSLibraries >> afterGenerateTreeSitterLibrary [
+	"Default: do nothing cz this is the reposnsability of subclasses; sometimes nothing to be done; but this is not the case of TypeScript."
+]
 
-	| clonePath cloneCommand status lastReleasedVersion |
-	"Construct clone path"
-	clonePath := self originalLibrariesDirectory , '/tree-sitter'.
-	
-	"before cloning get the latest release"	
-	lastReleasedVersion := self class gitBranchToUse ifNil: [ self latestReleaseTagForOwner: 'tree-sitter' repo: 'tree-sitter' ].
+{ #category : 'as yet unclassified' }
+TSLibraries >> beforeGenerateTreeSitterLibrary [
+	"Default: do nothing cz this is the reposnsability of subclasses; sometimes nothing to be done; but this is not the case of TypeScript."
+]
 
-	"Execute clone command"
+{ #category : 'as yet unclassified' }
+TSLibraries >> branchToClone [
+	^ self class gitBranchToUse
+		ifNil: [ self latestReleaseTagForOwner: self repositoryOwner repo: self repositoryName ]
+]
+
+{ #category : 'as yet unclassified' }
+TSLibraries >> cloneLibrary [
+
+	| clonePath cloneCommand status |
+	"Construct clone path (repositoryName is also the local folder name)"
+	clonePath := self originalLibrariesDirectory , '/'
+	             , self repositoryName.
+
+	"branch may be nil like Yaml, so here it checks from where it has to clone"
 	cloneCommand := self
-		gitCloneCommandFor: 'https://github.com/tree-sitter/tree-sitter.git'
-		branch: lastReleasedVersion
-		destination: clonePath.
+		                gitCloneCommandFor: self repositoryUrl
+		                branch: self branchToClone
+		                destination: clonePath.
 
-	self logInTranscript: 'Start cloning TreeSitter in ' , clonePath.
+	self logInTranscript:
+		'Start cloning Tree Sitter ' , self languageName , ' in '
+		, clonePath.
 
-	"Run the command"
 	status := LibC uniqueInstance system: cloneCommand.
 
-	"Verify success"
 	status = 0
 		ifTrue: [
 			self logInTranscript:
-				'Tree Sitter successfully cloned to: ' , clonePath ]
+				'Tree Sitter ' , self languageName , ' successfully cloned to: '
+				, clonePath ]
 		ifFalse: [
 			self logInTranscript:
-				'Tree Sitter clone failed with exit code: ' , status asString ]
+				'Tree Sitter ' , self languageName
+				, ' clone failed with exit code: ' , status asString ].
+
+	^ status
+]
+
+{ #category : 'accessing' }
+TSLibraries >> commandLine [
+
+	^ TSLibrariesCommandLines treeSitter 
 ]
 
 { #category : 'as yet unclassified' }
 TSLibraries >> ensureTreeSitterLibraryExists [
-	self libraryExists ifFalse: [
-		self libraryExistsInDocuments ifFalse: [
-			self
-				cloneTreeSitter;
-				generateTreeSitterLibraries ].
 
-		self moveLibraryToPharoVM ].
+	self libraryExists ifTrue: [ ^ self ].
+	self libraryExistsInDocuments ifFalse: [
+		self
+			cloneLibrary ;
+			generateTreeSitterLibrary ].
+	self moveLibraryToPharoVM
 ]
 
 { #category : 'as yet unclassified' }
-TSLibraries >> generateTreeSitterLibraries [
+TSLibraries >> generateTreeSitterLibrary [
 
-	| command status cmdLines |
-	cmdLines := TSLibrariesCommandLines new.
+	| command status |
+	self beforeGenerateTreeSitterLibrary.
 
-	self isMacOS
-		ifTrue: [ command := cmdLines cmdMacTreeSitter ]
-		ifFalse: [
-			self isWindows
-				ifTrue: [ command := cmdLines cmdWindowsTreeSitter ]
-				ifFalse: [ command := cmdLines cmdLinuxTreeSitter ] ].
-
-	self logInTranscript: 'Start generating TreeSitter library'.
-
-	"Run the command"
-	status := LibC uniqueInstance system: command.
+	command := self platformCommandFor: self commandLine.
 
 	self logInTranscript:
-		'TreeSitter library generation command is finished'.
+		'Start generating Tree Sitter ' , self languageName , ' library'.
 
-	"Verify success"
+	status := LibC uniqueInstance system: command.
+
+	self logInTranscript: 'Tree Sitter ' , self languageName
+		, ' library generation command is finished'.
+
+	self afterGenerateTreeSitterLibrary.
+
 	status = 0
 		ifTrue: [
-		self logInTranscript: 'TreeSitter library generated successfully' ]
+			self logInTranscript:
+				'Tree Sitter ' , self languageName
+				, ' library generated successfully' ]
 		ifFalse: [
-			Error signal:
-				'TreeSitter library was not generated successfully' ].
+			Error signal: 'Tree Sitter ' , self languageName
+				, ' library was not generated successfully' ].
 
 	^ status
 ]
@@ -104,22 +126,14 @@ TSLibraries >> gitCloneCommandFor: repositoryUrl branch: branchName destination:
 ]
 
 { #category : 'testing' }
-TSLibraries >> isLinux [
-	"Smalltalk os isLinux"
+TSLibraries >> isMainTreeSitterLibrary [
 
-	^ OSPlatform current isLinux
+	^ (self libraryName copyUpTo: $.)  = 'libtree-sitter'
 ]
 
-{ #category : 'testing' }
-TSLibraries >> isMacOS [ 
-
-	^ OSPlatform current isMacOS
-]
-
-{ #category : 'testing' }
-TSLibraries >> isWindows [
-
-	^ OSPlatform current isWindows
+{ #category : 'accessing' }
+TSLibraries >> languageName [
+	^ 'Tree Sitter'
 ]
 
 { #category : 'as yet unclassified' }
@@ -146,16 +160,7 @@ TSLibraries >> latestReleaseTagForOwner: owner repo: repoName [
 ]
 
 { #category : 'as yet unclassified' }
-TSLibraries >> librariesLocationInDocuments [
-
-	self isWindows
-		ifTrue: [ ^ '\tree-sitter\build\' ]
-		ifFalse: [ ^ '/tree-sitter/' ]
-]
-
-{ #category : 'as yet unclassified' }
-TSLibraries >> libraryExists [
-
+TSLibraries >> libraryExists [ 
 	^ (self vmLibrariesDirectory / self libraryName)
 		  asFileReference exists
 ]
@@ -163,8 +168,8 @@ TSLibraries >> libraryExists [
 { #category : 'as yet unclassified' }
 TSLibraries >> libraryExistsInDocuments [
 
-	^ ((self originalLibrariesDirectory , self librariesLocationInDocuments)
-		   asFileReference / self libraryName) asFileReference exists
+	^ ((self originalLibrariesDirectory , self libraryRootInDocuments)
+		  asFileReference / self libraryName)  exists
 ]
 
 { #category : 'accessing' }
@@ -176,12 +181,20 @@ TSLibraries >> libraryName [
 { #category : 'as yet unclassified' }
 TSLibraries >> libraryName: aName [
 
-	self isWindows
+	OSPlatform current isWindows
 		ifTrue: [ ^ aName , '.dll' ]
 		ifFalse: [
-			self isMacOS
+			OSPlatform current isMacOS
 				ifTrue: [ ^ aName , '.dylib' ]
 				ifFalse: [ ^ aName , '.so' ] ]
+]
+
+{ #category : 'as yet unclassified' }
+TSLibraries >> libraryRootInDocuments [
+
+	OSPlatform current isWindows
+		ifTrue: [ ^ '\tree-sitter\build\' ]
+		ifFalse: [ ^ '/tree-sitter/' ]
 ]
 
 { #category : 'as yet unclassified' }
@@ -204,7 +217,7 @@ TSLibraries >> moveLibrary: aLibraryName from: initialLocation [
 
 { #category : 'as yet unclassified' }
 TSLibraries >> moveLibraryToPharoVM [
-	self moveLibrary: self libraryName from: self librariesLocationInDocuments
+	self moveLibrary: self libraryName from: self libraryRootInDocuments
 ]
 
 { #category : 'as yet unclassified' }
@@ -215,19 +228,46 @@ TSLibraries >> originalLibrariesDirectory [
 ]
 
 { #category : 'as yet unclassified' }
+TSLibraries >> platformCommandFor: aCmdLines [
+
+	OSPlatform current isMacOS ifTrue: [ ^ aCmdLines cmdMac ].
+	OSPlatform current isWindows ifTrue: [ ^ aCmdLines cmdWindows ].
+	^ aCmdLines cmdLinux
+]
+
+{ #category : 'accessing' }
+TSLibraries >> repositoryName [
+	^ 'tree-sitter'
+]
+
+{ #category : 'as yet unclassified' }
+TSLibraries >> repositoryOwner [
+	^ 'tree-sitter'
+]
+
+{ #category : 'accessing' }
+TSLibraries >> repositoryUrl [
+
+	^ 'https://github.com/' , 
+		self repositoryOwner , 
+		'/', 
+		self repositoryName , 
+		'.git'
+]
+
+{ #category : 'as yet unclassified' }
 TSLibraries >> vmLibrariesDirectory [
 
 	| dir |
 	"Different for each OS"
-	self isWindows
+	OSPlatform current isWindows
 		ifTrue: [ dir := Smalltalk vm directory ]
 		ifFalse: [
-			self isMacOS
+			OSPlatform current isMacOS
 				ifTrue: [
 				dir := Smalltalk vm directory
 				       , '/Pharo.app/Contents/MacOS/Plugins' ]
-				ifFalse: [
-				dir := Smalltalk vm directory ] ].
+				ifFalse: [ dir := Smalltalk vm directory ] ].
 
 	^ dir asFileReference
 ]
