@@ -34,36 +34,18 @@ BaselineOfTreeSitter >> defineGroups: spec [
 
 	spec
 		group: 'default'
-		with:
-			#( 'TreeSitter' 'TreeSitter-Tests' 'TreeSitter-Spec'
-			   'TreeSitter-Highlighter' 'TreeSitter-Visitor'
-			   'TreeSitter-FAST-Utils' 'TreeSitter-Libraries'
-			   'TreeSitter-Typescript' 'TreeSitter-Typescript-Tests' ).
+		with: #( 'TreeSitter' 'TreeSitter-Tests' 'TreeSitter-Spec' 'TreeSitter-Highlighter' 'TreeSitter-Visitor' 'TreeSitter-Libraries' 'TreeSitter-Typescript'
+			   'TreeSitter-Typescript-Tests' ).
 
 	spec group: 'moose' with: #( 'default' 'TreeSitter-FAST-Utils' ).
 
-	spec
-		group: 'xml'
-		with: #( 'default' 'TreeSitter-XML' 'TreeSitter-XML-Tests' ).
-	spec
-		group: 'python'
-		with: #( 'default' 'TreeSitter-Python' 'TreeSitter-Python-Tests' ). 
-	spec
-		group: 'yaml'
-		with: #( 'default' 'TreeSitter-YAML' 'TreeSitter-YAML-Tests' ).
-	spec
-		group: 'html'
-		with: #( 'default' 'TreeSitter-HTML' 'TreeSitter-HTML-Tests' ).
-	spec
-		group: 'css'
-		with: #( 'default' 'TreeSitter-CSS' 'TreeSitter-CSS-Tests' ).
-	spec
-		group: 'typescript'
-		with:
-		#( 'default' 'TreeSitter-Typescript' 'TreeSitter-Typescript-Tests' ).
-	spec
-		group: 'cLang'
-		with: #( 'default' 'TreeSitter-C' 'TreeSitter-C-Tests' ).
+	spec group: 'xml' with: #( 'default' 'TreeSitter-XML' 'TreeSitter-XML-Tests' ).
+	spec group: 'python' with: #( 'default' 'TreeSitter-Python' 'TreeSitter-Python-Tests' ).
+	spec group: 'yaml' with: #( 'default' 'TreeSitter-YAML' 'TreeSitter-YAML-Tests' ).
+	spec group: 'html' with: #( 'default' 'TreeSitter-HTML' 'TreeSitter-HTML-Tests' ).
+	spec group: 'css' with: #( 'default' 'TreeSitter-CSS' 'TreeSitter-CSS-Tests' ).
+	spec group: 'typescript' with: #( 'default' 'TreeSitter-Typescript' 'TreeSitter-Typescript-Tests' ).
+	spec group: 'cLang' with: #( 'default' 'TreeSitter-C' 'TreeSitter-C-Tests' ).
 	spec group: 'groovy' with: #( 'default' 'TreeSitter-Groovy' 'TreeSitter-Groovy-Tests' ).
 	spec group: 'mermaid' with: #( 'default' 'TreeSitter-Mermaid' 'TreeSitter-Mermaid-Tests' )
 ]
