@@ -47,7 +47,8 @@ BaselineOfTreeSitter >> defineGroups: spec [
 	spec group: 'typescript' with: #( 'default' 'TreeSitter-Typescript' 'TreeSitter-Typescript-Tests' ).
 	spec group: 'cLang' with: #( 'default' 'TreeSitter-C' 'TreeSitter-C-Tests' ).
 	spec group: 'groovy' with: #( 'default' 'TreeSitter-Groovy' 'TreeSitter-Groovy-Tests' ).
-	spec group: 'mermaid' with: #( 'default' 'TreeSitter-Mermaid' 'TreeSitter-Mermaid-Tests' )
+	spec group: 'mermaid' with: #( 'default' 'TreeSitter-Mermaid' 'TreeSitter-Mermaid-Tests' ).
+	spec group: 'java' with: #( 'default' 'TreeSitter-Java' 'TreeSitter-Java-Tests' ).
 ]
 
 { #category : 'baselines' }
@@ -137,6 +138,13 @@ BaselineOfTreeSitter >> definePackages: spec [
 		package: 'TreeSitter-Mermaid-Tests'
 		with: [ spec requires: #( 'TreeSitter-Mermaid' ) ]. 
 		
+	spec
+		package: 'TreeSitter-Java'
+		with: [ spec requires: #( 'TreeSitter' ) .
+			spec postLoadDoIt: #postLoadJavaLibrary ];
+		package: 'TreeSitter-Java-Tests'
+		with: [ spec requires: #( 'TreeSitter-Java' ) ]. 
+		
 ]
 
 { #category : 'as yet unclassified' }
@@ -158,6 +166,11 @@ BaselineOfTreeSitter >> postLoadGroovyLibrary [
 { #category : 'as yet unclassified' }
 BaselineOfTreeSitter >> postLoadHTMLLibrary [  
 	TSLibrariesHTML new ensureTreeSitterLibraryExists 
+]
+
+{ #category : 'as yet unclassified' }
+BaselineOfTreeSitter >> postLoadJavaLibrary [  
+	TSLibrariesJava new ensureTreeSitterLibraryExists 
 ]
 
 { #category : 'as yet unclassified' }
