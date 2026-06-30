@@ -46,6 +46,16 @@ TSLibrariesCommandLines class >> html [
 		  yourself
 ]
 
+{ #category : 'local' }
+TSLibrariesCommandLines class >> java [
+
+	^ self new
+		  folderName: 'tree-sitter-java';
+		  windowsLibName: 'libtree-sitter-java.dll';
+		  sources: #( 'src/parser.c' 'src/scanner.c');
+		  yourself
+]
+
 { #category : 'as yet unclassified' }
 TSLibrariesCommandLines class >> mermaid [
 
