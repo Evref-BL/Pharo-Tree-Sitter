@@ -24,7 +24,9 @@ Class {
 	#instVars : [
 		'tsLanguage',
 		'languageName',
-		'typesRefied'
+		'typesRefied',
+		'nodeTypesJsonUrl',
+		'nodeTypesData'
 	],
 	#category : 'TreeSitter-FAST-Utils',
 	#package : 'TreeSitter-FAST-Utils'
@@ -58,34 +60,64 @@ TSFASTBuilder >> addDefineClassIn: metamodelGeneratorClass [
 
 { #category : 'building' }
 TSFASTBuilder >> addDefineHierarchyIn: metamodelGeneratorClass [
-
-	| method |
-	method := String streamContents: [ :stream |
-		          stream << 'defineHierarchy
-	"define class hierarchy"
-
-	super defineHierarchy.
-
-	entity --|> tEntity.' ].
-	metamodelGeneratorClass compile: method classified: #definition
+    | method |
+    method := String streamContents: [ :stream |
+        stream << 'defineHierarchy'; cr; tab; << '"define class hierarchy"'; cr.
+        stream tab; << 'super defineHierarchy.'; cr.
+        stream tab; << 'entity --|> tEntity.'; cr; cr.
+        
+     
+    ].
+    metamodelGeneratorClass compile: method classified: #definition.
 ]
 
 { #category : 'building' }
 TSFASTBuilder >> addDefineRelationsIn: metamodelGeneratorClass [
-	"should be improve if https://github.com/tree-sitter/tree-sitter/discussions/4017 got an answer"
-
-	| method |
-	method := String streamContents: [ :stream |
-		          stream << 'defineRelations
-
-	super defineRelations.
-'.
-		          stream
-			          << String tab;
-			          <<
-				          '(entity property: #''genericChildren'') <>-* (entity property: #''genericParent'').'.
-		           ].
-	metamodelGeneratorClass compile: method classified: #definition
+    | method |
+    method := String streamContents: [ :stream |
+        stream << 'defineRelations'; cr; tab; << 'super defineRelations.'; cr.
+        
+        "Relation générique de base"
+        stream cr; tab; << '(entity property: #''genericChildren'') <>-* (entity property: #''genericParent'').'; cr; cr.
+        
+        self nodeTypesData ifNotNil: [ :nodes |
+            (nodes select: [ :node | (node at: 'named' ifAbsent: [ false ]) = true ]) do: [ :node |
+                | nodeType varName fields children |
+                nodeType := node at: 'type'.
+                varName := self slotNameForNodeType: nodeType.
+                fields := node at: 'fields' ifAbsent: [ Dictionary new ].
+                children := node at: 'children' ifAbsent: [ nil ].
+                
+                "Génération des relations depuis les champs (fields) de l'AST"
+                fields isEmpty ifFalse: [
+                    stream cr; tab; << '" '; << nodeType asUppercase; << ' "'; cr.
+                    fields keysAndValuesDo: [ :fieldName :fieldInfo |
+                        | camelField isMultiple |
+                        camelField := self toCamelCase: fieldName.
+                        isMultiple := fieldInfo at: 'multiple' ifAbsent: [ false ].
+                        
+                        stream tab; << '(('; << varName; << ' property: #'; << camelField; << ') comment: '''')'.
+                        isMultiple 
+                            ifTrue: [ stream cr; tab; tab; << '<>-* ' ]
+                            ifFalse: [ stream cr; tab; tab; << '<>- ' ].
+                        stream << '((tEntity property: #'; << varName; << camelField capitalized; << 'Owner) comment: '''').'; cr; cr.
+                    ].
+                ].
+                
+                "Génération depuis les collections d'enfants non-nommées"
+                (fields isEmpty and: [ children isNotNil ]) ifTrue: [
+                    | isMultiple |
+                    isMultiple := children at: 'multiple' ifAbsent: [ false ].
+                    isMultiple ifTrue: [
+                        stream cr; tab; << '" '; << nodeType asUppercase; << ' (COLLECTION) "'; cr.
+                        stream tab; << '(('; << varName; << ' property: #childrenNodes) comment: '''')'; cr; tab; tab.
+                        stream << '<>-* ((tEntity property: #'; << varName; << 'Owner) comment: '''').'; cr; cr.
+                    ].
+                ].
+            ]
+        ]
+    ].
+    metamodelGeneratorClass compile: method classified: #definition.
 ]
 
 { #category : 'building' }
@@ -184,6 +216,15 @@ TSFASTBuilder >> createMetamodelGeneratorClass [
 	^ classBuilder install
 ]
 
+{ #category : 'as yet unclassified' }
+TSFASTBuilder >> fetchNodeTypesData [
+    | jsonString |
+    self nodeTypesJsonUrl ifNil: [ ^ self error: 'nodeTypesJsonUrl must be set before generating' ].
+    
+    jsonString := ZnClient new get: self nodeTypesJsonUrl.
+    self nodeTypesData: (NeoJSONReader fromString: jsonString).
+]
+
 { #category : 'building' }
 TSFASTBuilder >> fieldToReify [
 
@@ -208,10 +249,54 @@ TSFASTBuilder >> nameOfField: aFieldIdx [
 	^ tsLanguage nameOfField: aFieldIdx
 ]
 
+{ #category : 'as yet unclassified' }
+TSFASTBuilder >> nodeTypesData [
+    nodeTypesData ifNil: [ self fetchNodeTypesData ].
+    ^ nodeTypesData
+]
+
+{ #category : 'as yet unclassified' }
+TSFASTBuilder >> nodeTypesData: aCollection [
+    nodeTypesData := aCollection
+]
+
+{ #category : 'as yet unclassified' }
+TSFASTBuilder >> nodeTypesJsonUrl [
+    ^ nodeTypesJsonUrl
+]
+
+{ #category : 'as yet unclassified' }
+TSFASTBuilder >> nodeTypesJsonUrl: aString [
+    nodeTypesJsonUrl := aString
+]
+
 { #category : 'building' }
 TSFASTBuilder >> parentNameOfField: aFieldIdx [
 
 	^ (self nameOfField: aFieldIdx) , 'Parent'
+]
+
+{ #category : 'as yet unclassified' }
+TSFASTBuilder >> slotNameForNodeType: aString [
+    | camel |
+    camel := self toCamelCase: aString.
+    
+    "Gestion des mots-clés stricts"
+    camel = 'false' ifTrue: [ ^ '_false' ].
+    camel = 'true' ifTrue: [ ^ '_true' ].
+    camel = 'super' ifTrue: [ ^ '_super' ].
+    
+    "S'assurer que la première lettre est en minuscule pour les noms de variables/méthodes"
+    ^ camel uncapitalized
+]
+
+{ #category : 'as yet unclassified' }
+TSFASTBuilder >> toCamelCase: aString [
+    | parts |
+    parts := aString asString substrings: '_'.
+    ^ parts isEmpty 
+        ifTrue: [ '' ] 
+        ifFalse: [ parts first , (String streamContents: [ :s | (parts allButFirst) do: [ :p | s nextPutAll: p capitalized ] ]) ]
 ]
 
 { #category : 'accessing' }
