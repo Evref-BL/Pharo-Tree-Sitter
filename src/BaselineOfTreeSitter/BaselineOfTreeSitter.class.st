@@ -49,7 +49,7 @@ BaselineOfTreeSitter >> defineGroups: spec [
 	spec group: 'groovy' with: #( 'default' 'TreeSitter-Groovy' 'TreeSitter-Groovy-Tests' ).
 	spec group: 'mermaid' with: #( 'default' 'TreeSitter-Mermaid' 'TreeSitter-Mermaid-Tests' ).
 	spec group: 'java' with: #( 'default' 'TreeSitter-Java' 'TreeSitter-Java-Tests' ).
-	spec group: 'scss' with: #( 'default' 'TreeSitter-scss' 'TreeSitter-scss-Tests' ).
+	spec group: 'scss' with: #( 'default' 'TreeSitter-SCSS' 'TreeSitter-SCSS-Tests' ).
 ]
 
 { #category : 'baselines' }
