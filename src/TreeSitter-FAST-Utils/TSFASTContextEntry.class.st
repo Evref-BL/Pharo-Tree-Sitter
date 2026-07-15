@@ -104,13 +104,35 @@ TSFASTContextEntry >> field: anObject [
 
 { #category : 'testing' }
 TSFASTContextEntry >> fieldMatchesProperty: aFMProperty [
-	"My field matches the property if the property has the same name as the field or as an alias of the field."
-
-	aFMProperty name = field ifTrue: [ ^ true ].
-
-	fieldsAliasMap ifNotNil: [ fieldsAliasMap at: field ifPresent: [ :aliases | (aliases includes: aFMProperty name) ifTrue: [ ^ true ] ] ].
-
-	^ false
+    "Match tree-sitter field name against a Famix property.
+    Handles: unnamed children (<unnamedChild>), aliases,
+    camelCase conversion, and plural/singular forms."
+    
+    | propName camelField |
+    
+    "Handle unnamed children (tree-sitter returns '<unnamedChild>' as field key)"
+    (field isNil or: [ field isEmpty or: [ field = '<unnamedChild>' ] ]) ifTrue: [ 
+        ^ aFMProperty name asString = 'childrenNodes' ].
+    
+    propName := aFMProperty name asString.
+    
+    "Direct match"
+    propName = field ifTrue: [ ^ true ].
+    
+    "Check aliases"
+    fieldsAliasMap ifNotNil: [ 
+        fieldsAliasMap at: field ifPresent: [ :aliases | 
+            (aliases includes: aFMProperty name) ifTrue: [ ^ true ] ] ].
+    
+    "CamelCase conversion (type_parameters → typeParameters)"
+    camelField := self toCamelCase: field.
+    (camelField ~= field and: [ propName = camelField ]) ifTrue: [ ^ true ].
+    
+    "Plural/singular (safety net)"
+    propName = camelField asPlural ifTrue: [ ^ true ].
+    propName asSingular = camelField ifTrue: [ ^ true ].
+    
+    ^ false
 ]
 
 { #category : 'accessing' }
@@ -148,6 +170,18 @@ TSFASTContextEntry >> printOn: aStream [
 				nextPutAll: self field ].
 
 	aStream nextPutAll: ')'
+]
+
+{ #category : 'utils' }
+TSFASTContextEntry >> toCamelCase: aString [
+    "Convert tree-sitter underscore_name to camelCase.
+    Example: 'type_parameters' → 'typeParameters'"
+    | parts |
+    parts := aString asString substrings: '_'.
+    ^ parts isEmpty 
+        ifTrue: [ '' ] 
+        ifFalse: [ parts first , (String streamContents: [ :s | 
+            parts allButFirst do: [ :p | s nextPutAll: p capitalized ] ]) ]
 ]
 
 { #category : 'accessing' }

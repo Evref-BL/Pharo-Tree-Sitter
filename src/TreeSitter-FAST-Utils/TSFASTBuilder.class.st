@@ -63,6 +63,10 @@ TSFASTBuilder >> addDefineHierarchyIn: metamodelGeneratorClass [
         stream << 'defineHierarchy'; cr; tab; << '"define class hierarchy"'; cr.
         stream tab; << 'super defineHierarchy.'; cr.
         stream tab; << 'entity --|> tEntity.'; cr; cr.
+			
+			stream tab; << 'program --|> #THasImmediateSource.'; cr.
+			stream tab; << '_ERROR --|> #THasImmediateSource.'; cr; cr.
+	
         
         self nodeTypesData ifNotNil: [ :nodes |
             nodes do: [ :node |
@@ -136,7 +140,7 @@ TSFASTBuilder >> addDefineRelationsIn: metamodelGeneratorClass [
                     isMultiple ifTrue: [
                         stream cr; tab; << '" '; << nodeType asUppercase; << ' (COLLECTION) "'; cr.
                         stream tab; << '(('; << varName; << ' property: #childrenNodes) comment: '''')'; cr; tab; tab.
-                        stream << '<>-* ((tEntity property: #'; << varName; << 'Owner) comment: '''').'; cr; cr.
+                        stream << '<>-* ((entity property: #'; << varName; << 'Owner) comment: '''').'; cr; cr.
                     ].
                 ].
             ]
@@ -244,20 +248,18 @@ TSFASTBuilder >> buildParentMap [
 { #category : 'utils' }
 TSFASTBuilder >> commonAncestorOfAll: typeList in: parentMap [
     | commonAncestors |
-    typeList isEmpty ifTrue: [ ^ 'tEntity' ].
+    typeList isEmpty ifTrue: [ ^ 'entity' ].
     
     commonAncestors := self ancestorsOf: typeList first in: parentMap.
     
-    "On croise avec les ancêtres des autres types de la liste"
     typeList allButFirstDo: [ :type |
         | ancestors |
         ancestors := self ancestorsOf: type in: parentMap.
         commonAncestors := commonAncestors select: [ :each | ancestors includes: each ].
     ].
     
-    "S'il y a un ancêtre commun, on renvoie son nom formaté, sinon tEntity"
     commonAncestors isEmpty 
-        ifTrue: [ ^ 'tEntity' ]
+        ifTrue: [ ^ 'entity' ]
         ifFalse: [ ^ self slotNameForNodeType: commonAncestors first ]
 ]
 
