@@ -104,15 +104,13 @@ TSFASTContextEntry >> field: anObject [
 
 { #category : 'testing' }
 TSFASTContextEntry >> fieldMatchesProperty: aFMProperty [
-    "Match tree-sitter field name against a Famix property.
-    Handles: unnamed children (<unnamedChild>), aliases,
-    camelCase conversion, and plural/singular forms."
-    
     | propName camelField |
     
-    "Handle unnamed children (tree-sitter returns '<unnamedChild>' as field key)"
+    "Handle unnamed children (single or multiple)"
     (field isNil or: [ field isEmpty or: [ field = '<unnamedChild>' ] ]) ifTrue: [ 
-        ^ aFMProperty name asString = 'childrenNodes' ].
+        | pName |
+        pName := aFMProperty name asString.
+        ^ pName = 'childrenNodes' or: [ pName = 'childrenNode' ] ].
     
     propName := aFMProperty name asString.
     
@@ -128,9 +126,8 @@ TSFASTContextEntry >> fieldMatchesProperty: aFMProperty [
     camelField := self toCamelCase: field.
     (camelField ~= field and: [ propName = camelField ]) ifTrue: [ ^ true ].
     
-    "Plural/singular (safety net)"
-    propName = camelField asPlural ifTrue: [ ^ true ].
-    propName asSingular = camelField ifTrue: [ ^ true ].
+    "Reserved property names (tree-sitter 'type' → Famix 'typeRef')"
+    camelField = 'type' ifTrue: [ propName = 'typeRef' ifTrue: [ ^ true ] ].
     
     ^ false
 ]

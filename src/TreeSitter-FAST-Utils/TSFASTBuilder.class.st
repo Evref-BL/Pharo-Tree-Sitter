@@ -118,7 +118,7 @@ TSFASTBuilder >> addDefineRelationsIn: metamodelGeneratorClass [
                     stream cr; tab; << '" '; << nodeType asUppercase; << ' "'; cr.
                     fields keysAndValuesDo: [ :fieldName :fieldInfo |
                         | camelField isMultiple validTypes validTypeNames targetClassVar |
-                        camelField := self toCamelCase: fieldName.
+								camelField := self safePropertyName: (self toCamelCase: fieldName).
                         isMultiple := fieldInfo at: 'multiple' ifAbsent: [ false ].
                         
 								"Children side"
@@ -134,15 +134,21 @@ TSFASTBuilder >> addDefineRelationsIn: metamodelGeneratorClass [
                     ].
                 ].
                 
-                (fields isEmpty and: [ children isNotNil ]) ifTrue: [
-                    | isMultiple |
-                    isMultiple := children at: 'multiple' ifAbsent: [ false ].
-                    isMultiple ifTrue: [
-                        stream cr; tab; << '" '; << nodeType asUppercase; << ' (COLLECTION) "'; cr.
-                        stream tab; << '(('; << varName; << ' property: #childrenNodes) comment: '''')'; cr; tab; tab.
-                        stream << '<>-* ((entity property: #'; << varName; << 'Owner) comment: '''').'; cr; cr.
-                    ].
-                ].
+					(fields isEmpty and: [ children isNotNil ]) ifTrue: [
+    					| isMultiple |
+   	 					isMultiple := children at: 'multiple' ifAbsent: [ false ].
+    					isMultiple 
+        					ifTrue: [
+           					stream cr; tab; << '" '; << nodeType asUppercase; << ' (COLLECTION) "'; cr.
+            					stream tab; << '(('; << varName; << ' property: #childrenNodes) comment: '''')'; cr; tab; tab.
+            					stream << '<>-* ((entity property: #'; << varName; << 'Owner) comment: '''').'; cr; cr.
+        						]
+        					ifFalse: [
+            					stream cr; tab; << '" '; << nodeType asUppercase; << ' (SINGLE CHILD) "'; cr.
+            					stream tab; << '(('; << varName; << ' property: #childrenNode) comment: '''')'; cr; tab; tab.
+            					stream << '<>- ((entity property: #'; << varName; << 'Owner) comment: '''').'; cr; cr.
+        						].
+						].
             ]
         ]
     ].
@@ -385,6 +391,13 @@ TSFASTBuilder >> nodeTypesJsonUrl: aString [
 TSFASTBuilder >> parentNameOfField: aFieldIdx [
 
 	^ (self nameOfField: aFieldIdx) , 'Parent'
+]
+
+{ #category : 'as yet unclassified' }
+TSFASTBuilder >> safePropertyName: aFieldName [
+    "Rename property names that conflict with FAME/Pharo internals"
+    aFieldName = 'type' ifTrue: [ ^ 'typeRef' ].
+    ^ aFieldName
 ]
 
 { #category : 'as yet unclassified' }
