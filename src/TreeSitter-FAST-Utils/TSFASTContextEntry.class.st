@@ -126,8 +126,9 @@ TSFASTContextEntry >> fieldMatchesProperty: aFMProperty [
     camelField := self toCamelCase: field.
     (camelField ~= field and: [ propName = camelField ]) ifTrue: [ ^ true ].
     
-    "Reserved property names (tree-sitter 'type' → Famix 'typeRef')"
-    camelField = 'type' ifTrue: [ propName = 'typeRef' ifTrue: [ ^ true ] ].
+    "Reserved property names (type → typeRef, name → nameRef)"
+    self reservedPropertyMappings at: camelField ifPresent: [ :safeName |
+        propName = safeName ifTrue: [ ^ true ] ].
     
     ^ false
 ]
@@ -167,6 +168,15 @@ TSFASTContextEntry >> printOn: aStream [
 				nextPutAll: self field ].
 
 	aStream nextPutAll: ')'
+]
+
+{ #category : 'as yet unclassified' }
+TSFASTContextEntry >> reservedPropertyMappings [
+    "Map tree-sitter field names to safe Famix property names"
+    ^ Dictionary new
+        at: 'type' put: 'typeRef';
+        at: 'name' put: 'nameRef';
+        yourself
 ]
 
 { #category : 'utils' }

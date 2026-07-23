@@ -397,6 +397,7 @@ TSFASTBuilder >> parentNameOfField: aFieldIdx [
 TSFASTBuilder >> safePropertyName: aFieldName [
     "Rename property names that conflict with FAME/Pharo internals"
     aFieldName = 'type' ifTrue: [ ^ 'typeRef' ].
+	aFieldName = 'name' ifTrue: [ ^ 'nameRef' ].
     ^ aFieldName
 ]
 
