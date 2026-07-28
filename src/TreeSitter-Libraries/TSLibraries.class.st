@@ -139,27 +139,24 @@ TSLibraries >> languageName [
 { #category : 'as yet unclassified' }
 TSLibraries >> latestReleaseTagForOwner: owner repo: repoName [
 	"I am a method that uses github apis to get the latest release version of a repo based on its name and its owner. If HTTPS is not available in the current VM, answer nil so callers can fall back to a plain git clone."
-	 
-	| client body status json |
+	| url json client body status |
+	url := 'https://api.github.com/repos/' , owner , '/' , repoName
+	       , '/releases/latest'.
+
 	client := ZnClient new.
+
 	^ [
 	  client beOneShot.
-	  client url: 'https://api.github.com/repos/' , owner , '/' , repoName , '/releases/latest'.
+	  client url: url.
+
 	  body := client get.
 	  status := client response status.
 
-	  status = 200
-		  ifTrue: [ (NeoJSONReader fromString: body) at: 'tag_name' ]
-		  ifFalse: [
-			  client := ZnClient new.
-			  client beOneShot.
-			  client url: 'https://api.github.com/repos/' , owner , '/' , repoName , '/tags'.
-			  body := client get.
-			  json := NeoJSONReader fromString: body.
-			  json isEmpty
-				  ifTrue: [ self error: 'No releases or tags found for ' , repoName ]
-				  ifFalse: [ (json first) at: 'name' ] ]
-	  ] ensure: [ client close ]
+	  status = 200 ifFalse: [
+		  self error: 'Cannot fetch latest release for ' , repoName ].
+
+	  json := NeoJSONReader fromString: body.
+	  json at: 'tag_name' ] ensure: [ client close ]
 ]
 
 { #category : 'as yet unclassified' }
