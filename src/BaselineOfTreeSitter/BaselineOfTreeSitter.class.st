@@ -49,6 +49,7 @@ BaselineOfTreeSitter >> defineGroups: spec [
 	spec group: 'groovy' with: #( 'default' 'TreeSitter-Groovy' 'TreeSitter-Groovy-Tests' ).
 	spec group: 'mermaid' with: #( 'default' 'TreeSitter-Mermaid' 'TreeSitter-Mermaid-Tests' ).
 	spec group: 'java' with: #( 'default' 'TreeSitter-Java' 'TreeSitter-Java-Tests' ).
+	spec group: 'scss' with: #( 'default' 'TreeSitter-SCSS' 'TreeSitter-SCSS-Tests' ).
 ]
 
 { #category : 'baselines' }
@@ -143,7 +144,14 @@ BaselineOfTreeSitter >> definePackages: spec [
 		with: [ spec requires: #( 'TreeSitter' ) .
 			spec postLoadDoIt: #postLoadJavaLibrary ];
 		package: 'TreeSitter-Java-Tests'
-		with: [ spec requires: #( 'TreeSitter-Java' ) ]. 
+		with: [ spec requires: #( 'TreeSitter-Java' ) ].
+		
+	spec
+		package: 'TreeSitter-SCSS'
+		with: [ spec requires: #( 'TreeSitter' ) .
+			spec postLoadDoIt: #postLoadSCSSLibrary ];
+		package: 'TreeSitter-SCSS-Tests'
+		with: [ spec requires: #( 'TreeSitter-SCSS' ) ]. 
 		
 ]
 
@@ -182,6 +190,11 @@ BaselineOfTreeSitter >> postLoadMermaidLibrary [
 { #category : 'as yet unclassified' }
 BaselineOfTreeSitter >> postLoadPythonLibrary [  
 	TSLibrariesPython new ensureTreeSitterLibraryExists 
+]
+
+{ #category : 'as yet unclassified' }
+BaselineOfTreeSitter >> postLoadSCSSLibrary [  
+	TSLibrariesSCSS new ensureTreeSitterLibraryExists 
 ]
 
 { #category : 'as yet unclassified' }

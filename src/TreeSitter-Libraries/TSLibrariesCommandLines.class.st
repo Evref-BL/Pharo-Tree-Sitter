@@ -71,6 +71,16 @@ TSLibrariesCommandLines class >> python [    ^ self new        folderName: 'tree
 ]
 
 { #category : 'as yet unclassified' }
+TSLibrariesCommandLines class >> scss [
+		
+	^ self new
+		  folderName: 'tree-sitter-scss';
+		  windowsLibName: 'libtree-sitter-scss.dll';
+		  sources: #( 'src/parser.c' 'src/scanner.c' );
+		  yourself
+]
+
+{ #category : 'as yet unclassified' }
 TSLibrariesCommandLines class >> treeSitter [    ^ self new        folderName: 'tree-sitter';        yourself
 ]
 
