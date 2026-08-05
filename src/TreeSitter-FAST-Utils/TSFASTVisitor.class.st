@@ -238,8 +238,11 @@ TSFASTVisitor >> instantiateFastEntity: aFASTClass from: aTSNode [
 
 { #category : 'accessing' }
 TSFASTVisitor >> kindForType: aSymbol [
-
-	^ self class environment at: (self classesPrefix , aSymbol pascalized) asSymbol
+    | className |
+    className := self classesPrefix , aSymbol pascalized.
+    ^ self class environment 
+        at: className asSymbol 
+        ifAbsent: [ self class environment at: (className , 'Class') asSymbol ]
 ]
 
 { #category : 'accessing' }
