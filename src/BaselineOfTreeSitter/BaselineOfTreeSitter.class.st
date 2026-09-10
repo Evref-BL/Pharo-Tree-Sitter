@@ -147,60 +147,60 @@ BaselineOfTreeSitter >> definePackages: spec [
 		
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'postloads' }
 BaselineOfTreeSitter >> postLoadCLibrary [  
 	TSLibrariesC new ensureTreeSitterLibraryExists 
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'postloads' }
 BaselineOfTreeSitter >> postLoadCSSLibrary [   
 	TSLibrariesCSS new ensureTreeSitterLibraryExists 
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'postloads' }
 BaselineOfTreeSitter >> postLoadGroovyLibrary [
 
 	TSLibrariesGroovy new ensureTreeSitterLibraryExists
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'postloads' }
 BaselineOfTreeSitter >> postLoadHTMLLibrary [  
 	TSLibrariesHTML new ensureTreeSitterLibraryExists 
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'postloads' }
 BaselineOfTreeSitter >> postLoadJavaLibrary [  
 	TSLibrariesJava new ensureTreeSitterLibraryExists 
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'postloads' }
 BaselineOfTreeSitter >> postLoadMermaidLibrary [
 
 	TSLibrariesMermaid new ensureTreeSitterLibraryExists
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'postloads' }
 BaselineOfTreeSitter >> postLoadPythonLibrary [  
 	TSLibrariesPython new ensureTreeSitterLibraryExists 
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'postloads' }
 BaselineOfTreeSitter >> postLoadTSLibrary [ 
 	TSLibraries new ensureTreeSitterLibraryExists.
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'postloads' }
 BaselineOfTreeSitter >> postLoadTypescriptLibrary [ 
 	TSLibrariesTypescript new ensureTreeSitterLibraryExists 
  
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'postloads' }
 BaselineOfTreeSitter >> postLoadXMLLibrary [  
 	TSLibrariesXML new ensureTreeSitterLibraryExists 
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'postloads' }
 BaselineOfTreeSitter >> postLoadYAMLLibrary [  
 	TSLibrariesYAML new ensureTreeSitterLibraryExists 
 ]
