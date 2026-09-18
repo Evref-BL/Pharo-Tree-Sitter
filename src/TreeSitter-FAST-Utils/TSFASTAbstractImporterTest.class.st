@@ -105,7 +105,7 @@ Dictionary new
 "
 Class {
 	#name : 'TSFASTAbstractImporterTest',
-	#superclass : 'TestCase',
+	#superclass : 'ParametrizedTestCase',
 	#instVars : [
 		'fast',
 		'importer',
