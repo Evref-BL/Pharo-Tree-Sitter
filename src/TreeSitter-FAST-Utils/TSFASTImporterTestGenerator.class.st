@@ -84,7 +84,7 @@ TSFASTImporterTestGenerator >> generateAssertionsFor: entity pushing: pushString
 		tab: indentation;
 		nextPutAll: 'self assert: (self topEntity isOfType: ';
 		nextPutAll: entity class name.
-		
+
 	self assertTraitsOf: entity.
 
 
@@ -144,9 +144,17 @@ TSFASTImporterTestGenerator >> generateAssertionsFor: entity pushing: pushString
 									stream
 										nextPutAll: 'self assert: self topEntity ';
 										nextPutAll: selector;
+										nextPutAll: ((result isCollection and: [ result isString not ])
+												 ifTrue: [ ' asArray ' ]
+												 ifFalse: [ '' ]);
+										"Collections for properties can be Array or OrderedCollections. We cannot serialize a set If we export and reimport the code, tey become OrderedCollections. So for tests we make them array all the time. The order is important."
 										nextPutAll: ' equals: ';
-										store: result.
+										store: result;
+										nextPutAll: ((result isCollection and: [ result isString not ])
+												 ifTrue: [ ' asArray' ]
+												 ifFalse: [ '' ]).
 									(result isString and: [ result lines size > 1 ]) ifTrue: [ stream nextPutAll: ' withPlatformLineEndings' ].
+
 									skipPop ifFalse: [
 											stream
 												nextPut: $.;
@@ -158,7 +166,7 @@ TSFASTImporterTestGenerator >> generateAssertionsFor: entity pushing: pushString
 			stream
 				nextPutAll: 'stack pop.';
 				cr;
-				tab: indentation ].
+				tab: indentation ]
 ]
 
 { #category : 'test generation' }
