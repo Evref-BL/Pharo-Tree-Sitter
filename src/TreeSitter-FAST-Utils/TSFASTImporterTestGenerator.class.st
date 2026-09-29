@@ -230,6 +230,58 @@ TSFASTImporterTestGenerator >> generateTestNamed: aString fromCode: code protoco
 	self generateMethod:  stream contents inProtocol: protocol
 ]
 
+{ #category : 'get' }
+TSFASTImporterTestGenerator >> getTestCorpusFrom: aUrl [
+	"Download and parse a tree-sitter corpus file.
+     Returns a Dictionary { testName -> codeSnippet }."
+
+	| content result lines state currentName codeStream |
+	content := ZnClient new get: aUrl.
+	result := Dictionary new.
+	lines := content lines.
+	state := #seekHeader.
+	currentName := nil.
+	codeStream := nil.
+
+
+	lines do: [ :line |
+			state = #seekHeader
+				ifTrue: [
+				(line matchesRegex: '={3,}') ifTrue: [ state := #readName ] ]
+				ifFalse: [
+						state = #readName
+							ifTrue: [
+									(line matchesRegex: '={3,}')
+										ifTrue: [
+												codeStream := String new writeStream.
+												state := #readCode ]
+										ifFalse: [
+										line trimBoth isEmpty ifFalse: [
+											currentName := line trimBoth ] ] ]
+							ifFalse: [
+									state = #readCode ifTrue: [
+											line trimBoth = '---'
+												ifTrue: [
+														| code safeName |
+														code := codeStream contents trimBoth.
+														(code isNotEmpty and: [ currentName isNotNil ]) ifTrue: [
+																safeName := '' join: ((currentName select: [ :c |
+																		              c isAlphaNumeric or: [
+																			              c = Character space ] ]) substrings
+																		             collect: [ :w | w capitalized ]).
+																result at: safeName put: code ].
+														currentName := nil.
+														state := #seekHeader ]
+												ifFalse: [
+														(line matchesRegex: '={3,}')
+															ifTrue: [ state := #readName ]
+															ifFalse: [
+																	codeStream
+																		nextPutAll: line;
+																		nextPut: Character cr ] ] ] ] ] ].
+	^ result
+]
+
 { #category : 'initialization' }
 TSFASTImporterTestGenerator >> initialize [
 
