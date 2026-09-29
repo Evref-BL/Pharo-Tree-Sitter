@@ -104,13 +104,33 @@ TSFASTContextEntry >> field: anObject [
 
 { #category : 'testing' }
 TSFASTContextEntry >> fieldMatchesProperty: aFMProperty [
-	"My field matches the property if the property has the same name as the field or as an alias of the field."
-
-	aFMProperty name = field ifTrue: [ ^ true ].
-
-	fieldsAliasMap ifNotNil: [ fieldsAliasMap at: field ifPresent: [ :aliases | (aliases includes: aFMProperty name) ifTrue: [ ^ true ] ] ].
-
-	^ false
+    | propName camelField |
+    
+    "Handle unnamed children (single or multiple)"
+    (field isNil or: [ field isEmpty or: [ field = '<unnamedChild>' ] ]) ifTrue: [ 
+        | pName |
+        pName := aFMProperty name asString.
+        ^ pName = 'childrenNodes' or: [ pName = 'childrenNode' ] ].
+    
+    propName := aFMProperty name asString.
+    
+    "Direct match"
+    propName = field ifTrue: [ ^ true ].
+    
+    "Check aliases"
+    fieldsAliasMap ifNotNil: [ 
+        fieldsAliasMap at: field ifPresent: [ :aliases | 
+            (aliases includes: aFMProperty name) ifTrue: [ ^ true ] ] ].
+    
+    "CamelCase conversion (type_parameters → typeParameters)"
+    camelField := self toCamelCase: field.
+    (camelField ~= field and: [ propName = camelField ]) ifTrue: [ ^ true ].
+    
+    "Reserved property names (type → typeRef, name → nameRef)"
+    self reservedPropertyMappings at: camelField ifPresent: [ :safeName |
+        propName = safeName ifTrue: [ ^ true ] ].
+    
+    ^ false
 ]
 
 { #category : 'accessing' }
@@ -148,6 +168,27 @@ TSFASTContextEntry >> printOn: aStream [
 				nextPutAll: self field ].
 
 	aStream nextPutAll: ')'
+]
+
+{ #category : 'as yet unclassified' }
+TSFASTContextEntry >> reservedPropertyMappings [
+    "Map tree-sitter field names to safe Famix property names"
+    ^ Dictionary new
+        at: 'type' put: 'typeRef';
+        at: 'name' put: 'nameRef';
+        yourself
+]
+
+{ #category : 'utils' }
+TSFASTContextEntry >> toCamelCase: aString [
+    "Convert tree-sitter underscore_name to camelCase.
+    Example: 'type_parameters' → 'typeParameters'"
+    | parts |
+    parts := aString asString substrings: '_'.
+    ^ parts isEmpty 
+        ifTrue: [ '' ] 
+        ifFalse: [ parts first , (String streamContents: [ :s | 
+            parts allButFirst do: [ :p | s nextPutAll: p capitalized ] ]) ]
 ]
 
 { #category : 'accessing' }
