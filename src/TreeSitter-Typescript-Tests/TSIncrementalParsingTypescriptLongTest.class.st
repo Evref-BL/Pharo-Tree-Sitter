@@ -9,247 +9,67 @@ Class {
 	#package : 'TreeSitter-Typescript-Tests'
 }
 
+{ #category : 'as yet unclassified' }
+TSIncrementalParsingTypescriptLongTest >> editTree: oldTree from: oldString to: newString [  
+
+	parser editTree: oldTree usingInputEdit: (TSInputEdit fromString: oldString to: newString).
+	^ parser parseString: newString usingTree: oldTree 
+]
+
 { #category : 'editing' }
 TSIncrementalParsingTypescriptLongTest >> editTreeForDeleteBeginingLongExampleUsing: oldTree [   
 
-	|newString aTSInputEdit startPoint oldPoint newPoint newTree|
-	
-	newString := self newLongStringDeleteBeginning .
-
-	aTSInputEdit := TSInputEdit new. 
-	
-	startPoint := aTSInputEdit createPointWithRow: 0 andColumn: 0.
-	oldPoint := aTSInputEdit createPointWithRow: 5 andColumn: 72. 
-	newPoint := aTSInputEdit createPointWithRow: 0 andColumn: 0.   
-	
-	aTSInputEdit
-		startByte: 0;
-		oldEndByte: 272;
-		newEndByte: 0;
-		startPoint: startPoint;
-		oldEndPoint: oldPoint;
-		newEndPoint: newPoint.
-	
-	parser editTree: oldTree usingInputEdit: aTSInputEdit.
-	newTree := parser parseString: newString usingTree: oldTree.
-	
-	^ newTree
+	^ self editTree: oldTree from: self longStringExample to: self newLongStringDeleteBeginning 
 ]
 
 { #category : 'editing' }
 TSIncrementalParsingTypescriptLongTest >> editTreeForDeleteEndLongExampleUsing: oldTree [   
 
-	|newString aTSInputEdit startPoint oldPoint newPoint newTree|
-	
-	newString := self newLongStringDeleteEnd .
-
-	aTSInputEdit := TSInputEdit new. 
-	
-	startPoint := aTSInputEdit createPointWithRow: 631 andColumn: 0.
-	oldPoint := aTSInputEdit createPointWithRow: 631 andColumn: 0. 
-	newPoint := aTSInputEdit createPointWithRow: 631 andColumn: 0.   
-	
-	aTSInputEdit
-		startByte: 16615;
-		oldEndByte: 16637;
-		newEndByte: 16615;
-		startPoint: startPoint;
-		oldEndPoint: oldPoint;
-		newEndPoint: newPoint.
-	
-	parser editTree: oldTree usingInputEdit: aTSInputEdit.
-	newTree := parser parseString: newString usingTree: oldTree.
-	
-	^ newTree
+	^ self editTree: oldTree from: self longStringExample to: self newLongStringDeleteEnd 
 ]
 
 { #category : 'editing' }
 TSIncrementalParsingTypescriptLongTest >> editTreeForDeleteMiddleLongExampleUsing: oldTree [   
 
-	|newString aTSInputEdit startPoint oldPoint newPoint newTree|
-	
-	newString := self newLongStringDeleteMiddle .
-
-	aTSInputEdit := TSInputEdit new. 
-	
-	startPoint := aTSInputEdit createPointWithRow: 7 andColumn: 0.
-	oldPoint := aTSInputEdit createPointWithRow: 25 andColumn: 13. 
-	newPoint := aTSInputEdit createPointWithRow: 7 andColumn: 0.   
-	
-	aTSInputEdit
-		startByte: 272;
-		oldEndByte: 692;
-		newEndByte: 272;
-		startPoint: startPoint;
-		oldEndPoint: oldPoint;
-		newEndPoint: newPoint.
-	
-	parser editTree: oldTree usingInputEdit: aTSInputEdit.
-	newTree := parser parseString: newString usingTree: oldTree.
-	
-	^ newTree
+	^ self editTree: oldTree from: self longStringExample to: self newLongStringDeleteMiddle 
 ]
 
 { #category : 'editing' }
 TSIncrementalParsingTypescriptLongTest >> editTreeForInsertBeginningLongExampleUsing: oldTree [   
 
-	|newString aTSInputEdit startPoint oldPoint newPoint newTree|
-	
-	newString := self newLongStringInsertBeginning .
-
-	aTSInputEdit := TSInputEdit new. 
-	
-	startPoint := aTSInputEdit createPointWithRow: 0 andColumn: 0.
-	oldPoint := aTSInputEdit createPointWithRow: 0 andColumn: 0. 
-	newPoint := aTSInputEdit createPointWithRow: 6 andColumn: 0.   
-	
-	aTSInputEdit
-		startByte: 0;
-		oldEndByte: 0;
-		newEndByte: 270;
-		startPoint: startPoint;
-		oldEndPoint: oldPoint;
-		newEndPoint: newPoint.
-	
-	parser editTree: oldTree usingInputEdit: aTSInputEdit.
-	newTree := parser parseString: newString usingTree: oldTree.
-	
-	^ newTree
+	^ self editTree: oldTree from: self longStringExample to: self newLongStringInsertBeginning 
 ]
 
 { #category : 'editing' }
 TSIncrementalParsingTypescriptLongTest >> editTreeForInsertEndLongExampleUsing: oldTree [   
 
-	|newString aTSInputEdit startPoint oldPoint newPoint newTree|
-	
-	newString := self newLongStringInsertEnd .
-
-	aTSInputEdit := TSInputEdit new. 
-	
-	startPoint := aTSInputEdit createPointWithRow: 631 andColumn: 22.
-	oldPoint := aTSInputEdit createPointWithRow: 631 andColumn: 22. 
-	newPoint := aTSInputEdit createPointWithRow: 632 andColumn: 27.   
-	
-	aTSInputEdit
-		startByte: 16637;
-		oldEndByte: 16637;
-		newEndByte: 16666;
-		startPoint: startPoint;
-		oldEndPoint: oldPoint;
-		newEndPoint: newPoint.
-	
-	parser editTree: oldTree usingInputEdit: aTSInputEdit.
-	newTree := parser parseString: newString usingTree: oldTree.
-	
-	^ newTree
+	^ self editTree: oldTree from: self longStringExample to: self newLongStringInsertEnd 
 ]
 
 { #category : 'editing' }
 TSIncrementalParsingTypescriptLongTest >> editTreeForInsertMiddleLongExampleUsing: oldTree [   
 
-	|newString aTSInputEdit startPoint oldPoint newPoint newTree|
-	
-	newString := self newLongStringInsertMiddle .
-
-	aTSInputEdit := TSInputEdit new. 
-	
-	startPoint := aTSInputEdit createPointWithRow: 103 andColumn: 0.
-	oldPoint := aTSInputEdit createPointWithRow: 103 andColumn: 0. 
-	newPoint := aTSInputEdit createPointWithRow: 107 andColumn: 1.   
-	
-	aTSInputEdit
-		startByte: 2849;
-		oldEndByte: 2849;
-		newEndByte: 2914;
-		startPoint: startPoint;
-		oldEndPoint: oldPoint;
-		newEndPoint: newPoint.
-	
-	parser editTree: oldTree usingInputEdit: aTSInputEdit.
-	newTree := parser parseString: newString usingTree: oldTree.
-	
-	^ newTree
+	^ self editTree: oldTree from: self longStringExample to: self newLongStringInsertMiddle 
 ]
 
 { #category : 'editing' }
 TSIncrementalParsingTypescriptLongTest >> editTreeForUpdateBeginningLongExampleUsing: oldTree [   
 
-	|newString aTSInputEdit startPoint oldPoint newPoint newTree|
-	
-	newString := self newLongStringUpdateBeginning .
-
-	aTSInputEdit := TSInputEdit new. 
-	
-	startPoint := aTSInputEdit createPointWithRow: 0 andColumn: 0.
-	oldPoint := aTSInputEdit createPointWithRow: 7 andColumn: 24. 
-	newPoint := aTSInputEdit createPointWithRow: 0 andColumn: 40.   
-	
-	aTSInputEdit
-		startByte: 0;
-		oldEndByte: 268;
-		newEndByte: 40;
-		startPoint: startPoint;
-		oldEndPoint: oldPoint;
-		newEndPoint: newPoint.
-	
-	parser editTree: oldTree usingInputEdit: aTSInputEdit.
-	newTree := parser parseString: newString usingTree: oldTree.
-	
-	^ newTree
+	^ self editTree: oldTree from: self longStringExample to: self newLongStringUpdateBeginning
 ]
 
 { #category : 'editing' }
 TSIncrementalParsingTypescriptLongTest >> editTreeForUpdateEndLongExampleUsing: oldTree [   
 
-	|newString aTSInputEdit startPoint oldPoint newPoint newTree|
-	
-	newString := self newLongStringUpdateEnd .
+	^ self editTree: oldTree from: self longStringExample to: self newLongStringUpdateEnd
 
-	aTSInputEdit := TSInputEdit new. 
-	
-	startPoint := aTSInputEdit createPointWithRow: 631 andColumn: 0.
-	oldPoint := aTSInputEdit createPointWithRow: 632 andColumn: 20. 
-	newPoint := aTSInputEdit createPointWithRow: 632 andColumn: 27.   
-	
-	aTSInputEdit
-		startByte: 16615;
-		oldEndByte: 16637;
-		newEndByte: 16644;
-		startPoint: startPoint;
-		oldEndPoint: oldPoint;
-		newEndPoint: newPoint.
-	
-	parser editTree: oldTree usingInputEdit: aTSInputEdit.
-	newTree := parser parseString: newString usingTree: oldTree.
-	
-	^ newTree
+
 ]
 
 { #category : 'editing' }
 TSIncrementalParsingTypescriptLongTest >> editTreeForUpdateMiddleLongExampleUsing: oldTree [   
 
-	|newString aTSInputEdit startPoint oldPoint newPoint newTree|
-	
-	newString := self newLongStringUpdateMiddle .
-
-	aTSInputEdit := TSInputEdit new. 
-	
-	startPoint := aTSInputEdit createPointWithRow: 80 andColumn: 0.
-	oldPoint := aTSInputEdit createPointWithRow: 94 andColumn: 4. 
-	newPoint := aTSInputEdit createPointWithRow: 98 andColumn: 1.   
-	
-	aTSInputEdit
-		startByte: 2258;
-		oldEndByte: 2814;
-		newEndByte: 2953;
-		startPoint: startPoint;
-		oldEndPoint: oldPoint;
-		newEndPoint: newPoint.
-	
-	parser editTree: oldTree usingInputEdit: aTSInputEdit.
-	newTree := parser parseString: newString usingTree: oldTree.
-	
-	^ newTree
+	^ self editTree: oldTree from: self longStringExample to: self newLongStringUpdateMiddle
 ]
 
 { #category : 'storing' }

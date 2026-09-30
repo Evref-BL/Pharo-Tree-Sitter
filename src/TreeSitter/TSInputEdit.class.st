@@ -26,6 +26,61 @@ TSInputEdit class >> fieldsDesc [
  
 ]
 
+{ #category : 'instance creation' }
+TSInputEdit class >> fromString: oldString to: newString [  
+	"Answer the edit turning oldString into newString, as a single replaced byte range.
+	Offsets are in UTF-8 bytes, as parseString: sends UTF-8 to tree-sitter.
+	The range is the smallest one: common prefix and common suffix are left out."
+
+	| oldBytes newBytes prefix maxSuffix suffix oldEnd newEnd |
+	oldBytes := oldString utf8Encoded.
+	newBytes := newString utf8Encoded.
+
+	prefix := 0.
+	[ prefix < oldBytes size and: [
+		prefix < newBytes size and: [
+		(oldBytes at: prefix + 1) = (newBytes at: prefix + 1) ] ] ]
+		whileTrue: [ prefix := prefix + 1 ].
+
+	"the suffix must not overlap the prefix"
+	maxSuffix := (oldBytes size min: newBytes size) - prefix.
+	suffix := 0.
+	[ suffix < maxSuffix and: [
+		(oldBytes at: oldBytes size - suffix) = (newBytes at: newBytes size - suffix) ] ]
+		whileTrue: [ suffix := suffix + 1 ].
+
+	oldEnd := oldBytes size - suffix.
+	newEnd := newBytes size - suffix.
+
+	^ self new
+		startByte: prefix;
+		oldEndByte: oldEnd;
+		newEndByte: newEnd;
+		startPoint: (self pointAt: prefix in: oldBytes);
+		oldEndPoint: (self pointAt: oldEnd in: oldBytes);
+		newEndPoint: (self pointAt: newEnd in: newBytes);
+		yourself 
+]
+
+{ #category : 'accessing' }
+TSInputEdit class >> pointAt: aByteOffset in: aByteArray [  
+	"Answer the TSPoint of a 0-based byte offset, computed like tree-sitter:
+	row = number of LF bytes before it, column = number of bytes since the last LF."
+
+	| row lineStart |
+	row := 0.
+	lineStart := 0.
+	1 to: aByteOffset do: [ :i |
+		(aByteArray at: i) = 10 ifTrue: [
+			row := row + 1.
+			lineStart := i ] ].
+	^ TSPoint new
+		row: row;
+		column: aByteOffset - lineStart;
+		yourself
+
+]
+
 { #category : 'as yet unclassified' }
 TSInputEdit >> createPointWithRow: aRow andColumn: aColumn [
 	
