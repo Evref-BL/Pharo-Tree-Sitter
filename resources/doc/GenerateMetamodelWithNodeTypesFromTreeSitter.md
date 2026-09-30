@@ -1,13 +1,13 @@
 ## How to Test
 
-Follow the step-by-step guide below to test the dynamic FAST metamodel generation, code parsing, and test generation in a fresh **Pharo image**.
+Follow the step-by-step guide below to generate a new FAST metamodel: classes, properties and tests in a fresh **Pharo image**. We will continue this documentation using typeScript as an example.
 
 ---
 
 ### Prerequisites & Dependencies Installation
 
 #### 1. Install `Pharo-Tree-Sitter`
-Execute the following Metacello script to load the updated Pharo Tree-Sitter repository:
+Execute the following Metacello script to load Pharo Tree-Sitter repository:
 
 ```smalltalk
 Metacello new
@@ -43,7 +43,7 @@ Metacello new
 > - **Location:** Head to the target language repository on GitHub (typically under `src/`, or `<subfolder>/src/` for multi-grammar repos like TypeScript/TSX).
 > - **Usage:** Always click the **Raw** button to get the direct raw URL (e.g. `https://raw.githubusercontent.com/tree-sitter/tree-sitter-typescript/master/typescript/src/node-types.json`) so Pharo can fetch it directly.
 
-Run this script:
+Run this script to generate a new metamodel generator:
 
 ```smalltalk
 | builder generatorClass |
