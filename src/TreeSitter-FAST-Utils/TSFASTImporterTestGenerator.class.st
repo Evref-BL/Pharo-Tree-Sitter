@@ -233,7 +233,7 @@ TSFASTImporterTestGenerator >> generateTestNamed: aString fromCode: code protoco
 { #category : 'get' }
 TSFASTImporterTestGenerator >> getTestCorpusFrom: aUrl [
 	"Download and parse a tree-sitter corpus file.
-     Returns a Dictionary { testName -> codeSnippet }."
+	 Returns a Dictionary { testName -> codeSnippet }."
 
 	| content result lines state currentName codeStream |
 	content := ZnClient new get: aUrl.
@@ -242,7 +242,6 @@ TSFASTImporterTestGenerator >> getTestCorpusFrom: aUrl [
 	state := #seekHeader.
 	currentName := nil.
 	codeStream := nil.
-
 
 	lines do: [ :line |
 			state = #seekHeader
@@ -256,11 +255,14 @@ TSFASTImporterTestGenerator >> getTestCorpusFrom: aUrl [
 												codeStream := String new writeStream.
 												state := #readCode ]
 										ifFalse: [
-										line trimBoth isEmpty ifFalse: [
-											currentName := line trimBoth ] ] ]
+												| trimmed |
+												trimmed := line trimBoth.
+												(trimmed isNotEmpty and: [
+													 currentName isNil and: [ (trimmed beginsWith: ':') not ] ])
+													ifTrue: [ currentName := trimmed ] ] ]
 							ifFalse: [
 									state = #readCode ifTrue: [
-											line trimBoth = '---'
+											(line matchesRegex: '-{3,}')
 												ifTrue: [
 														| code safeName |
 														code := codeStream contents trimBoth.
