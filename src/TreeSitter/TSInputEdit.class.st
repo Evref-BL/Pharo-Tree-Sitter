@@ -1,17 +1,30 @@
 Class {
 	#name : 'TSInputEdit',
 	#superclass : 'FFIStructure',
-	#instVars : [
-		'startByte',
-		'oldEndByte',
-		'newEndByte',
-		'startPoint',
-		'oldEndPoint',
-		'newEndPoint'
+	#classVars : [
+		'OFFSET_NEWENDBYTE',
+		'OFFSET_NEWENDPOINT',
+		'OFFSET_OLDENDBYTE',
+		'OFFSET_OLDENDPOINT',
+		'OFFSET_STARTBYTE',
+		'OFFSET_STARTPOINT'
 	],
 	#category : 'TreeSitter',
 	#package : 'TreeSitter'
 }
+
+{ #category : 'as yet unclassified' }
+TSInputEdit class >> fieldsDesc [  
+	^ #(
+		uint32 startByte;
+		uint32 oldEndByte;
+		uint32 newEndByte;
+		TSPoint startPoint;
+		TSPoint oldEndPoint;
+		TSPoint newEndPoint;
+	)
+ 
+]
 
 { #category : 'as yet unclassified' }
 TSInputEdit >> createPointWithRow: aRow andColumn: aColumn [
@@ -24,74 +37,74 @@ TSInputEdit >> createPointWithRow: aRow andColumn: aColumn [
 			column: aColumn. 
 ]
 
-{ #category : 'accessing' }
+{ #category : 'accessing - structure variables' }
 TSInputEdit >> newEndByte [
-
-	^ newEndByte
+	"This method was automatically generated"
+	^handle unsignedLongAt: OFFSET_NEWENDBYTE
 ]
 
-{ #category : 'accessing' }
+{ #category : 'accessing - structure variables' }
 TSInputEdit >> newEndByte: anObject [
-
-	newEndByte := anObject
+	"This method was automatically generated"
+	handle unsignedLongAt: OFFSET_NEWENDBYTE put: anObject
 ]
 
-{ #category : 'accessing' }
+{ #category : 'accessing - structure variables' }
 TSInputEdit >> newEndPoint [
-
-	^ newEndPoint
+	"This method was automatically generated"
+	^ TSPoint fromHandle: (handle referenceStructAt: OFFSET_NEWENDPOINT length: TSPoint byteSize)
 ]
 
-{ #category : 'accessing' }
+{ #category : 'accessing - structure variables' }
 TSInputEdit >> newEndPoint: anObject [
-
-	newEndPoint := anObject
+	"This method was automatically generated"
+	handle structAt: OFFSET_NEWENDPOINT put: anObject getHandle length: TSPoint byteSize
 ]
 
-{ #category : 'accessing' }
+{ #category : 'accessing - structure variables' }
 TSInputEdit >> oldEndByte [
-
-	^ oldEndByte
+	"This method was automatically generated"
+	^handle unsignedLongAt: OFFSET_OLDENDBYTE
 ]
 
-{ #category : 'accessing' }
+{ #category : 'accessing - structure variables' }
 TSInputEdit >> oldEndByte: anObject [
-
-	oldEndByte := anObject
+	"This method was automatically generated"
+	handle unsignedLongAt: OFFSET_OLDENDBYTE put: anObject
 ]
 
-{ #category : 'accessing' }
+{ #category : 'accessing - structure variables' }
 TSInputEdit >> oldEndPoint [
-
-	^ oldEndPoint
+	"This method was automatically generated"
+	^ TSPoint fromHandle: (handle referenceStructAt: OFFSET_OLDENDPOINT length: TSPoint byteSize)
 ]
 
-{ #category : 'accessing' }
+{ #category : 'accessing - structure variables' }
 TSInputEdit >> oldEndPoint: anObject [
-
-	oldEndPoint := anObject
+	"This method was automatically generated"
+	handle structAt: OFFSET_OLDENDPOINT put: anObject getHandle length: TSPoint byteSize
 ]
 
-{ #category : 'accessing' }
+{ #category : 'accessing - structure variables' }
 TSInputEdit >> startByte [
-
-	^ startByte
+	"This method was automatically generated"
+	^handle unsignedLongAt: OFFSET_STARTBYTE
 ]
 
-{ #category : 'accessing' }
+{ #category : 'accessing - structure variables' }
 TSInputEdit >> startByte: anObject [
-
-	startByte := anObject
+	"This method was automatically generated"
+	handle unsignedLongAt: OFFSET_STARTBYTE put: anObject
 ]
 
-{ #category : 'accessing' }
+{ #category : 'accessing - structure variables' }
 TSInputEdit >> startPoint [
-
-	^ startPoint
+	"This method was automatically generated"
+	^ TSPoint fromHandle: (handle referenceStructAt: OFFSET_STARTPOINT length: TSPoint byteSize)
 ]
 
-{ #category : 'accessing' }
+{ #category : 'accessing - structure variables' }
 TSInputEdit >> startPoint: anObject [
-
-	startPoint := anObject
+	"This method was automatically generated"
+	handle structAt: OFFSET_STARTPOINT put: anObject getHandle length: TSPoint byteSize
 ]
