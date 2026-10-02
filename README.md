@@ -17,6 +17,7 @@ It allows you to analyze and highlight code using existing Tree-sitter parsers d
     - [How It Works](#how-it-works)
     - [Required Tools for MacOS and Linux](#required-tools-for-macos-and-linux)
     - [Required Tools for Windows](#required-tools-for-windows)
+    - [Customizing the version of the library](#customizing-the-version-of-the-library)
   - [Manual Installation](#manual-installation)
     - [macOS](#macos)
     - [Building Tree-sitter Shared Library](#building-tree-sitter-shared-library)
@@ -115,6 +116,18 @@ To make sure the automation process works, please ensure the following tools are
 | Ninja  | Build system                      | `ninja --version`      |
 
 If any of these commands fail, install the corresponding tool before continuing.
+
+### Customizing the version of the library
+
+By default, at the installation, this project will compile the missing libraries by getting the latest release of those libraries. 
+
+It is possible to customize the version to install. In order to do this, you need to initialize a global variable named `TreeSitterLibraryBranchMap` and put the version (SHA, tag, branch name) you want for the language you want. 
+
+For example:
+
+```smalltalk
+(self class environment at: #TreeSitterLibraryBranchMap ifAbsentPut: [ Dictionary new ]) at: 'Python' put: 'main' "Loads main branch instead of latest release"
+```
 
 ## Manual Installation
 

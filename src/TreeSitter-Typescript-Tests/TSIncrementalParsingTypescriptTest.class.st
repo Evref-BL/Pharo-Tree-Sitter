@@ -12,271 +12,71 @@ Class {
 { #category : 'editing' }
 TSIncrementalParsingTypescriptTest >> editTree: oldTree forBasicExample: oldString [ 
 
-	|newString aTSInputEdit startPoint oldPoint newPoint newTree|
-	
-	newString := 'function printHello(): void { console.log(''Hello!''); console.log(''hi!''); }'.
+	^ self
+		editTree: oldTree
+		from: oldString
+		to: 'function printHello(): void { console.log(''Hello!''); console.log(''hi!''); }'
+]
 
-	aTSInputEdit := TSInputEdit new.
+{ #category : 'as yet unclassified' }
+TSIncrementalParsingTypescriptTest >> editTree: oldTree from: oldString to: newString [  
 
-	startPoint := aTSInputEdit createPointWithRow: 0 andColumn: oldString size .
-	oldPoint := aTSInputEdit createPointWithRow: 0 andColumn: oldString size . 
-	newPoint := aTSInputEdit createPointWithRow: 0 andColumn: newString size .   
-	
-	aTSInputEdit
-		startByte: oldString size;
-		oldEndByte: oldString size;
-		newEndByte: newString size;
-		startPoint: startPoint;
-		oldEndPoint: oldPoint;
-		newEndPoint: newPoint.
-	
-	parser editTree: oldTree usingInputEdit: aTSInputEdit.
-	newTree := parser parseString: newString usingTree: oldTree. 
-	
-	^ newTree
+	parser editTree: oldTree usingInputEdit: (TSInputEdit fromString: oldString to: newString).
+	^ parser parseString: newString usingTree: oldTree 
 ]
 
 { #category : 'editing' }
 TSIncrementalParsingTypescriptTest >> editTreeForDeleteBeginingExampleUsing: oldTree [   
-
-	|newString aTSInputEdit startPoint oldPoint newPoint newTree|
-	
-	newString := self newStringDeleteBeginning.
-
-	aTSInputEdit := TSInputEdit new. 
-	
-	startPoint := aTSInputEdit createPointWithRow: 0 andColumn: 0.
-	oldPoint := aTSInputEdit createPointWithRow: 1 andColumn: 33. 
-	newPoint := aTSInputEdit createPointWithRow: 0 andColumn: 0.   
-	
-	aTSInputEdit
-		startByte: 0;
-		oldEndByte: 69;
-		newEndByte: 0;
-		startPoint: startPoint;
-		oldEndPoint: oldPoint;
-		newEndPoint: newPoint.
-	
-	parser editTree: oldTree usingInputEdit: aTSInputEdit.
-	newTree := parser parseString: newString usingTree: oldTree.
-	
-	^ newTree
+ 
+	^ self editTree: oldTree from: self originalStringToParse to: self newStringDeleteBeginning 
 ]
 
 { #category : 'editing' }
 TSIncrementalParsingTypescriptTest >> editTreeForDeleteEndExampleUsing: oldTree [   
 
-	|newString aTSInputEdit startPoint oldPoint newPoint newTree|
-	
-	newString := self newStringDeleteEnd.
-
-	aTSInputEdit := TSInputEdit new. 
-	
-	startPoint := aTSInputEdit createPointWithRow: 9 andColumn: 51.
-	oldPoint := aTSInputEdit createPointWithRow: 9 andColumn: 51. 
-	newPoint := aTSInputEdit createPointWithRow: 9 andColumn: 51.   
-	
-	aTSInputEdit
-		startByte: 224;
-		oldEndByte: 255;
-		newEndByte: 224;
-		startPoint: startPoint;
-		oldEndPoint: oldPoint;
-		newEndPoint: newPoint.
-	
-	parser editTree: oldTree usingInputEdit: aTSInputEdit.
-	newTree := parser parseString: newString usingTree: oldTree.
-	
-	^ newTree
+	^ self editTree: oldTree from: self originalStringToParse to: self newStringDeleteEnd
 ]
 
 { #category : 'editing' }
 TSIncrementalParsingTypescriptTest >> editTreeForDeleteMiddleExampleUsing: oldTree [   
-
-	|newString aTSInputEdit startPoint oldPoint newPoint newTree|
-	
-	newString := self newStringDeleteMiddle.
-
-	aTSInputEdit := TSInputEdit new. 
-	
-	startPoint := aTSInputEdit createPointWithRow: 6 andColumn: 36.
-	oldPoint := aTSInputEdit createPointWithRow: 6 andColumn: 42. 
-	newPoint := aTSInputEdit createPointWithRow: 6 andColumn: 36.   
-	
-	aTSInputEdit
-		startByte: 141;
-		oldEndByte: 147;
-		newEndByte: 141;
-		startPoint: startPoint;
-		oldEndPoint: oldPoint;
-		newEndPoint: newPoint.
-	
-	parser editTree: oldTree usingInputEdit: aTSInputEdit.
-	newTree := parser parseString: newString usingTree: oldTree.
-	
-	^ newTree
+  
+	^ self editTree: oldTree from: self originalStringToParse to: self newStringDeleteMiddle
 ]
 
 { #category : 'editing' }
 TSIncrementalParsingTypescriptTest >> editTreeForInsertBeginingExampleUsing: oldTree [   
-
-	|newString aTSInputEdit startPoint oldPoint newPoint newTree|
-	
-	newString := self newStringInsertBeginning.
-
-	aTSInputEdit := TSInputEdit new. 
-	
-	startPoint := aTSInputEdit createPointWithRow: 0 andColumn: 0.
-	oldPoint := aTSInputEdit createPointWithRow: 0 andColumn: 0. 
-	newPoint := aTSInputEdit createPointWithRow: 0 andColumn: 10.   
-	
-	aTSInputEdit
-		startByte: 0;
-		oldEndByte: 0;
-		newEndByte: 10;
-		startPoint: startPoint;
-		oldEndPoint: oldPoint;
-		newEndPoint: newPoint.
-	
-	parser editTree: oldTree usingInputEdit: aTSInputEdit.
-	newTree := parser parseString: newString usingTree: oldTree.
-	
-	^ newTree
+ 
+	^ self editTree: oldTree from: self originalStringToParse to: self newStringInsertBeginning
 ]
 
 { #category : 'editing' }
 TSIncrementalParsingTypescriptTest >> editTreeForInsertEndExampleUsing: oldTree [   
 
-	|newString aTSInputEdit startPoint oldPoint newPoint newTree|
-	
-	newString := self newStringInsertEnd.
-
-	aTSInputEdit := TSInputEdit new. 
-	
-	startPoint := aTSInputEdit createPointWithRow: 11 andColumn: 27.
-	oldPoint := aTSInputEdit createPointWithRow: 11 andColumn: 27. 
-	newPoint := aTSInputEdit createPointWithRow: 12 andColumn: 21.   
-	
-	aTSInputEdit
-		startByte: 255;
-		oldEndByte: 255;
-		newEndByte: 278;
-		startPoint: startPoint;
-		oldEndPoint: oldPoint;
-		newEndPoint: newPoint.
-	
-	parser editTree: oldTree usingInputEdit: aTSInputEdit.
-	newTree := parser parseString: newString usingTree: oldTree.
-	
-	^ newTree
+	^ self editTree: oldTree from: self originalStringToParse to: self newStringInsertEnd
 ]
 
 { #category : 'editing' }
 TSIncrementalParsingTypescriptTest >> editTreeForInsertMiddleExampleUsing: oldTree [   
 
-	|newString aTSInputEdit startPoint oldPoint newPoint newTree|
-	
-	newString := self newStringInsertMiddle.
-
-	aTSInputEdit := TSInputEdit new. 
-	
-	startPoint := aTSInputEdit createPointWithRow: 7 andColumn: 1.
-	oldPoint := aTSInputEdit createPointWithRow: 7 andColumn: 1. 
-	newPoint := aTSInputEdit createPointWithRow: 9 andColumn: 22.   
-	
-	aTSInputEdit
-		startByte: 169;
-		oldEndByte: 169;
-		newEndByte: 195;
-		startPoint: startPoint;
-		oldEndPoint: oldPoint;
-		newEndPoint: newPoint.
-	
-	parser editTree: oldTree usingInputEdit: aTSInputEdit.
-	newTree := parser parseString: newString usingTree: oldTree.
-	
-	^ newTree
+	^ self editTree: oldTree from: self originalStringToParse to: self newStringInsertMiddle
 ]
 
 { #category : 'editing' }
 TSIncrementalParsingTypescriptTest >> editTreeForUpdateBeginingExampleUsing: oldTree [   
 
-	|newString aTSInputEdit startPoint oldPoint newPoint newTree|
-	
-	newString := self newStringUpdateBegining.
-
-	aTSInputEdit := TSInputEdit new. 
-	
-	startPoint := aTSInputEdit createPointWithRow: 0 andColumn: 0.
-	oldPoint := aTSInputEdit createPointWithRow: 0 andColumn: 9. 
-	newPoint := aTSInputEdit createPointWithRow: 0 andColumn: 1.   
-	
-	aTSInputEdit
-		startByte: 0;
-		oldEndByte: 9;
-		newEndByte: 1;
-		startPoint: startPoint;
-		oldEndPoint: oldPoint;
-		newEndPoint: newPoint.
-	
-	parser editTree: oldTree usingInputEdit: aTSInputEdit.
-	newTree := parser parseString: newString usingTree: oldTree.
-	
-	^ newTree
+	^ self editTree: oldTree from: self originalStringToParse to: self newStringUpdateBegining
 ]
 
 { #category : 'editing' }
 TSIncrementalParsingTypescriptTest >> editTreeForUpdateEndExampleUsing: oldTree [   
 
-	|newString aTSInputEdit startPoint oldPoint newPoint newTree|
-	
-	newString := self newStringUpdateEnd.
-
-	aTSInputEdit := TSInputEdit new. 
-	
-	startPoint := aTSInputEdit createPointWithRow: 11 andColumn: 26.
-	oldPoint := aTSInputEdit createPointWithRow: 11 andColumn: 27. 
-	newPoint := aTSInputEdit createPointWithRow: 11 andColumn: 27.   
-	
-	aTSInputEdit
-		startByte: 254;
-		oldEndByte: 255;
-		newEndByte: 255;
-		startPoint: startPoint;
-		oldEndPoint: oldPoint;
-		newEndPoint: newPoint.
-	
-	parser editTree: oldTree usingInputEdit: aTSInputEdit.
-	newTree := parser parseString: newString usingTree: oldTree.
-	
-	^ newTree
+	^ self editTree: oldTree from: self originalStringToParse to: self newStringUpdateEnd
 ]
 
 { #category : 'editing' }
 TSIncrementalParsingTypescriptTest >> editTreeForUpdateMiddleExampleUsing: oldTree [   
 
-	|newString aTSInputEdit startPoint oldPoint newPoint newTree|
-	
-	newString := self newStringUpdateMiddle.
-
-	aTSInputEdit := TSInputEdit new. 
-	
-	startPoint := aTSInputEdit createPointWithRow: 9 andColumn: 43.
-	oldPoint := aTSInputEdit createPointWithRow: 9 andColumn: 47. 
-	newPoint := aTSInputEdit createPointWithRow: 9 andColumn: 48.   
-	
-	aTSInputEdit
-		startByte: 216;
-		oldEndByte: 220;
-		newEndByte: 221;
-		startPoint: startPoint;
-		oldEndPoint: oldPoint;
-		newEndPoint: newPoint.
-	
-	parser editTree: oldTree usingInputEdit: aTSInputEdit.
-	newTree := parser parseString: newString usingTree: oldTree.
-	
-	^ newTree
+	^ self editTree: oldTree from: self originalStringToParse to: self newStringUpdateMiddle
 ]
 
 { #category : 'storing' }

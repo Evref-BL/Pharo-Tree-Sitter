@@ -84,7 +84,7 @@ TSFASTImporterTestGenerator >> generateAssertionsFor: entity pushing: pushString
 		tab: indentation;
 		nextPutAll: 'self assert: (self topEntity isOfType: ';
 		nextPutAll: entity class name.
-		
+
 	self assertTraitsOf: entity.
 
 
@@ -144,9 +144,17 @@ TSFASTImporterTestGenerator >> generateAssertionsFor: entity pushing: pushString
 									stream
 										nextPutAll: 'self assert: self topEntity ';
 										nextPutAll: selector;
+										nextPutAll: ((result isCollection and: [ result isString not ])
+												 ifTrue: [ ' asArray ' ]
+												 ifFalse: [ '' ]);
+										"Collections for properties can be Array or OrderedCollections. We cannot serialize a set If we export and reimport the code, tey become OrderedCollections. So for tests we make them array all the time. The order is important."
 										nextPutAll: ' equals: ';
-										store: result.
+										store: result;
+										nextPutAll: ((result isCollection and: [ result isString not ])
+												 ifTrue: [ ' asArray' ]
+												 ifFalse: [ '' ]).
 									(result isString and: [ result lines size > 1 ]) ifTrue: [ stream nextPutAll: ' withPlatformLineEndings' ].
+
 									skipPop ifFalse: [
 											stream
 												nextPut: $.;
@@ -158,7 +166,7 @@ TSFASTImporterTestGenerator >> generateAssertionsFor: entity pushing: pushString
 			stream
 				nextPutAll: 'stack pop.';
 				cr;
-				tab: indentation ].
+				tab: indentation ]
 ]
 
 { #category : 'test generation' }
@@ -220,6 +228,60 @@ TSFASTImporterTestGenerator >> generateTestNamed: aString fromCode: code protoco
 		ifFalse: [ self generateAssertionsFor: model rootEntities anyOne pushing: 'fast rootEntities anyOne' popAtTheEnd: false ].
 
 	self generateMethod:  stream contents inProtocol: protocol
+]
+
+{ #category : 'get' }
+TSFASTImporterTestGenerator >> getTestCorpusFrom: aUrl [
+	"Download and parse a tree-sitter corpus file.
+	 Returns a Dictionary { testName -> codeSnippet }."
+
+	| content result lines state currentName codeStream |
+	content := ZnClient new get: aUrl.
+	result := Dictionary new.
+	lines := content lines.
+	state := #seekHeader.
+	currentName := nil.
+	codeStream := nil.
+
+	lines do: [ :line |
+			state = #seekHeader
+				ifTrue: [
+				(line matchesRegex: '={3,}') ifTrue: [ state := #readName ] ]
+				ifFalse: [
+						state = #readName
+							ifTrue: [
+									(line matchesRegex: '={3,}')
+										ifTrue: [
+												codeStream := String new writeStream.
+												state := #readCode ]
+										ifFalse: [
+												| trimmed |
+												trimmed := line trimBoth.
+												(trimmed isNotEmpty and: [
+													 currentName isNil and: [ (trimmed beginsWith: ':') not ] ])
+													ifTrue: [ currentName := trimmed ] ] ]
+							ifFalse: [
+									state = #readCode ifTrue: [
+											(line matchesRegex: '-{3,}')
+												ifTrue: [
+														| code safeName |
+														code := codeStream contents trimBoth.
+														(code isNotEmpty and: [ currentName isNotNil ]) ifTrue: [
+																safeName := '' join: ((currentName select: [ :c |
+																		              c isAlphaNumeric or: [
+																			              c = Character space ] ]) substrings
+																		             collect: [ :w | w capitalized ]).
+																result at: safeName put: code ].
+														currentName := nil.
+														state := #seekHeader ]
+												ifFalse: [
+														(line matchesRegex: '={3,}')
+															ifTrue: [ state := #readName ]
+															ifFalse: [
+																	codeStream
+																		nextPutAll: line;
+																		nextPut: Character cr ] ] ] ] ] ].
+	^ result
 ]
 
 { #category : 'initialization' }
