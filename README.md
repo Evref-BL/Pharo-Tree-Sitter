@@ -214,4 +214,6 @@ https://doi.org/10.5281/zenodo.15423234
 
 This library allows you to create a first version of any FASTLanguageMetamodel, in condition that this language is supported by treesitter and by PharoTreeSitter. To do that you can follow a detailed documentation [here](https://modularmoose.org/blog/2025-09-16-generation-of-fast-metamodel-using-treesitter/).
 
+**Update:** this library is updated and generated FAST metamodels are now complete and tested following the structure proposed by Tree-Sitter; Check the doc
+([here](https://github.com/Evref-BL/Pharo-Tree-Sitter/blob/main/resources/doc/GenerateMetamodelWithNodeTypesFromTreeSitter.md)).
 
