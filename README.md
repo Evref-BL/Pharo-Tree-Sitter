@@ -1,9 +1,5 @@
 # Pharo Tree-Sitter
 
-[![CI](https://github.com/Evref-BL/Pharo-Tree-Sitter/actions/workflows/ci.yml/badge.svg?branch=main&event=push)](https://github.com/Evref-BL/Pharo-Tree-Sitter/actions/workflows/ci.yml?query=branch%3Amain+event%3Apush)
-[![Coverage Status](https://coveralls.io/repos/github/Evref-BL/Pharo-Tree-Sitter/badge.svg?branch=main)](https://coveralls.io/github/Evref-BL/Pharo-Tree-Sitter?branch=main)
-[![DOI](https://zenodo.org/badge/843819305.svg)](https://doi.org/10.5281/zenodo.15089053)
-
 This project provides **Pharo bindings to [Tree-sitter](https://tree-sitter.github.io/tree-sitter/)**.  
 It allows you to analyze and highlight code using existing Tree-sitter parsers developed by the community.
 
@@ -37,7 +33,7 @@ To install it in **Pharo**, run the following script in a Playground:
 ```smalltalk
 Metacello new
   baseline: 'TreeSitter';
-  repository: 'github://Evref-BL/Pharo-Tree-Sitter:main/src';
+  repository: 'github://repoOwner/Pharo-Tree-Sitter:main/src';
   load.
 ```
 
@@ -46,7 +42,7 @@ To add this project to your baseline you can copy paste:
 ```Smalltalk
 spec
 	baseline: 'TreeSitter'
-	with: [ spec repository: 'github://Evref-BL/Pharo-Tree-Sitter:main/src' ]
+	with: [ spec repository: 'github://repoOwner/Pharo-Tree-Sitter:main/src' ]
 ```
 
 ## Native Libraries Required
@@ -206,14 +202,13 @@ Those utilises are documented here: [Documentation](resources/doc/ts_utilities.m
 
 ## Pre-built Libraries (Temporary Solution)
 
-If you face issues building the libraries, you can download pre-built libraries (for Windows and macOS) here:
-https://doi.org/10.5281/zenodo.15423234
+If you face issues building the libraries, you can download pre-built libraries (for Windows and macOS) here:(repo here)
 
 
 # Create a new FASTLanguageMetamodel using PharoTreeSitter
 
-This library allows you to create a first version of any FASTLanguageMetamodel, in condition that this language is supported by treesitter and by PharoTreeSitter. To do that you can follow a detailed documentation [here](https://modularmoose.org/blog/2025-09-16-generation-of-fast-metamodel-using-treesitter/).
+This library allows you to create a first version of any FASTLanguageMetamodel, in condition that this language is supported by treesitter and by PharoTreeSitter. To do that you can follow a detailed documentation [here anonymized]().
 
 **Update:** this library is updated and generated FAST metamodels are now complete and tested following the structure proposed by Tree-Sitter; Check the doc
-([here](https://github.com/Evref-BL/Pharo-Tree-Sitter/blob/main/resources/doc/GenerateMetamodelWithNodeTypesFromTreeSitter.md)).
+([here anonymized]()).
 
