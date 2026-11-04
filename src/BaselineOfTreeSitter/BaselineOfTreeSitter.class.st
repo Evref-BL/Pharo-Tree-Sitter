@@ -50,6 +50,7 @@ BaselineOfTreeSitter >> defineGroups: spec [
 	spec group: 'mermaid' with: #( 'default' 'TreeSitter-Mermaid' 'TreeSitter-Mermaid-Tests' ).
 	spec group: 'java' with: #( 'default' 'TreeSitter-Java' 'TreeSitter-Java-Tests' ).
 	spec group: 'scss' with: #( 'default' 'TreeSitter-SCSS' 'TreeSitter-SCSS-Tests' ).
+	spec group: 'angular' with: #( 'default' 'TreeSitter-Angular' 'TreeSitter-Angular-Tests' ).
 ]
 
 { #category : 'baselines' }
@@ -153,6 +154,18 @@ BaselineOfTreeSitter >> definePackages: spec [
 		package: 'TreeSitter-SCSS-Tests'
 		with: [ spec requires: #( 'TreeSitter-SCSS' ) ]. 
 		
+	spec
+		package: 'TreeSitter-Angular' with: [
+			spec requires: #( 'TreeSitter' ).
+			spec postLoadDoIt: #postLoadAngularLibrary ];
+		package: 'TreeSitter-Angular-Tests'
+		with: [ spec requires: #( 'TreeSitter-Angular' ) ].
+		
+]
+
+{ #category : 'postloads' }
+BaselineOfTreeSitter >> postLoadAngularLibrary [  
+	TSLibrariesAngular new ensureTreeSitterLibraryExists 
 ]
 
 { #category : 'postloads' }
