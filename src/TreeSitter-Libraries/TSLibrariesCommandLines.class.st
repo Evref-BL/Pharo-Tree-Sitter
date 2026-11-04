@@ -12,6 +12,16 @@ Class {
 	#package : 'TreeSitter-Libraries'
 }
 
+{ #category : 'as yet unclassified' }
+TSLibrariesCommandLines class >> angular [
+
+	^ self new
+		  folderName: 'tree-sitter-angular';
+		  windowsLibName: 'libtree-sitter-angular.dll';
+		  sources: #( 'src/parser.c' 'src/scanner.c');
+		  yourself
+]
+
 { #category : 'local' }
 TSLibrariesCommandLines class >> c [
 
