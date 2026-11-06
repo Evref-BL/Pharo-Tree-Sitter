@@ -61,17 +61,37 @@ For example, to use Tree-sitter with Python:
 - `libtree-sitter.dylib` (core)
 - `tree-sitter-python.dylib` (parser)
 
-You can generate these manually or take advantage of our **automated setup** for some supported languages.
+You can generate these manually or take advantage of our **automated setup** for the supported languages.
 
 ## Automated Library Generation
 
-We automated the generation and installation of libraries for a few selected languages (currently **Python** and **TypeScript**) to simplify the setup across platforms. The generated libraries are copied directly to the appropriate Pharo `vm` folders.
+We automated the generation and installation of libraries for all the supported languages to simplify the setup across platforms. The generated libraries are copied directly to the appropriate Pharo `vm` folders.
 
 The automation covers:
 
-- [Tree-sitter core](https://github.com/tree-sitter/tree-sitter)
-- [tree-sitter-python](https://github.com/tree-sitter/tree-sitter-python)
-- [tree-sitter-typescript](https://github.com/tree-sitter/tree-sitter-typescript)
+- Tree-Sitter
+- Tree-Sitter-Python
+- Tree-Sitter-Typescript
+- Tree-Sitter-HTML
+- Tree-Sitter-XML
+- Tree-Sitter-CSS
+- Tree-Sitter-SCSS
+- Tree-Sitter-YAML
+- Tree-Sitter-C
+- Tree-Sitter-Mermaid
+- Tree-Sitter-Groovy
+- Tree-Sitter-Java
+- Tree-Sitter-Angular
+
+By default, when the project is installed, TypeScript packages are loaded and libraries are generated.
+In order to load specific language, you need to specify this on load, for example:
+
+```smalltalk
+Metacello new
+  baseline: 'TreeSitter';
+  repository: 'github://Evref-BL/Pharo-Tree-Sitter:main/src';
+  load: 'python'.
+```
 
 ### How It Works
 
@@ -84,8 +104,7 @@ When a new parser or language is requested, the automation:
 5. Copies it to the correct `vm` location.
 
 This ensures libraries are only built when needed.
-
-> **Note:** Automation is only available for a limited set of languages for now.  
+  
 > Contributions are welcome! See the `TreeSitter-Libraries` package and create a new subclass like `TreeSitter-NewLanguage`.
 
 ### Required Tools for MacOS and Linux
@@ -194,7 +213,7 @@ tree rootNode
 - Famix been a dependency model 
 - FAST (Famix AST) been an AST representation of the language
 
-It exist some utilities to help building a Famix model for a language supported by TreeSitter. You can find this project here: [https://github.com/moosetechnology/TreeSitterFamixIntegration](https://github.com/moosetechnology/TreeSitterFamixIntegration)
+Some utilities exist to help building a Famix model for a language supported by TreeSitter. You can find this project here: [https://github.com/moosetechnology/TreeSitterFamixIntegration](https://github.com/moosetechnology/TreeSitterFamixIntegration)
 
 And this project provides a way to easily create a FAST importer. You can find the documentation here: [Documentation](resources/doc/fast_importer.md)
 
