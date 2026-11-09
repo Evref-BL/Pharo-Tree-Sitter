@@ -9,6 +9,18 @@ Class {
 }
 
 { #category : 'tests' }
+TSFASTContextEntryTest >> testNodeWithoutFieldDoesNotMatchTheAliasOfUnnamedFields [
+
+	| entry |
+	entry := TSFASTContextEntry new
+		         aliasUnnamedFieldAs: 'pattern';
+		         yourself.
+	self deny: (entry fieldMatchesProperty: (FMProperty new
+				  name: #pattern;
+				  yourself))
+]
+
+{ #category : 'tests' }
 TSFASTContextEntryTest >> testUnnamedChildMatchesChildrenNodesWithoutAlias [
 
 	| entry |

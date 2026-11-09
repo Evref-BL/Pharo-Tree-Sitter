@@ -106,17 +106,12 @@ TSFASTContextEntry >> field: anObject [
 TSFASTContextEntry >> fieldMatchesProperty: aFMProperty [
 
 	| propName camelField |
-	"Handle unnamed children (single or multiple)"
-	(field isNil or: [ field isEmpty or: [ field = '<unnamedChild>' ] ]) ifTrue: [
-			| pName |
-			pName := aFMProperty name asString.
-			"An alias declared for the unnamed children (see #aliasUnnamedFieldAs:) wins over the generic childrenNodes property"
-			fieldsAliasMap ifNotNil: [ fieldsAliasMap at: '<unnamedChild>' ifPresent: [ :aliases | (aliases includes: aFMProperty name) ifTrue: [ ^ true ] ] ].
-			^ pName = 'childrenNodes' or: [ pName = 'childrenNode' ] ].
-
 	propName := aFMProperty name asString.
-	"An alias declared for the unnamed children (see #aliasUnnamedFieldAs:) wins over the generic childrenNodes property"
-	fieldsAliasMap ifNotNil: [ fieldsAliasMap at: '<unnamedChild>' ifPresent: [ :aliases | (aliases includes: aFMProperty name) ifTrue: [ ^ true ] ] ].
+
+	"Handle unnamed children (single or multiple)"
+	(field isNil or: [ field isEmpty or: [ field = '<unnamedChild>' ] ]) ifTrue: [ "An alias declared for the unnamed children (see #aliasUnnamedFieldAs:) wins over the generic childrenNodes property"
+			field = '<unnamedChild>' ifTrue: [ fieldsAliasMap ifNotNil: [ fieldsAliasMap at: field ifPresent: [ :aliases | (aliases includes: aFMProperty name) ifTrue: [ ^ true ] ] ] ].
+			^ propName = 'childrenNodes' or: [ propName = 'childrenNode' ] ].
 
 	"Direct match"
 	propName = field ifTrue: [ ^ true ].
