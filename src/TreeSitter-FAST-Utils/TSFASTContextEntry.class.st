@@ -104,33 +104,34 @@ TSFASTContextEntry >> field: anObject [
 
 { #category : 'testing' }
 TSFASTContextEntry >> fieldMatchesProperty: aFMProperty [
-    | propName camelField |
-    
-    "Handle unnamed children (single or multiple)"
-    (field isNil or: [ field isEmpty or: [ field = '<unnamedChild>' ] ]) ifTrue: [ 
-        | pName |
-        pName := aFMProperty name asString.
-        ^ pName = 'childrenNodes' or: [ pName = 'childrenNode' ] ].
-    
-    propName := aFMProperty name asString.
-    
-    "Direct match"
-    propName = field ifTrue: [ ^ true ].
-    
-    "Check aliases"
-    fieldsAliasMap ifNotNil: [ 
-        fieldsAliasMap at: field ifPresent: [ :aliases | 
-            (aliases includes: aFMProperty name) ifTrue: [ ^ true ] ] ].
-    
-    "CamelCase conversion (type_parameters → typeParameters)"
-    camelField := self toCamelCase: field.
-    (camelField ~= field and: [ propName = camelField ]) ifTrue: [ ^ true ].
-    
-    "Reserved property names (type → typeRef, name → nameRef)"
-    self reservedPropertyMappings at: camelField ifPresent: [ :safeName |
-        propName = safeName ifTrue: [ ^ true ] ].
-    
-    ^ false
+
+	| propName camelField |
+	"Handle unnamed children (single or multiple)"
+	(field isNil or: [ field isEmpty or: [ field = '<unnamedChild>' ] ]) ifTrue: [
+			| pName |
+			pName := aFMProperty name asString.
+			"An alias declared for the unnamed children (see #aliasUnnamedFieldAs:) wins over the generic childrenNodes property"
+			fieldsAliasMap ifNotNil: [ fieldsAliasMap at: '<unnamedChild>' ifPresent: [ :aliases | (aliases includes: aFMProperty name) ifTrue: [ ^ true ] ] ].
+			^ pName = 'childrenNodes' or: [ pName = 'childrenNode' ] ].
+
+	propName := aFMProperty name asString.
+	"An alias declared for the unnamed children (see #aliasUnnamedFieldAs:) wins over the generic childrenNodes property"
+	fieldsAliasMap ifNotNil: [ fieldsAliasMap at: '<unnamedChild>' ifPresent: [ :aliases | (aliases includes: aFMProperty name) ifTrue: [ ^ true ] ] ].
+
+	"Direct match"
+	propName = field ifTrue: [ ^ true ].
+
+	"Check aliases"
+	fieldsAliasMap ifNotNil: [ fieldsAliasMap at: field ifPresent: [ :aliases | (aliases includes: aFMProperty name) ifTrue: [ ^ true ] ] ].
+
+	"CamelCase conversion (type_parameters → typeParameters)"
+	camelField := self toCamelCase: field.
+	(camelField ~= field and: [ propName = camelField ]) ifTrue: [ ^ true ].
+
+	"Reserved property names (type → typeRef, name → nameRef)"
+	self reservedPropertyMappings at: camelField ifPresent: [ :safeName | propName = safeName ifTrue: [ ^ true ] ].
+
+	^ false
 ]
 
 { #category : 'accessing' }
