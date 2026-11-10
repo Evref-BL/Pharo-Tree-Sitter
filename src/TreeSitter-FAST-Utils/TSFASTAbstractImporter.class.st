@@ -12,10 +12,14 @@ By default the visitor will be a `TSFASTVisitor` that is fully automatic. But if
 For more information check the documentation of the project in the github repository.
 
 In the future I should be able to manage incremental imports.
+
+I use FASTTImporter so the importers created by subclassing me can be used via the `FASTAgnosticImporter` of FAST.
 "
 Class {
 	#name : 'TSFASTAbstractImporter',
 	#superclass : 'Object',
+	#traits : 'FASTTImporter',
+	#classTraits : 'FASTTImporter classTrait',
 	#instVars : [
 		'errorReportBlock',
 		'tsParser'
@@ -28,21 +32,6 @@ Class {
 TSFASTAbstractImporter class >> isAbstract [
 
 	^ self = TSFASTAbstractImporter
-]
-
-{ #category : 'parsing' }
-TSFASTAbstractImporter class >> parse: aString [
-
-	^ self new parse: aString
-]
-
-{ #category : 'parsing' }
-TSFASTAbstractImporter class >> parseFile: aFileReference [
-	"We could optimize by using the binary read stream of the file, but that means we would have to manage the encoding and the importer is not managing that yet.
-	
-	This implementation only accept utf8 for now. Next step would be to detect the encoding of the file before reading the contents."
-
-	^ self parse: aFileReference asFileReference contents
 ]
 
 { #category : 'initialization' }
@@ -66,21 +55,21 @@ TSFASTAbstractImporter >> initialiseTreeSitterParser [
 ]
 
 { #category : 'parsing' }
-TSFASTAbstractImporter >> parse: aString [
+TSFASTAbstractImporter >> parse: aString into: aModel [
+	"Import the source in the FAST model, or in a new one if the model is nil, and answer the model"
 
-	| tsTree fastTree |
+	| tsTree fastModel |
 	self initialiseTreeSitterParser.
-
+	
 	tsTree := self tsParser parseString: aString.
 	
-	fastTree := self visitorClass new
-		            originString: aString;
-		            in: [ :importer | errorReportBlock ifNotNil: [ importer errorReportBlock: errorReportBlock ] ];
-		            import: tsTree rootNode.
-
+	fastModel := self visitorClass new
+		             originString: aString;
+		             in: [ :importer | errorReportBlock ifNotNil: [ importer errorReportBlock: errorReportBlock ] ];
+		             import: tsTree rootNode into: aModel.
+		
 	self deleteTreeSitterParser.
-
-	^ fastTree
+	^ fastModel
 ]
 
 { #category : 'accessing' }
