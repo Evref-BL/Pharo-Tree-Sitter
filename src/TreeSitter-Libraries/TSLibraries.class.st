@@ -106,10 +106,14 @@ TSLibraries >> generateTreeSitterLibrary [
 
 { #category : 'accessing' }
 TSLibraries >> gitCloneCommandFor: repositoryUrl branch: branchName destination: clonePath [
+	"The Pharo VM can put its own libraries first in LD_LIBRARY_PATH, which makes git's https helper load an incompatible libssh2 on Linux. Git runs without that variable."
 
-	branchName ifNil: [ ^ 'git clone --depth 1 ' , repositoryUrl , ' ' , clonePath ].
+	| gitCommand |
+	gitCommand := branchName
+		ifNil: [ 'git clone --depth 1 ' , repositoryUrl , ' ' , clonePath ]
+		ifNotNil: [ 'git clone --branch ' , branchName , ' --depth 1 ' , repositoryUrl , ' ' , clonePath ].
 
-	^ 'git clone --branch ' , branchName , ' --depth 1 ' , repositoryUrl , ' ' , clonePath
+	^ 'env -u LD_LIBRARY_PATH ' , gitCommand
 ]
 
 { #category : 'testing' }
