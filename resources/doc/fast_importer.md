@@ -22,6 +22,7 @@ This section covers the content of the package `TreeSitter-FAST-Utils` and expla
       - [The context management](#the-context-management)
       - [Customize fields relation name matching](#customize-fields-relation-name-matching)
       - [Manage properties](#manage-properties)
+  - [Incremental parsing](#incremental-parsing)
   - [Add regression tests to your project](#add-regression-tests-to-your-project)
     - [TSFASTAbstractImporterTest](#tsfastabstractimportertest)
     - [Regression tests generation](#regression-tests-generation)
@@ -590,6 +591,44 @@ visitAugmentedAssignment: aTSNode
 
 	^ fastEntity
 ```
+
+## Incremental parsing
+
+When a file changes a little, there is no need to parse it again from scratch. Tree-Sitter can reuse the tree of the previous version and parse only the changed part. `TSFASTAbstractImporter` does this for you, so an importer gets incremental parsing without any extra code.
+
+### Parse a source and keep its tree
+
+`parse:` answers a FAST model, and the importer remembers the tree-Sitter tree and the source for that model:
+
+```smalltalk
+| importer model |
+importer := FASTPythonImporter new.
+model := importer parse: 'x = 1'.
+```
+
+### Parse a new version of the source
+
+`parse:usingOldTree:` takes the model answered for the previous version and the new source:
+
+```smalltalk
+newModel := importer parse: 'x = 2' usingOldTree: model.
+```
+
+The importer compares the remembered source with the new one, computes the edit that turns the first into the second, applies it to the old tree and reparses with that tree. It then answers a new model for the new source. The old model is forgotten.
+
+Earlier importers exposed `editTree:using:` and kept their own tree representations. They are replaced by passing the new source to `parse:usingOldTree:`, so there is no need to build an input edit.
+
+> [!NOTE]
+> The edit is one changed range: the part between the common prefix and the common suffix of the two sources. Two separate changes are therefore reparsed as one range.
+
+> [!IMPORTANT]
+> Only the tree-Sitter parse is incremental. The FAST model is rebuilt entirely from the new tree by `importToFAST:usingSourceCode:`. The gain is the parsing time, not the model building.
+
+### Rules
+
+- Only the last model answered by an importer for a given source can be reparsed. Reparsing a model replaces it, so reparsing the replaced model raises an error. A model that the importer did not answer also raises an error.
+- The importer keeps one tree per model it answered. Trees are not released automatically, so keep an importer only as long as you need its incremental parsing.
+- Each importer keeps its own conversion from tree to model. A customized conversion overrides `importToFAST:usingSourceCode:`, and both `parse:` and `parse:usingOldTree:` use it.
 
 ## Add regression tests to your project
 
