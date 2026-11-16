@@ -4,8 +4,9 @@ I test how a TSFASTContextEntry matches the field of its tree-sitter node with t
 Class {
 	#name : 'TSFASTContextEntryTest',
 	#superclass : 'TestCase',
-	#category : 'TreeSitter-FAST-Utils-Tests',
-	#package : 'TreeSitter-FAST-Utils-Tests'
+	#category : 'TreeSitter-FAST-Utils-Tests-Tests',
+	#package : 'TreeSitter-FAST-Utils-Tests',
+	#tag : 'Tests'
 }
 
 { #category : 'tests' }

@@ -4,8 +4,9 @@ I am a minimal importer used to test the incremental parsing of TSFASTAbstractIm
 Class {
 	#name : 'TSFASTTestImporter',
 	#superclass : 'TSFASTAbstractImporter',
-	#category : 'TreeSitter-FAST-Utils-Tests',
-	#package : 'TreeSitter-FAST-Utils-Tests'
+	#category : 'TreeSitter-FAST-Utils-Tests-Stubs',
+	#package : 'TreeSitter-FAST-Utils-Tests',
+	#tag : 'Stubs'
 }
 
 { #category : 'parsing' }
