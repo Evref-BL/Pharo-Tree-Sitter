@@ -4,8 +4,9 @@ I test the incremental parsing of TSFASTAbstractImporter with TSFASTTestImporter
 Class {
 	#name : 'TSFASTAbstractImporterIncrementalTest',
 	#superclass : 'TestCase',
-	#category : 'TreeSitter-FAST-Utils-Tests',
-	#package : 'TreeSitter-FAST-Utils-Tests'
+	#category : 'TreeSitter-FAST-Utils-Tests-Tests',
+	#package : 'TreeSitter-FAST-Utils-Tests',
+	#tag : 'Tests'
 }
 
 { #category : 'tests' }

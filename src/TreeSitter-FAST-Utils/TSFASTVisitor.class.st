@@ -198,15 +198,21 @@ TSFASTVisitor >> handleNode: aTSNode parentBlock: aBlock [
 	^ self handleNode: aTSNode kind: (self class environment at: (self classesPrefix , aTSNode type pascalized) asSymbol) parentBlock: aBlock
 ]
 
-{ #category : 'actions' }
+{ #category : 'importing' }
 TSFASTVisitor >> import: aTSNode [
-	"Consider we will not add duplicated entities with the algo of the importer."
+	"Import the node in a new model and answer it"
+
+	^ self import: aTSNode into: nil
+]
+
+{ #category : 'importing' }
+TSFASTVisitor >> import: aTSNode into: aModel [
+	"Import the node in the model, or in a new one if the model is nil, and answer the model. Consider we will not add duplicated entities with the algo of the importer."
 
 	FMShouldCheckForDuplicatedEntitiesInMultivalueLinks value: false during: [
-			model := self newInstanceOfClassNamed: self classesPrefix , 'Model'.
+			model := aModel ifNil: [ self newInstanceOfClassNamed: self classesPrefix , 'Model' ].
 			aTSNode accept: self.
 			self manageErrorReport ].
-
 	^ model
 ]
 

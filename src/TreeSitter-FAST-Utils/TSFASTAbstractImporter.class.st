@@ -12,10 +12,14 @@ By default the visitor will be a `TSFASTVisitor` that is fully automatic. But if
 I import incrementally: after #parse:, the source of the model can be changed and reparsed with #parse:usingOldTree:, which reuses the tree-sitter tree of the previous version. I remember one TSFASTTreeRepresentation per model I answered.
 
 For more information check the documentation of the project in the github repository.
+
+I use FASTTImporter so the importers created by subclassing me can be used via the `FASTAgnosticImporter` of FAST.
 "
 Class {
 	#name : 'TSFASTAbstractImporter',
 	#superclass : 'Object',
+	#traits : 'FASTTImporter',
+	#classTraits : 'FASTTImporter classTrait',
 	#instVars : [
 		'errorReportBlock',
 		'tsParser',
@@ -29,21 +33,6 @@ Class {
 TSFASTAbstractImporter class >> isAbstract [
 
 	^ self = TSFASTAbstractImporter
-]
-
-{ #category : 'parsing' }
-TSFASTAbstractImporter class >> parse: aString [
-
-	^ self new parse: aString
-]
-
-{ #category : 'parsing' }
-TSFASTAbstractImporter class >> parseFile: aFileReference [
-	"We could optimize by using the binary read stream of the file, but that means we would have to manage the encoding and the importer is not managing that yet.
-	
-	This implementation only accept utf8 for now. Next step would be to detect the encoding of the file before reading the contents."
-
-	^ self parse: aFileReference asFileReference contents
 ]
 
 { #category : 'initialization' }
@@ -87,6 +76,21 @@ TSFASTAbstractImporter >> parse: aString [
 	self deleteTreeSitterParser.
 	self rememberTree: tsTree source: aString forModel: fastModel.
 	^ fastModel
+]
+
+{ #category : 'parsing' }
+TSFASTAbstractImporter >> parse: aString into: aModel [
+	"Import the source in the FAST model given, or in a new one when it is nil, and answer the model. The entities of the source are moved into the model given, so that several sources can be imported in one model. A model given here is not remembered for incremental parsing."
+
+	| tsTree fastModel |
+	aModel ifNil: [ ^ self parse: aString ].
+
+	self initialiseTreeSitterParser.
+	tsTree := self tsParser parseString: aString.
+	fastModel := self importToFAST: tsTree rootNode usingSourceCode: aString.
+	self deleteTreeSitterParser.
+	fastModel entities copy do: [ :entity | aModel add: entity ].
+	^ aModel
 ]
 
 { #category : 'parsing' }

@@ -13,6 +13,7 @@ This section covers the content of the package `TreeSitter-FAST-Utils` and expla
     - [Install TreeSitter](#install-treesitter)
     - [Generate the base of the Metamodel](#generate-the-base-of-the-metamodel)
     - [FAST importer](#fast-importer)
+    - [Declare the importer](#declare-the-importer)
   - [Customize your metamodel and visitor](#customize-your-metamodel-and-visitor)
     - [Improve relations management](#improve-relations-management)
     - [Implement a specialized visitor](#implement-a-specialized-visitor)
@@ -125,7 +126,29 @@ This builder will also generate the base of an importer. We will explore that in
 
 ### FAST importer
 
-Now that we have a basic metamodel, we can import a FAST model like this:
+Now that we have a basic metamodel, the importer of the language is a subclass of `TSFASTAbstractImporter`. `TSFASTBuilder` generates the base of the importer with the metamodel, so you do not need to write the visitor plumbing to start.
+
+Import a source with the importer of the language:
+
+```Smalltalk
+FASTPythonImporter parse: 'if x > 0:
+    if x < 10:
+        1
+    else:
+        2
+else:
+    3'
+```
+
+or a file:
+
+```Smalltalk
+FASTPythonImporter parseFile: 'myFile.py'
+```
+
+Both answer a FAST model. The importer of a language also takes part in the FAST importers API: see [Declare the importer](#declare-the-importer) and the [FAST documentation](https://modularmoose.org/users/ast/fast#add-a-language).
+
+The lower-level API is still available, and it is useful to debug or test a parser. Here the tree-sitter parser and the importer are used directly:
 
 ```Smalltalk
 | parser tsLanguage importer |
@@ -149,27 +172,33 @@ importer originString: string.
 ^ importer import: (parser parseString: string) rootNode
 ```
 
-This is not really practical so it is recommended to implement a subclass of `TSFASTAbsractImporter`. With the current version of Tree Sitter, this should now happens automatically using `TSFASTBuilder`. 
+### Declare the importer
 
-For example for Python we now have a `FASTPythonImporter`.
+`TSFASTAbstractImporter` already uses the `FASTTImporter` trait from FAST, on its instance side and on its class side, so a subclass inherits it. A language importer only has to provide:
 
-And the previous script can now be replaced by:
-
-```Smalltalk
-FASTPythonImporter parse: 'if x > 0:
-    if x < 10:
-        1
-    else:
-        2
-else:
-    3'
-```
-
-or: 
+- `tsLanguage` on the instance side: the tree-sitter language, for example `TSLanguage python`.
+- `visitorClass` on the instance side, when the default `TSFASTVisitor` is not enough. The default answers `TSFASTVisitor`.
+- `extensions` on the class side: the file extensions without the dot, for example `#( 'py' )`. It answers no extension by default, so the importer handles no file.
 
 ```Smalltalk
-FASTPythonImporter parseFile: 'myFile.py'
+FASTPythonImporter class >> extensions
+	^ #( 'py' )
+
+FASTPythonImporter >> tsLanguage
+	^ TSLanguage python
 ```
+
+`parse:into:` is inherited: it imports the source into the model given, or into a new model when the model is `nil`, and answers the model. Use it to import several files in one model:
+
+```Smalltalk
+| model |
+model := FASTPythonImporter parse: 'x = 1'.
+FASTPythonImporter new parse: 'y = 2' into: model.
+```
+
+The importers are found by the classes that use the trait, so nothing has to be registered in FAST.
+
+To be used by `FASTAgnosticImporter` in FAST, the language project also needs a `FASTImporterDescription` subclass in the FAST repository. It tells FAST where the project is (its baseline, GitHub repository, group and branch) and which extensions it handles, so FAST can load the project when the language is not in the image yet. Without it, `FASTAgnosticImporter` cannot import the files of your language.
 
 ## Customize your metamodel and visitor
 

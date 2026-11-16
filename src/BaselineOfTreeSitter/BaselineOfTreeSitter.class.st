@@ -18,15 +18,16 @@ BaselineOfTreeSitter >> baseline: spec [
 { #category : 'baselines' }
 BaselineOfTreeSitter >> defineDependencies: spec [
 
-
 	spec baseline: 'PharoBackwardCompatibility' with: [ spec repository: 'github://jecisc/PharoBackwardCompatibility:v1.x.x/src' ].
-  
-	spec
-        baseline: 'NeoJSON'
-        with: [
-            spec
-                loads: #('default');
-                repository: 'github://svenvc/NeoJSON/repository' ]
+
+	spec baseline: 'NeoJSON' with: [
+			spec
+				loads: #( 'default' );
+				repository: 'github://svenvc/NeoJSON/repository' ].
+	spec baseline: 'FAST' with: [
+			spec
+				loads: #( 'FAST-Importer' );
+				repository: 'github://moosetechnology/FAST:v3/src' ]
 ]
 
 { #category : 'baselines' }
@@ -62,7 +63,7 @@ BaselineOfTreeSitter >> definePackages: spec [
 		package: 'TreeSitter-Highlighter' with: [ spec requires: #( 'TreeSitter' ) ];
 		package: 'TreeSitter-Spec' with: [ spec requires: #( 'TreeSitter-Visitor' ) ];
 		package: 'TreeSitter-Libraries' with: [ spec requires: #( 'TreeSitter' 'NeoJSON' ) ];
-		package: 'TreeSitter-FAST-Utils' with: [ spec requires: #( 'TreeSitter-Visitor' ) ];
+		package: 'TreeSitter-FAST-Utils' with: [ spec requires: #( 'TreeSitter-Visitor' 'FAST' ) ];
 		package: 'TreeSitter-FAST-Utils-Tests' with: [ spec requires: #( 'TreeSitter-FAST-Utils' ) ].
 
 	"Core tests ( Only Typescript is loaded by default cz many tests depend on it. )"

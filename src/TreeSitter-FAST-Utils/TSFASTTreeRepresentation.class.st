@@ -9,8 +9,9 @@ Class {
 		'treeSitterTree',
 		'fastModel'
 	],
-	#category : 'TreeSitter-FAST-Utils',
-	#package : 'TreeSitter-FAST-Utils'
+	#category : 'TreeSitter-FAST-Utils-Objects',
+	#package : 'TreeSitter-FAST-Utils',
+	#tag : 'Objects'
 }
 
 { #category : 'accessing' }
