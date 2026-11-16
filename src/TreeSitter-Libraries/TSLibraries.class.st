@@ -129,32 +129,16 @@ TSLibraries >> languageName [
 
 { #category : 'accessing' }
 TSLibraries >> latestReleaseTagForOwner: owner repo: repoName [
-	"I am a method that uses github apis to get the latest release version of a repo based on its name and its owner. If HTTPS is not available in the current VM, answer nil so callers can fall back to a plain git clone."
+	"I use the GitHub API to answer the latest release of a repo. When the API gives no release, for example because it rate-limits unauthenticated requests, I answer nil so that the callers clone the default branch."
 
-	| client body status json |
-
-
+	| client body |
 	client := ZnClient new.
-
 	^ [
-	  client beOneShot.
-	  client url: 'https://api.github.com/repos/' , owner , '/' , repoName , '/releases/latest'.
-
-	  body := client get.
-	  status := client response status.
-
-	  status = 200
-		  ifTrue: [ (NeoJSONReader fromString: body) at: 'tag_name' ]
-		  ifFalse: [
-			  client := ZnClient new.
-			  client beOneShot.
-			  client url: 'https://api.github.com/repos/' , owner , '/' , repoName , '/tags'.
-			  body := client get.
-			  json := NeoJSONReader fromString: body.
-			  json isEmpty
-				  ifTrue: [ self error: 'No releases or tags found for ' , repoName ]
-				  ifFalse: [ (json first) at: 'name' ] ]
-	  ] ensure: [ client close ]
+		  client beOneShot.
+		  client enforceHttpSuccess: false.
+		  client url: 'https://api.github.com/repos/' , owner , '/' , repoName , '/releases/latest'.
+		  body := client get.
+		  client response isSuccess ifTrue: [ (NeoJSONReader fromString: body) at: 'tag_name' ifAbsent: [ nil ] ] ] ensure: [ client close ]
 ]
 
 { #category : 'testing' }
